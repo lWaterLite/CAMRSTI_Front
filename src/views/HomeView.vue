@@ -82,7 +82,15 @@
         <template slot-scope="scope">
           <span style="display: none;">{{ scope.row.sampleId }}</span>
           <el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
-          <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="onDelete(scope.row.sampleId)"></el-button>
+          <el-popconfirm
+              @confirm="onDelete(scope.row.sampleId)"
+              confirm-button-text='确定'
+              cancel-button-text='取消'
+              icon="el-icon-info"
+              icon-color="red"
+              title="确定删除这一条记录吗？">
+            <el-button size="mini" round plain type="danger" icon="el-icon-delete" slot="reference"></el-button>
+          </el-popconfirm>
         </template>
       </el-table-column>
     </el-table>
