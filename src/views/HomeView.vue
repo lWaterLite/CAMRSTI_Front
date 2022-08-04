@@ -82,7 +82,7 @@
         <template slot-scope="scope">
           <span style="display: none;">{{ scope.row.sampleId }}</span>
           <el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
-          <el-button size="mini" round plain type="danger" icon="el-icon-delete"></el-button>
+          <el-button size="mini" round plain type="danger" icon="el-icon-delete" @click="onDelete(scope.row.sampleId)"></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -103,11 +103,6 @@
   color: #99a9bf;
 }
 
-.table-expand .el-form-item {
-  margin-right: 0;
-  margin-bottom: 0;
-  width: 50%;
-}
 </style>
 
 <script>
@@ -117,51 +112,46 @@ export default {
   name: 'HomeView',
   data() {
     return {
-      tableData: []
-      // tableData: [
-      //   {
-      //     sampleId: '11Y1:9',
-      //     sampleType: '炉壁',
-      //     sampleSource: '北京延庆水泉沟',
-      //     samplingYear: 2019,
-      //     samplingPeople: '刘海峰',
-      //     imageId: 'IMG_20190512_33333',
-      //     describe: '取自炉体上半部分，红色，质地疏松多空',
-      //     explain: '自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析',
-      //     experimentId: ["11Y3:9-1", "11Y3:9-2", "11Y3:9-3"],
-      //     test: '无'
-      //   },
-      //   {
-      //     sampleId: '11Y1:8',
-      //     sampleType: '炉壁',
-      //     sampleSource: '北京延庆水泉沟',
-      //     samplingYear: 2019,
-      //     samplingPeople: '刘海峰',
-      //     imageId: 'IMG_20190512_33333',
-      //     describe: '取自炉体上半部分，红色，质地疏松多空',
-      //     explain: '自内向外取三处，分别做薄片后矿相观察，制备粉末样品开展XRD分析',
-      //     experimentId: ['11Y3:9-1', '11Y3:9-2', '11Y3:9-3'],
-      //     test: '无'
-      //   }
-      // ]
+      tableData: [],
+      isRouterAlive: true
     }
   },
   mounted: function () {
-    const that = this;
-    axios.get("http://localhost:5000/api/request/base")
-        .then(function (response) {
-          // console.log(response.data.count);
-          for (let i=0;i<response.data.length;++i) {
-            that.tableData.push(response.data[i])
-          }
-          // console.log(that.tableData);
-        })
-        .catch(function (error) {
-          // console.log(error)
-          if (error.isAxiosError) {
-            alert('数据请求失败，请检查后端和数据库是否正在运行')
-          }
-        })
+    this.getData();
+  },
+  methods: {
+    getData: function () {
+      axios.get("http://localhost:5000/api/request/base")
+          .then( response => {
+            this.tableData = [];
+            for (let i=0;i<response.data.length;++i) {
+              this.tableData.push(response.data[i])
+            }
+          })
+          .catch(function (error) {
+            if (error.isAxiosError) {
+              this.$notify.error({
+                title: '出错了',
+                message: '数据请求错误，请检查后端和数据库运行情况'
+              });
+              console.log(error);
+            }
+          })
+    },
+    onDelete: function (s) {
+      axios.post('http://localhost:5000/api/request/delete', {'sampleId': s})
+      .then(() => {
+        this.$message({
+          message: '删除成功',
+          type: 'success'
+        });
+        this.getData();
+      })
+      .catch(error => {
+        this.$message.error('删除失败，请检查后端和数据库运行情况');
+        console.log(error);
+      })
+    }
   }
 }
 </script>

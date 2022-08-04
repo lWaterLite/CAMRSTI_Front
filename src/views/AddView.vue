@@ -176,12 +176,12 @@ export default {
                 .then(() => {
                   // 数据库上传成功后上传图片
                   this.$refs.upload.submit();
-                  this.$notify({
-                    title: '上传成功',
+                  this.$message({
                     message: '数据上传成功',
                     type: 'success',
                     duration: 2000
                   });
+                  this.$refs.upload.clearFiles();   //清空upload
                   this.$refs.form.resetFields();   //上传成功后清空表单
                 })
                 .catch(err => {
