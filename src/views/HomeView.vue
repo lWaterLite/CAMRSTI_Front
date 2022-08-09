@@ -55,14 +55,14 @@
             <el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId" :key="img">
             <el-image
                 style="height: 200px"
-                :src="'http://localhost:5000/api/request/img/' + img"
+                :src="'http://10.0.0.13:5000/api/request/img/' + img"
                 fit="contain">
                 <div slot="error" class="image-slot">
                 <i class="el-icon-picture-outline"></i>
                 </div>
             </el-image>
             <div slot="reference" class="name-wrapper">
-                <a :href="'http://localhost:5000/api/request/img/' + img" target="_blank" style="text-decoration: underline; color: #409EAF">{{ img }}</a>
+                <a :href="'http://10.0.0.13:5000/api/request/img/' + img" target="_blank" style="text-decoration: underline; color: #409EAF">{{ img }}</a>
             </div>
             </el-popover>
           </template>
@@ -129,7 +129,7 @@ export default {
   },
   methods: {
     getData: function () {
-      axios.get("http://localhost:5000/api/request/base")
+      axios.get("http://10.0.0.13:5000/api/request/base")
           .then( response => {
             this.tableData = [];
             for (let i=0;i<response.data.length;++i) {
@@ -147,7 +147,7 @@ export default {
           })
     },
     onDelete: function (s) {
-      axios.post('http://localhost:5000/api/request/delete', {'sampleId': s})
+      axios.post('http://10.0.0.13:5000/api/request/delete', {'sampleId': s})
       .then(() => {
         this.$message({
           message: '删除成功',
