@@ -146,7 +146,7 @@ export default {
       let fileObj = param.file
       let form = new FormData()
       form.append("fileToUpload", fileObj)
-      axios.post("http://127.0.0.1:5000/api/upload/img", form)
+      axios.post("http://1.13.21.160:5001/api/upload/img", form)
       .then(response => {
         console.log(response);
       })
@@ -172,7 +172,7 @@ export default {
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.form.experimentId = this.form.experimentId.split(';'); // 实验编号处理
-            axios.post('http://127.0.0.1:5000/api/upload/base', this.form)
+            axios.post('http://1.13.21.160:5001/api/upload/base', this.form)
                 .then(() => {
                   // 数据库上传成功后上传图片
                   this.$refs.upload.submit();
