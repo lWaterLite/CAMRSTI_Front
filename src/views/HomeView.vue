@@ -13,10 +13,10 @@
 						<el-button type="primary" icon="el-icon-refresh" size="medium">重置</el-button>
 					</el-form-item>
 				</el-form>
-				<el-table :data="tableData" stripe border height="85vh" style="width: 100%" >
+				<el-table :data="tableData" stripe border height="85vh" style="width: 100%">
 					<el-table-column sortable prop="sampleId" label="样品号" width="87">
 						<template slot-scope="scope">
-							<el-link type="primary" >
+							<el-link type="primary">
 								<el-tag type="success" effect="plain" size="small" @click="addTab(scope.row.sampleId)">
 									{{ scope.row.sampleId }}
 								</el-tag>
@@ -76,7 +76,35 @@
 					</el-table-column>
 				</el-table>
 			</el-tab-pane>
-			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name" :label="tab.label">
+			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
+				:label="tab.label">
+				<el-descriptions title="金相:" border labelStyle="width: 150px">
+					<el-descriptions-item label="金相"></el-descriptions-item>
+					<el-descriptions-item label="样品全图"></el-descriptions-item>
+					<el-descriptions-item label="样品全图描述"></el-descriptions-item>
+					<el-descriptions-item label="设备"></el-descriptions-item>
+					<el-descriptions-item label="放大倍数"></el-descriptions-item>
+					<el-descriptions-item label="拍摄模式"></el-descriptions-item>
+					<el-descriptions-item label="金相照片"></el-descriptions-item>
+				</el-descriptions><br />
+				<el-descriptions title="矿相:" border labelStyle="width: 150px">
+					<el-descriptions-item label="矿相"></el-descriptions-item>
+					<el-descriptions-item label="薄片扫描图"></el-descriptions-item>
+					<el-descriptions-item label="薄片扫描图描述"></el-descriptions-item>
+					<el-descriptions-item label="设备"></el-descriptions-item>
+					<el-descriptions-item label="放大倍数"></el-descriptions-item>
+					<el-descriptions-item label="拍摄模式"></el-descriptions-item>
+					<el-descriptions-item label="矿相照片"></el-descriptions-item>
+				</el-descriptions><br />
+				<el-descriptions title="电子显微:" border labelStyle="width: 150px">
+					<el-descriptions-item label="电子显微"></el-descriptions-item>
+					<el-descriptions-item label="样品全图"></el-descriptions-item>
+					<el-descriptions-item label="样品全图描述"></el-descriptions-item>
+					<el-descriptions-item label="设备"></el-descriptions-item>
+					<el-descriptions-item label="放大倍数"></el-descriptions-item>
+					<el-descriptions-item label="拍摄模式"></el-descriptions-item>
+					<el-descriptions-item label="电子显微照片"></el-descriptions-item>
+				</el-descriptions>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -94,9 +122,12 @@
 </style>
 
 <script>
-  import {localGet, localPost} from "@/Utils/axios.config";
+	import {
+		localGet,
+		localPost
+	} from "@/Utils/axios.config";
 
-  export default {
+	export default {
 		name: 'HomeView',
 		data() {
 			return {
@@ -152,12 +183,12 @@
 			addTab(sampleId) {
 				let isExist = 0;
 				this.tabsList.forEach((tab) => {
-					if(tab.label === sampleId) {
+					if (tab.label === sampleId) {
 						this.activeTab = tab.name;
 						isExist = 1;
 					}
 				})
-				if(isExist === 0) {
+				if (isExist === 0) {
 					this.tabsList.push({
 						label: sampleId,
 						name: String(this.tabsNumber + 1),
@@ -173,15 +204,15 @@
 				if (activeName === removeName) {
 					tabs.forEach((tab) => {
 						if (tab.name === removeName) {
-							activeName = String(tab.name-1);
+							activeName = String(tab.name - 1);
 						}
 					});
 				}
 				this.activeTab = activeName;
 				this.tabsList = tabs.filter(tab => tab.name !== removeName);
 				this.tabsList.forEach((tab) => {
-					if(tab.name > removeName) {
-						tab.name = String(tab.name-1);
+					if (tab.name > removeName) {
+						tab.name = String(tab.name - 1);
 					}
 				});
 				this.tabsNumber--;
