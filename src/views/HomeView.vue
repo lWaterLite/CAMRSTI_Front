@@ -114,7 +114,8 @@
 </style>
 
 <script>
-import axios from 'axios'
+// import axios from 'axios'
+import {localGet, localPost} from "@/Utils/axios.config";
 
 export default {
   name: 'HomeView',
@@ -129,7 +130,7 @@ export default {
   },
   methods: {
     getData: function () {
-      axios.get("http://localhost:5000/api/request/base")
+      localGet.get("api/request/base")
           .then( response => {
             this.tableData = [];
             for (let i=0;i<response.data.length;++i) {
@@ -147,7 +148,7 @@ export default {
           })
     },
     onDelete: function (s) {
-      axios.post('http://localhost:5000/api/request/delete', {'sampleId': s})
+      localPost.post('api/request/delete', {'sampleId': s})
       .then(() => {
         this.$message({
           message: '删除成功',
