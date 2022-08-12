@@ -13,8 +13,16 @@
 						<el-button type="primary" icon="el-icon-refresh" size="medium">重置</el-button>
 					</el-form-item>
 				</el-form>
-				<el-table :data="tableData" stripe border height="85vh" style="width: 100%" @row-click="addTab">
-					<el-table-column sortable prop="sampleId" label="样品号" width="87"></el-table-column>
+				<el-table :data="tableData" stripe border height="85vh" style="width: 100%" >
+					<el-table-column sortable prop="sampleId" label="样品号" width="87">
+						<template slot-scope="scope">
+							<el-link type="primary" >
+								<el-tag type="success" effect="plain" size="small" @click="addTab(scope.row.sampleId)">
+									{{ scope.row.sampleId }}
+								</el-tag>
+							</el-link>
+						</template>
+					</el-table-column>
 					<el-table-column sortable prop="sampleType" label="样品类型" width="101"></el-table-column>
 					<el-table-column sortable prop="sampleSource" label="样品来源" width="120"></el-table-column>
 					<el-table-column sortable prop="samplingYear" label="取样年份" width="101">
@@ -141,17 +149,17 @@
 						console.log(error);
 					})
 			},
-			addTab(row) {
+			addTab(sampleId) {
 				let isExist = 0;
 				this.tabsList.forEach((tab) => {
-					if(tab.label === row.sampleId) {
+					if(tab.label === sampleId) {
 						this.activeTab = tab.name;
 						isExist = 1;
 					}
 				})
 				if(isExist == 0) {
 					this.tabsList.push({
-						label: row.sampleId,
+						label: sampleId,
 						name: String(this.tabsNumber + 1),
 						closable: true,
 					})
