@@ -6,11 +6,13 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
+import {local} from '@/Utils/axios.config'
+
 export default {
   methods: {
     click: function () {
-      axios.post('http://127.0.0.1:5000/api/upload', {
+      local.post('api/upload', {
         'firstName': 'Fred',
         'lastName': 'Flintstone'
       })

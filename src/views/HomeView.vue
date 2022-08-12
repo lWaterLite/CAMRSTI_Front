@@ -94,9 +94,9 @@
 </style>
 
 <script>
-	import axios from 'axios'
+  import {localGet, localPost} from "@/Utils/axios.config";
 
-	export default {
+  export default {
 		name: 'HomeView',
 		data() {
 			return {
@@ -116,7 +116,7 @@
 		},
 		methods: {
 			getData: function() {
-				axios.get("http://localhost:5000/api/request/base")
+				localGet.get("api/request/base")
 					.then(response => {
 						this.tableData = [];
 						for (let i = 0; i < response.data.length; ++i) {
@@ -134,7 +134,7 @@
 					})
 			},
 			onDelete: function(s) {
-				axios.post('http://localhost:5000/api/request/delete', {
+				localPost.post('api/request/delete', {
 						'sampleId': s
 					})
 					.then(() => {
@@ -157,7 +157,7 @@
 						isExist = 1;
 					}
 				})
-				if(isExist == 0) {
+				if(isExist === 0) {
 					this.tabsList.push({
 						label: sampleId,
 						name: String(this.tabsNumber + 1),
