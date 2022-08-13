@@ -78,23 +78,43 @@
 			</el-tab-pane>
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
 				:label="tab.label">
-				<el-descriptions title="金相:" border labelStyle="width: 150px">
-					<el-descriptions-item label="金相"></el-descriptions-item>
-					<el-descriptions-item label="样品全图"></el-descriptions-item>
-					<el-descriptions-item label="样品全图描述"></el-descriptions-item>
-					<el-descriptions-item label="设备"></el-descriptions-item>
-					<el-descriptions-item label="放大倍数"></el-descriptions-item>
-					<el-descriptions-item label="拍摄模式"></el-descriptions-item>
-					<el-descriptions-item label="金相照片"></el-descriptions-item>
+				<el-descriptions contentClassName="metalPhaseData" title="金相:" border labelStyle="width: 150px">
+					<el-descriptions-item prop="metalPhase" label="金相">{{metalPhaseData.metalPhase}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="sampleFullImg" label="样品全图">{{metalPhaseData.sampleFullImg}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="sfDescription" label="样品全图描述">{{metalPhaseData.sfDescription}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="sfEquipment" label="设备">{{metalPhaseData.sfEquipment}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="sfZoom" label="放大倍数">{{metalPhaseData.sfZoom}}</el-descriptions-item>
+					<el-descriptions-item prop="sfPhotoMod" label="拍摄模式">{{metalPhaseData.sfPhotoMod}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="mpImage" label="金相照片">
+						<el-link type="primary">
+							<el-tag type="success" effect="plain" size="small">
+								{{metalPhaseData.mpImage}}
+							</el-tag>
+						</el-link>
+					</el-descriptions-item>
 				</el-descriptions><br />
-				<el-descriptions title="矿相:" border labelStyle="width: 150px">
-					<el-descriptions-item label="矿相"></el-descriptions-item>
-					<el-descriptions-item label="薄片扫描图"></el-descriptions-item>
-					<el-descriptions-item label="薄片扫描图描述"></el-descriptions-item>
-					<el-descriptions-item label="设备"></el-descriptions-item>
-					<el-descriptions-item label="放大倍数"></el-descriptions-item>
-					<el-descriptions-item label="拍摄模式"></el-descriptions-item>
-					<el-descriptions-item label="矿相照片"></el-descriptions-item>
+				<el-descriptions contentClassName="minePhaseData" title="矿相:" border labelStyle="width: 150px">
+					<el-descriptions-item prop="minePhase" label="矿相">{{minePhaseData.minePhase}}</el-descriptions-item>
+					<el-descriptions-item prop="mpFullImage" label="薄片扫描图">{{minePhaseData.mpFullImage}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="mpDescription" label="薄片扫描图描述">{{minePhaseData.mpDescription}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="mpEquipment" label="设备">{{minePhaseData.mpEquipment}}
+					</el-descriptions-item>
+					<el-descriptions-item prop="mpZoom" label="放大倍数">{{minePhaseData.mpZoom}}</el-descriptions-item>
+					<el-descriptions-item prop="mpMod" label="拍摄模式">{{minePhaseData.mpMod}}</el-descriptions-item>
+					<el-descriptions-item prop="mpImg" label="矿相照片">
+						<el-link type="primary">
+							<el-tag type="success" effect="plain" size="small">
+								{{minePhaseData.mpImg}}
+							</el-tag>
+						</el-link>
+					</el-descriptions-item>
 				</el-descriptions><br />
 				<el-descriptions title="电子显微:" border labelStyle="width: 150px">
 					<el-descriptions-item label="电子显微"></el-descriptions-item>
@@ -103,7 +123,15 @@
 					<el-descriptions-item label="设备"></el-descriptions-item>
 					<el-descriptions-item label="放大倍数"></el-descriptions-item>
 					<el-descriptions-item label="拍摄模式"></el-descriptions-item>
-					<el-descriptions-item label="电子显微照片"></el-descriptions-item>
+					<el-descriptions-item prop="emImg" label="电子显微照片">
+						<template slot-scope="scope">
+							<el-link type="primary">
+								<el-tag type="success" effect="plain" size="small">
+									{{ scope.row.emImg }}
+								</el-tag>
+							</el-link>
+						</template>
+					</el-descriptions-item>
 				</el-descriptions>
 			</el-tab-pane>
 		</el-tabs>
@@ -132,6 +160,24 @@
 		data() {
 			return {
 				tableData: [],
+				metalPhaseData: {
+					metalPhase: "无",
+					sampleFullImg: "无",
+					sfDescription: "无",
+					sfEquipment: "无",
+					sfZoom: "无",
+					sfPhotoMod: "明场/暗场",
+					mpImage: "无"
+				},
+				minePhaseData: {
+					minePhase: "无",
+					mpFullImage: "无",
+					mpDescription: "无",
+					mpEquipment: "无",
+					mpZoom: "无",
+					mpMod: "XPL/PPL",
+					mpImg: "无"
+				},
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 1,
