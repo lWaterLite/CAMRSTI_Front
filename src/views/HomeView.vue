@@ -39,14 +39,14 @@
 					<el-table-column prop="imageId" label="照片号" width="260">
 						<template slot-scope="scope">
 							<el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId" :key="img">
-								<el-image style="height: 200px" :src="'http://localhost:5000/api/request/img/' + img"
+								<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
 									fit="contain">
 									<div slot="error" class="image-slot">
 										<i class="el-icon-picture-outline"></i>
 									</div>
 								</el-image>
 								<div slot="reference" class="name-wrapper">
-									<a :href="'http://localhost:5000/api/request/img/' + img" target="_blank"
+									<a :href="pageLink+'api/request/img/' + img" target="_blank"
 										style="text-decoration: underline; color: #409EAF">{{ img }}</a>
 								</div>
 							</el-popover>
@@ -76,42 +76,43 @@
 					</el-table-column>
 				</el-table>
 			</el-tab-pane>
+      <!--    样品信息分页    -->
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
 				:label="tab.label">
 				<el-descriptions contentClassName="metalPhaseData" title="金相:" border labelStyle="width: 150px">
-					<el-descriptions-item prop="metalPhase" label="金相">{{metalPhaseData.metalPhase}}
+					<el-descriptions-item prop="metalPhase" label="金相">{{tab.metalPhaseData.metalPhase}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="sampleFullImg" label="样品全图">{{metalPhaseData.sampleFullImg}}
+					<el-descriptions-item prop="sampleFullImg" label="样品全图">{{tab.metalPhaseData.sfFullImg}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="sfDescription" label="样品全图描述">{{metalPhaseData.sfDescription}}
+					<el-descriptions-item prop="sfDescription" label="样品全图描述">{{tab.metalPhaseData.sfDescription}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="sfEquipment" label="设备">{{metalPhaseData.sfEquipment}}
+					<el-descriptions-item prop="sfEquipment" label="设备">{{tab.metalPhaseData.sfEquipment}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="sfZoom" label="放大倍数">{{metalPhaseData.sfZoom}}</el-descriptions-item>
-					<el-descriptions-item prop="sfPhotoMod" label="拍摄模式">{{metalPhaseData.sfPhotoMod}}
+					<el-descriptions-item prop="sfZoom" label="放大倍数">{{tab.metalPhaseData.sfZoom}}</el-descriptions-item>
+					<el-descriptions-item prop="sfPhotoMod" label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}
 					</el-descriptions-item>
 					<el-descriptions-item prop="mpImage" label="金相照片">
 						<el-link type="primary">
 							<el-tag type="success" effect="plain" size="small">
-								{{metalPhaseData.mpImage}}
+								{{tab.metalPhaseData.sfImgList}}
 							</el-tag>
 						</el-link>
 					</el-descriptions-item>
 				</el-descriptions><br />
 				<el-descriptions contentClassName="minePhaseData" title="矿相:" border labelStyle="width: 150px">
-					<el-descriptions-item prop="minePhase" label="矿相">{{minePhaseData.minePhase}}</el-descriptions-item>
-					<el-descriptions-item prop="mpFullImage" label="薄片扫描图">{{minePhaseData.mpFullImage}}
+					<el-descriptions-item prop="minePhase" label="矿相">{{tab.minePhaseData.minePhase}}</el-descriptions-item>
+					<el-descriptions-item prop="mpFullImage" label="薄片扫描图">{{tab.minePhaseData.mpFullImage}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="mpDescription" label="薄片扫描图描述">{{minePhaseData.mpDescription}}
+					<el-descriptions-item prop="mpDescription" label="薄片扫描图描述">{{tab.minePhaseData.mpDescription}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="mpEquipment" label="设备">{{minePhaseData.mpEquipment}}
+					<el-descriptions-item prop="mpEquipment" label="设备">{{tab.minePhaseData.mpEquipment}}
 					</el-descriptions-item>
-					<el-descriptions-item prop="mpZoom" label="放大倍数">{{minePhaseData.mpZoom}}</el-descriptions-item>
-					<el-descriptions-item prop="mpMod" label="拍摄模式">{{minePhaseData.mpMod}}</el-descriptions-item>
+					<el-descriptions-item prop="mpZoom" label="放大倍数">{{tab.minePhaseData.mpZoom}}</el-descriptions-item>
+					<el-descriptions-item prop="mpMod" label="拍摄模式">{{tab.minePhaseData.mpPhotoMod}}</el-descriptions-item>
 					<el-descriptions-item prop="mpImg" label="矿相照片">
 						<el-link type="primary">
 							<el-tag type="success" effect="plain" size="small">
-								{{minePhaseData.mpImg}}
+								{{tab.minePhaseData.mpImgList}}
 							</el-tag>
 						</el-link>
 					</el-descriptions-item>
@@ -150,34 +151,16 @@
 </style>
 
 <script>
-	import {
-		localGet,
-		localPost
-	} from "@/Utils/axios.config";
+	import {localGet, localPost, localImg} from "@/Utils/axios.config";
 
-	export default {
+  export default {
 		name: 'HomeView',
 		data() {
 			return {
+        pageLink: localImg, // img解析前缀链接
 				tableData: [],
-				metalPhaseData: {
-					metalPhase: "无",
-					sampleFullImg: "无",
-					sfDescription: "无",
-					sfEquipment: "无",
-					sfZoom: "无",
-					sfPhotoMod: "明场/暗场",
-					mpImage: "无"
-				},
-				minePhaseData: {
-					minePhase: "无",
-					mpFullImage: "无",
-					mpDescription: "无",
-					mpEquipment: "无",
-					mpZoom: "无",
-					mpMod: "XPL/PPL",
-					mpImg: "无"
-				},
+				metalPhaseData: {},
+				minePhaseData: {},
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 1,
@@ -185,6 +168,24 @@
 					label: "分页",
 					name: "1",
 					closable: true,
+          metalPhaseData: {
+            metalPhase: "无",
+            sfFullImg: "无",
+            sfDescription: "无",
+            sfEquipment: "无",
+            sfZoom: "无",
+            sfPhotoMod: "暗场",
+            sfImgList: '无'
+          },
+          minePhaseData: {
+            minePhase: "无",
+            mpFullImage: "无",
+            mpDescription: "无",
+            mpEquipment: "无",
+            mpZoom: "无",
+            mpPhotoMod: "PPL",
+            mpImgList: '无'
+          }
 				}],
 			}
 		},
@@ -235,13 +236,38 @@
 					}
 				})
 				if (isExist === 0) {
-					this.tabsList.push({
-						label: sampleId,
-						name: String(this.tabsNumber + 1),
-						closable: true,
-					})
-					this.activeTab = String(this.tabsNumber + 1);
-					this.tabsNumber++;
+          // axios请求
+          localGet.get('api/request/phase/'+sampleId)
+                .then(response => {
+                  this.tabsList.push({
+                    label: sampleId,
+                    name: String(this.tabsNumber + 1),
+                    closable: true,
+                    metalPhaseData: response.data.metalPhaseData,
+                    minePhaseData: response.data.minePhaseData
+                  })
+                  console.log(this.tabsList)
+                  this.activeTab = String(this.tabsNumber + 1);
+                  this.tabsNumber++;
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.$notify.error({
+                    title: '出错了',
+                    message: '数据请求错误，请联系管理员检查运行情况'
+                  });
+                });
+
+					// this.tabsList.push({
+					// 	label: sampleId,
+					// 	name: String(this.tabsNumber + 1),
+					// 	closable: true,
+          //   metalPhaseData: this.metalPhaseData,
+          //   minePhaseData: this.minePhaseData
+					// })
+          // console.log(this.tabsList)
+					// this.activeTab = String(this.tabsNumber + 1);
+					// this.tabsNumber++;
 				}
 			},
 			removeTab(removeName) {

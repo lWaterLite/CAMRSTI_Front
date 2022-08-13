@@ -6,22 +6,12 @@
 </template>
 
 <script>
-// import axios from "axios";
-import {local} from '@/Utils/axios.config'
+import {getPhaseData} from "@/Utils/http.aciton"
 
 export default {
   methods: {
     click: function () {
-      local.post('api/upload', {
-        'firstName': 'Fred',
-        'lastName': 'Flintstone'
-      })
-          .then(function (response) {
-              console.log(response);
-          })
-          .catch(function (err) {
-            console.log(err)
-          })
+      getPhaseData('11Y1:8', this);
     }
   }
 }
