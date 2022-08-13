@@ -39,14 +39,14 @@
 					<el-table-column prop="imageId" label="照片号" width="260">
 						<template slot-scope="scope">
 							<el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId" :key="img">
-								<el-image style="height: 200px" :src="'http://localhost:5000/api/request/img/' + img"
+								<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
 									fit="contain">
 									<div slot="error" class="image-slot">
 										<i class="el-icon-picture-outline"></i>
 									</div>
 								</el-image>
 								<div slot="reference" class="name-wrapper">
-									<a :href="'http://localhost:5000/api/request/img/' + img" target="_blank"
+									<a :href="pageLink+'api/request/img/' + img" target="_blank"
 										style="text-decoration: underline; color: #409EAF">{{ img }}</a>
 								</div>
 							</el-popover>
@@ -76,6 +76,7 @@
 					</el-table-column>
 				</el-table>
 			</el-tab-pane>
+      <!--    样品信息分页    -->
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
 				:label="tab.label">
 				<el-descriptions contentClassName="metalPhaseData" title="金相:" border labelStyle="width: 150px">
@@ -150,15 +151,13 @@
 </style>
 
 <script>
-	import {
-		localGet,
-		localPost
-	} from "@/Utils/axios.config";
+	import {localGet, localPost, localImg} from "@/Utils/axios.config";
 
-	export default {
+  export default {
 		name: 'HomeView',
 		data() {
 			return {
+        pageLink: localImg, // img解析前缀链接
 				tableData: [],
 				metalPhaseData: {
 					metalPhase: "无",
