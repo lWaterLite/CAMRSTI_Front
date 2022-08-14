@@ -23,7 +23,7 @@
 							<template slot-scope="scope">
 								<el-link type="primary">
 									<el-tag type="success" effect="plain" size="small"
-										@click="addTab(scope.row.sampleId)">
+										@click="addTab(scope.row.sampleId,scope.column.property)">
 										{{ scope.row.sampleId }}
 									</el-tag>
 								</el-link>
@@ -63,7 +63,8 @@
 						<el-table-column prop="experimentId" label="实验编号" width="160">
 							<template slot-scope="scope">
 								<el-link type="primary" v-for="sc in scope.row.experimentId" :key="sc">
-									<el-tag type="success" effect="plain" size="small">
+									<el-tag type="success" effect="plain" size="small"
+										@click="addTab(scope.row.sampleId,scope.column.property)">
 										{{ sc }}
 									</el-tag>
 								</el-link>
@@ -87,79 +88,84 @@
 			<!--    样品信息分页    -->
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
 				:label="tab.label">
-				<template>
-					<!-- 金相信息 -->
-					<el-descriptions contentClassName="metalPhaseData" title="金相:" border labelStyle="width: 150px">
-						<el-descriptions-item label="金相">{{tab.metalPhaseData.metalPhase}}
-						</el-descriptions-item>
-						<el-descriptions-item label="样品全图">{{tab.metalPhaseData.sfFullImg}}
-						</el-descriptions-item>
-						<el-descriptions-item label="样品全图描述">{{tab.metalPhaseData.sfDescription}}
-						</el-descriptions-item>
-						<el-descriptions-item label="设备">{{tab.metalPhaseData.sfEquipment}}
-						</el-descriptions-item>
-						<el-descriptions-item label="放大倍数">{{tab.metalPhaseData.sfZoom}}
-						</el-descriptions-item>
-						<el-descriptions-item label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}
-						</el-descriptions-item>
-						<el-descriptions-item label="金相照片">
-							<div v-if="tab.metalPhaseData.sfImgList.length!==0">
-								<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
-									<el-tag type="success" effect="plain" size="small">
-										{{Img}}
-									</el-tag>
-								</el-link>
-							</div>
-							<div v-else>无</div>
-						</el-descriptions-item>
-					</el-descriptions><br />
-				</template>
-				<template>
-					<!-- 矿相信息 -->
-					<el-descriptions contentClassName="minePhaseData" title="矿相:" border labelStyle="width: 150px">
-						<el-descriptions-item label="矿相">{{tab.minePhaseData.minePhase}}
-						</el-descriptions-item>
-						<el-descriptions-item label="薄片扫描图">{{tab.minePhaseData.mpFullImage}}
-						</el-descriptions-item>
-						<el-descriptions-item label="薄片扫描图描述">{{tab.minePhaseData.mpDescription}}
-						</el-descriptions-item>
-						<el-descriptions-item label="设备">{{tab.minePhaseData.mpEquipment}}
-						</el-descriptions-item>
-						<el-descriptions-item label="放大倍数">{{tab.minePhaseData.mpZoom}}</el-descriptions-item>
-						<el-descriptions-item label="拍摄模式">{{tab.minePhaseData.mpPhotoMod}}
-						</el-descriptions-item>
-						<el-descriptions-item label="矿相照片">
-							<div v-if="tab.minePhaseData.mpImgList.length!==0">
-								<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
-									<el-tag type="success" effect="plain" size="small">
-										{{Img}}
-									</el-tag>
-								</el-link>
-							</div>
-							<div v-else>无</div>
-						</el-descriptions-item>
-					</el-descriptions><br />
-				</template>
-				<template>
-					<!-- 电子显微信息 -->
-					<el-descriptions title="电子显微:" border labelStyle="width: 150px">
-						<el-descriptions-item label="电子显微"></el-descriptions-item>
-						<el-descriptions-item label="样品全图"></el-descriptions-item>
-						<el-descriptions-item label="样品全图描述"></el-descriptions-item>
-						<el-descriptions-item label="设备"></el-descriptions-item>
-						<el-descriptions-item label="放大倍数"></el-descriptions-item>
-						<el-descriptions-item label="拍摄模式"></el-descriptions-item>
-						<el-descriptions-item label="电子显微照片">
-							<div>
-								<el-link type="primary">
-									<el-tag type="success" effect="plain" size="small">
+				<div v-if="tab.src === 'sampleId'">
+					<template>
+						<!-- 金相信息 -->
+						<el-descriptions contentClassName="metalPhaseData" title="金相:" border :labelStyle="LS">
+							<el-descriptions-item label="金相">{{tab.metalPhaseData.metalPhase}}
+							</el-descriptions-item>
+							<el-descriptions-item label="样品全图">{{tab.metalPhaseData.sfFullImg}}
+							</el-descriptions-item>
+							<el-descriptions-item label="样品全图描述">{{tab.metalPhaseData.sfDescription}}
+							</el-descriptions-item>
+							<el-descriptions-item label="设备">{{tab.metalPhaseData.sfEquipment}}
+							</el-descriptions-item>
+							<el-descriptions-item label="放大倍数">{{tab.metalPhaseData.sfZoom}}
+							</el-descriptions-item>
+							<el-descriptions-item label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}
+							</el-descriptions-item>
+							<el-descriptions-item label="金相照片">
+								<div v-if="tab.metalPhaseData.sfImgList.length!==0">
+									<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
+										<el-tag type="success" effect="plain" size="small">
+											{{Img}}
+										</el-tag>
+									</el-link>
+								</div>
+								<div v-else>无</div>
+							</el-descriptions-item>
+						</el-descriptions><br />
+					</template>
+					<template>
+						<!-- 矿相信息 -->
+						<el-descriptions contentClassName="minePhaseData" title="矿相:" border :labelStyle="LS">
+							<el-descriptions-item label="矿相">{{tab.minePhaseData.minePhase}}
+							</el-descriptions-item>
+							<el-descriptions-item label="薄片扫描图">{{tab.minePhaseData.mpFullImage}}
+							</el-descriptions-item>
+							<el-descriptions-item label="薄片扫描图描述">{{tab.minePhaseData.mpDescription}}
+							</el-descriptions-item>
+							<el-descriptions-item label="设备">{{tab.minePhaseData.mpEquipment}}
+							</el-descriptions-item>
+							<el-descriptions-item label="放大倍数">{{tab.minePhaseData.mpZoom}}</el-descriptions-item>
+							<el-descriptions-item label="拍摄模式">{{tab.minePhaseData.mpPhotoMod}}
+							</el-descriptions-item>
+							<el-descriptions-item label="矿相照片">
+								<div v-if="tab.minePhaseData.mpImgList.length!==0">
+									<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
+										<el-tag type="success" effect="plain" size="small">
+											{{Img}}
+										</el-tag>
+									</el-link>
+								</div>
+								<div v-else>无</div>
+							</el-descriptions-item>
+						</el-descriptions><br />
+					</template>
+					<template>
+						<!-- 电子显微信息 -->
+						<el-descriptions title="电子显微:" border :labelStyle="LS">
+							<el-descriptions-item label="电子显微"></el-descriptions-item>
+							<el-descriptions-item label="样品全图"></el-descriptions-item>
+							<el-descriptions-item label="样品全图描述"></el-descriptions-item>
+							<el-descriptions-item label="设备"></el-descriptions-item>
+							<el-descriptions-item label="放大倍数"></el-descriptions-item>
+							<el-descriptions-item label="拍摄模式"></el-descriptions-item>
+							<el-descriptions-item label="电子显微照片">
+								<div>
+									<el-link type="primary">
+										<el-tag type="success" effect="plain" size="small">
 
-									</el-tag>
-								</el-link>
-							</div>
-						</el-descriptions-item>
-					</el-descriptions>
-				</template>
+										</el-tag>
+									</el-link>
+								</div>
+							</el-descriptions-item>
+						</el-descriptions>
+					</template>
+				</div>
+				<div v-else-if="tab.src === 'experimentId'">
+					
+				</div>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -177,13 +183,19 @@
 </style>
 
 <script>
+	import {
+		localGet,
+		localPost,
+		localImg
+	} from "@/Utils/axios.config";
 
-	import {localGet, localPost, localImg} from "@/Utils/axios.config";
-
-  export default {
+	export default {
 		name: 'HomeView',
 		data() {
 			return {
+				LS: {
+					"width":"150px"
+				},//description的label样式
 				pageLink: localImg, // img解析前缀链接
 				tableData: [],
 				metalPhaseData: {},
@@ -195,6 +207,7 @@
 					label: "分页",
 					name: "1",
 					closable: true,
+					src: "sampleId",
 					metalPhaseData: {
 						metalPhase: "无",
 						sfFullImg: "无",
@@ -254,48 +267,68 @@
 						console.log(error);
 					})
 			},
-			addTab(sampleId) {
+			addTab(sampleId, column) {
 				let isExist = 0;
-				this.tabsList.forEach((tab) => {
-					if (tab.label === sampleId) {
-						this.activeTab = tab.name;
-						isExist = 1;
-					}
-				})
-				if (isExist === 0) {
-					// axios请求
-					localGet.get('api/request/phase/' + sampleId)
-						.then(response => {
-							this.tabsList.push({
-								label: sampleId,
-								name: String(this.tabsNumber + 1),
-								closable: true,
-								metalPhaseData: response.data.metalPhaseData,
-								minePhaseData: response.data.minePhaseData
-							})
-							console.log(this.tabsList)
-							this.activeTab = String(this.tabsNumber + 1);
-							this.tabsNumber++;
-						})
-						.catch(err => {
-							console.log(err);
-							this.$notify.error({
-								title: '出错了',
-								message: '数据请求错误，请联系管理员检查运行情况'
-							});
-						});
 
-					// this.tabsList.push({
-					// 	label: sampleId,
-					// 	name: String(this.tabsNumber + 1),
-					// 	closable: true,
-					//   metalPhaseData: this.metalPhaseData,
-					//   minePhaseData: this.minePhaseData
-					// })
-					// console.log(this.tabsList)
-					// this.activeTab = String(this.tabsNumber + 1);
-					// this.tabsNumber++;
+				if (column === "sampleId") {
+					this.tabsList.forEach((tab) => {
+						if (tab.label === sampleId) {
+							this.activeTab = tab.name;
+							isExist = 1;
+						}
+					});
+					if (isExist === 0) {
+
+						// axios请求
+						localGet.get('api/request/phase/' + sampleId)
+							.then(response => {
+								this.tabsList.push({
+									label: sampleId,
+									name: String(this.tabsNumber + 1),
+									closable: true,
+									src: column,
+									metalPhaseData: response.data.metalPhaseData,
+									minePhaseData: response.data.minePhaseData
+								});
+								this.activeTab = String(this.tabsNumber + 1);
+								this.tabsNumber++;
+							})
+							.catch(err => {
+								console.log(err);
+								this.$notify.error({
+									title: '出错了',
+									message: '数据请求错误，请联系管理员检查运行情况'
+								});
+							});
+					}
+				} else if (column === "experimentId") {
+					this.tabsList.forEach((tab) => {
+						if (tab.label === (sampleId + "的实验")) {
+							this.activeTab = tab.name;
+							isExist = 1;
+						}
+					})
+					if (isExist === 0) {
+						this.tabsList.push({
+							label: sampleId + "的实验",
+							name: String(this.tabsNumber + 1),
+							closable: true,
+							src: column
+						});
+						this.activeTab = String(this.tabsNumber + 1);
+						this.tabsNumber++;
+					}
 				}
+				// this.tabsList.push({
+				// 	label: sampleId,
+				// 	name: String(this.tabsNumber + 1),
+				// 	closable: true,
+				//   metalPhaseData: this.metalPhaseData,
+				//   minePhaseData: this.minePhaseData
+				// })
+				// console.log(this.tabsList)
+				// this.activeTab = String(this.tabsNumber + 1);
+				// this.tabsNumber++;
 			},
 			removeTab(removeName) {
 				let tabs = this.tabsList;
