@@ -53,7 +53,7 @@
 									</el-image>
 									<div slot="reference" class="name-wrapper">
 										<a :href="pageLink+'api/request/img/' + img" target="_blank"
-											style="text-decoration: underline; color: #409EAF">{{ img }}</a>
+											style="text-decoration: none; color: #409EAF">{{ img }}</a>
 									</div>
 								</el-popover>
 							</template>
@@ -89,21 +89,29 @@
 				:label="tab.label">
 				<template>
 					<!-- 金相信息 -->
-					<el-descriptions contentClassName="metalPhaseData" title="金相:" border labelStyle="width: 150px">
-						<el-descriptions-item label="金相">{{tab.metalPhaseData.metalPhase}}
-						</el-descriptions-item>
-						<el-descriptions-item label="样品全图">{{tab.metalPhaseData.sfFullImg}}
-						</el-descriptions-item>
-						<el-descriptions-item label="样品全图描述">{{tab.metalPhaseData.sfDescription}}
-						</el-descriptions-item>
-						<el-descriptions-item label="设备">{{tab.metalPhaseData.sfEquipment}}
-						</el-descriptions-item>
-						<el-descriptions-item label="放大倍数">{{tab.metalPhaseData.sfZoom}}
-						</el-descriptions-item>
-						<el-descriptions-item label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}
-						</el-descriptions-item>
+					<el-descriptions contentClassName="metalPhaseData" title="金相:" border :labelStyle="{width: '150px'}">
+						<el-descriptions-item label="金相">{{tab.metalPhaseData.metalPhase}}</el-descriptions-item>
+						<el-descriptions-item label="样品全图">
+              <template>
+                <el-popover trigger="hover" placement="top">
+                  <el-image style="height: 200px" :src="pageLink+'api/request/img/'+tab.metalPhaseData.sfFullImg" fit="contain">
+                    <div class="image-slot">
+                      <i class="el-icon-picture-outline"/>
+                    </div>
+                  </el-image>
+                  <div class="name-wrapper" slot="reference">
+                    <a :href="pageLink+'api/request/img/'+tab.metalPhaseData.sfFullImg" target="_blank"
+                       style="text-decoration: none; color: #409EAF">{{tab.metalPhaseData.sfFullImg}}</a>
+                  </div>
+                </el-popover>
+              </template>
+            </el-descriptions-item>
+						<el-descriptions-item label="样品全图描述">{{tab.metalPhaseData.sfDescription}}</el-descriptions-item>
+						<el-descriptions-item label="设备">{{tab.metalPhaseData.sfEquipment}}</el-descriptions-item>
+						<el-descriptions-item label="放大倍数">{{tab.metalPhaseData.sfZoom}}</el-descriptions-item>
+						<el-descriptions-item label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}</el-descriptions-item>
 						<el-descriptions-item label="金相照片">
-							<div v-if="tab.metalPhaseData.sfImgList.length!==0">
+							<div v-if="tab.metalPhaseData.sfImgList.length">
 								<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
 									<el-tag type="success" effect="plain" size="small">
 										{{Img}}
@@ -116,11 +124,23 @@
 				</template>
 				<template>
 					<!-- 矿相信息 -->
-					<el-descriptions contentClassName="minePhaseData" title="矿相:" border labelStyle="width: 150px">
-						<el-descriptions-item label="矿相">{{tab.minePhaseData.minePhase}}
-						</el-descriptions-item>
-						<el-descriptions-item label="薄片扫描图">{{tab.minePhaseData.mpFullImage}}
-						</el-descriptions-item>
+					<el-descriptions contentClassName="minePhaseData" title="矿相:" border :labelStyle="{width: '150px'}">
+						<el-descriptions-item label="矿相">{{tab.minePhaseData.minePhase}}</el-descriptions-item>
+						<el-descriptions-item label="薄片扫描图">
+              <template>
+                <el-popover trigger="hover" placement="top">
+                  <el-image style="height: 200px" :src="pageLink+'api/request/img/'+tab.minePhaseData.mpFullImg" fit="contain">
+                    <div class="image-slot">
+                      <i class="el-icon-picture-outline"/>
+                    </div>
+                  </el-image>
+                  <div class="name-wrapper" slot="reference">
+                    <a :href="pageLink+'api/request/img/'+tab.minePhaseData.mpFullImg" target="_blank"
+                       style="text-decoration: none; color: #409EAF">{{tab.minePhaseData.mpFullImg}}</a>
+                  </div>
+                </el-popover>
+              </template>
+            </el-descriptions-item>
 						<el-descriptions-item label="薄片扫描图描述">{{tab.minePhaseData.mpDescription}}
 						</el-descriptions-item>
 						<el-descriptions-item label="设备">{{tab.minePhaseData.mpEquipment}}
@@ -129,7 +149,7 @@
 						<el-descriptions-item label="拍摄模式">{{tab.minePhaseData.mpPhotoMod}}
 						</el-descriptions-item>
 						<el-descriptions-item label="矿相照片">
-							<div v-if="tab.minePhaseData.mpImgList.length!==0">
+							<div v-if="tab.minePhaseData.mpImgList.length">
 								<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
 									<el-tag type="success" effect="plain" size="small">
 										{{Img}}
@@ -142,21 +162,36 @@
 				</template>
 				<template>
 					<!-- 电子显微信息 -->
-					<el-descriptions title="电子显微:" border labelStyle="width: 150px">
-						<el-descriptions-item label="电子显微"></el-descriptions-item>
-						<el-descriptions-item label="样品全图"></el-descriptions-item>
-						<el-descriptions-item label="样品全图描述"></el-descriptions-item>
-						<el-descriptions-item label="设备"></el-descriptions-item>
-						<el-descriptions-item label="放大倍数"></el-descriptions-item>
-						<el-descriptions-item label="拍摄模式"></el-descriptions-item>
+					<el-descriptions title="电子显微:" border :labelStyle="{width: '150px'}">
+						<el-descriptions-item label="电子显微">{{tab.emPhaseData.emPhase}}</el-descriptions-item>
+						<el-descriptions-item label="样品全图">
+              <template>
+                <el-popover trigger="hover" placement="top">
+                  <el-image style="height: 200px" :src="pageLink+'api/request/img/'+tab.emPhaseData.emFullImg" fit="contain">
+                    <div class="image-slot">
+                      <i class="el-icon-picture-outline"/>
+                    </div>
+                  </el-image>
+                  <div class="name-wrapper" slot="reference">
+                    <a :href="pageLink+'api/request/img/'+tab.emPhaseData.emFullImg" target="_blank"
+                       style="text-decoration: none; color: #409EAF">{{tab.emPhaseData.emFullImg}}</a>
+                  </div>
+                </el-popover>
+              </template>
+            </el-descriptions-item>
+						<el-descriptions-item label="样品全图描述">{{tab.emPhaseData.emDescription}}</el-descriptions-item>
+						<el-descriptions-item label="设备">{{tab.emPhaseData.emEquipment}}</el-descriptions-item>
+						<el-descriptions-item label="放大倍数">{{tab.emPhaseData.emZoom}}</el-descriptions-item>
+						<el-descriptions-item label="拍摄模式">{{tab.emPhaseData.emPhotoMod}}</el-descriptions-item>
 						<el-descriptions-item label="电子显微照片">
-							<div>
-								<el-link type="primary">
-									<el-tag type="success" effect="plain" size="small">
-
-									</el-tag>
-								</el-link>
-							</div>
+              <div v-if="tab.emPhaseData.emImgList.length">
+                <el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
+                  <el-tag type="success" effect="plain" size="small">
+                    {{Img}}
+                  </el-tag>
+                </el-link>
+              </div>
+              <div v-else>无</div>
 						</el-descriptions-item>
 					</el-descriptions>
 				</template>
@@ -170,10 +205,6 @@
 		padding: 15px;
 	}
 
-	::v-deep .el-tabs--card>.el-tabs__header {
-		border-bottom: 1px solid #409EAF;
-		background-color: #fff;
-	}
 </style>
 
 <script>
@@ -201,17 +232,26 @@
 						sfEquipment: "无",
 						sfZoom: "无",
 						sfPhotoMod: "暗场",
-						sfImgList: '无'
+						sfImgList: []
 					},
 					minePhaseData: {
 						minePhase: "无",
-						mpFullImage: "无",
+						mpFullImg: "无",
 						mpDescription: "无",
 						mpEquipment: "无",
 						mpZoom: "无",
 						mpPhotoMod: "PPL",
-						mpImgList: '无'
-					}
+						mpImgList: []
+					},
+          emPhaseData: {
+            emPhase: '无',
+            emFullImg: '无',
+            emDescription: '无',
+            emEquipment: '无',
+            emZoom: '无',
+            emPhotoMod: '无',
+            emImgList: []
+          }
 				}],
 			}
 		},
@@ -227,11 +267,12 @@
 							this.tableData.push(response.data[i])
 						}
 					})
-					.catch(function(error) {
+					.catch(error => {
 						if (error.isAxiosError) {
 							this.$notify.error({
 								title: '出错了',
-								message: '数据请求错误，请检查后端和数据库运行情况'
+								message: '数据请求错误，请检查后端和数据库运行情况',
+                duration: 0
 							});
 							console.log(error);
 						}
@@ -270,7 +311,8 @@
 								name: String(this.tabsNumber + 1),
 								closable: true,
 								metalPhaseData: response.data.metalPhaseData,
-								minePhaseData: response.data.minePhaseData
+								minePhaseData: response.data.minePhaseData,
+                emPhaseData: response.data.emPhaseData
 							})
 							console.log(this.tabsList)
 							this.activeTab = String(this.tabsNumber + 1);
@@ -280,31 +322,10 @@
 							console.log(err);
 							this.$notify.error({
 								title: '出错了',
-								message: '数据请求错误，请联系管理员检查运行情况'
+								message: '数据请求错误，请联系管理员检查运行情况',
+                duration: 0
 							});
 						});
-          // axios请求
-          localGet.get('api/request/phase/'+sampleId)
-                .then(response => {
-                  this.tabsList.push({
-                    label: sampleId,
-                    name: String(this.tabsNumber + 1),
-                    closable: true,
-                    metalPhaseData: response.data.metalPhaseData,
-                    minePhaseData: response.data.minePhaseData
-                  })
-                  console.log(this.tabsList)
-                  this.activeTab = String(this.tabsNumber + 1);
-                  this.tabsNumber++;
-                })
-                .catch(err => {
-                  console.log(err);
-                  this.$notify.error({
-                    title: '出错了',
-                    message: '数据请求错误，请联系管理员检查运行情况'
-                  });
-                });
-
 					// this.tabsList.push({
 					// 	label: sampleId,
 					// 	name: String(this.tabsNumber + 1),
