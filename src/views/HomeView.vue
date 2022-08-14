@@ -222,6 +222,10 @@
 	#HomeView {
 		padding: 15px;
 	}
+	::v-deep .el-tabs--card> .el-tabs__header {
+		background-color: #fff;
+		border-bottom: 1px solid #409EFF;
+	}
 </style>
 
 <script>
