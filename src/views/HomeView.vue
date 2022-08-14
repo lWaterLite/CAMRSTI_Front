@@ -103,7 +103,7 @@
 						<el-descriptions-item label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}
 						</el-descriptions-item>
 						<el-descriptions-item label="金相照片">
-							<div v-if="tab.metalPhaseData.sfImgList.length!=0">
+							<div v-if="tab.metalPhaseData.sfImgList.length!==0">
 								<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
 									<el-tag type="success" effect="plain" size="small">
 										{{Img}}
@@ -129,7 +129,7 @@
 						<el-descriptions-item label="拍摄模式">{{tab.minePhaseData.mpPhotoMod}}
 						</el-descriptions-item>
 						<el-descriptions-item label="矿相照片">
-							<div v-if="tab.minePhaseData.mpImgList.length!=0">
+							<div v-if="tab.minePhaseData.mpImgList.length!==0">
 								<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
 									<el-tag type="success" effect="plain" size="small">
 										{{Img}}
