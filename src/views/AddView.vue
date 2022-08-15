@@ -5,16 +5,7 @@
           <el-input v-model="form.sampleId"></el-input>
         </el-form-item>
         <el-form-item label="样品类型" prop="sampleType">
-          <el-select v-model="form.sampleType" placeholder="请选择样品类型" style="width: 100%">
-            <el-option label="炉渣" value="炉渣"></el-option>
-            <el-option label="炉壁" value="炉壁"></el-option>
-            <el-option label="陶范" value="陶范"></el-option>
-            <el-option label="坩埚" value="坩埚"></el-option>
-            <el-option label="鼓风管" value="鼓风管"></el-option>
-            <el-option label="铜" value="铜"></el-option>
-            <el-option label="铁" value="铁"></el-option>
-            <el-option label="不明" value="不明"></el-option>
-          </el-select>
+          <el-input v-model="form.sampleType"></el-input>
         </el-form-item>
         <el-form-item label="样品来源" prop="sampleSource">
           <el-input v-model="form.sampleSource"></el-input>
@@ -107,7 +98,8 @@ export default {
           {max: 20, trigger: 'blur', message: '样品编号不能超过20个字符'}
         ],
         sampleType: [
-          {required: true, trigger: 'blur', message: '请选择样品类型'}
+          {required: true, trigger: 'blur', message: '请输入样品类型'},
+          {max: 10, trigger: 'blur', message: '样品类型不能超过10个字符'}
         ],
         sampleSource: [
           {required: true, message: '请输入样品来源', trigger: 'blur'},

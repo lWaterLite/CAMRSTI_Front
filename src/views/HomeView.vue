@@ -213,9 +213,9 @@
 					<!-- 物理性能 -->
 					<template>
 						<el-descriptions title="物理性能:" border :labelStyle="{width: '150px'}">
-							<el-descriptions-item label="显气孔率(%)"></el-descriptions-item>
-							<el-descriptions-item label="真密度(g/cm3)"></el-descriptions-item>
-							<el-descriptions-item label="吸水率(%)"></el-descriptions-item>
+							<el-descriptions-item label="显气孔率(%)">{{tab.physicalPorosity.apparentPorosity}}</el-descriptions-item>
+							<el-descriptions-item label="真密度(g/cm3)">{{tab.physicalPorosity.trueDensity}}</el-descriptions-item>
+							<el-descriptions-item label="吸水率(%)">{{tab.physicalPorosity.waterAbsorption}}</el-descriptions-item>
 						</el-descriptions>
 					</template>
 				</div>
@@ -325,7 +325,12 @@
 						emZoom: '无',
 						emPhotoMod: '无',
 						emImgList: []
-					}
+					},
+          physicalPorosity: {
+            apparentPorosity: 0,
+            trueDensity: 0,
+            waterAbsorption: 0
+          }
 				}],
 			}
 		},
@@ -382,6 +387,7 @@
 						// axios请求
 						localGet.get('api/request/phase/' + sampleId)
 							.then(response => {
+                console.log(response);
 								this.tabsList.push({
 									label: sampleId,
 									name: String(this.tabsNumber + 1),
@@ -389,7 +395,8 @@
 									src: column,
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
-									emPhaseData: response.data.emPhaseData
+									emPhaseData: response.data.emPhaseData,
+                  physicalPorosity: response.data.physicalPorosity
 								});
 								this.activeTab = String(this.tabsNumber + 1);
 								this.tabsNumber++;
@@ -398,7 +405,7 @@
 								console.log(err);
 								this.$notify.error({
 									title: '出错了',
-									message: '数据请求错误，请联系管理员检查运行情况',
+									message: '数据请求错误，样品数据可能不存在',
 									duration: 0
 								});
 							});
