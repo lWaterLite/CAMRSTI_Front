@@ -2,8 +2,8 @@
 	<div id="HomeView">
 		<el-tabs v-model="activeTab" type="card" @tab-remove="removeTab">
 			<el-tab-pane label="主页" name="0">
+				<!-- 徒有其表的搜索 -->
 				<template>
-					<!-- 徒有其表的搜索 -->
 					<el-form label-width="80px" :inline="true">
 						<el-form-item>
 							<el-input placeholder="关键词搜索" clearable prefix-icon="el-icon-search"
@@ -16,8 +16,8 @@
 						</el-form-item>
 					</el-form>
 				</template>
+				<!-- 样品基本信息 -->
 				<template>
-					<!-- 样品基本信息 -->
 					<el-table :data="tableData" stripe border height="85vh" style="width: 100%">
 						<el-table-column sortable prop="sampleId" label="样品号" width="87">
 							<template slot-scope="scope">
@@ -88,9 +88,10 @@
 			<!--    样品信息分页    -->
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
 				:label="tab.label">
+				<!-- 样品详细信息 -->
 				<div v-if="tab.src === 'sampleId'">
+					<!-- 金相信息 -->
 					<template>
-						<!-- 金相信息 -->
 						<el-descriptions contentClassName="metalPhaseData" title="金相:" border
 							:labelStyle="{width: '150px'}">
 							<el-descriptions-item label="金相">{{tab.metalPhaseData.metalPhase}}</el-descriptions-item>
@@ -129,8 +130,8 @@
 							</el-descriptions-item>
 						</el-descriptions><br />
 					</template>
+					<!-- 矿相信息 -->
 					<template>
-						<!-- 矿相信息 -->
 						<el-descriptions contentClassName="minePhaseData" title="矿相:" border
 							:labelStyle="{width: '150px'}">
 							<el-descriptions-item label="矿相">{{tab.minePhaseData.minePhase}}</el-descriptions-item>
@@ -171,8 +172,8 @@
 							</el-descriptions-item>
 						</el-descriptions><br />
 					</template>
+					<!-- 电子显微信息 -->
 					<template>
-						<!-- 电子显微信息 -->
 						<el-descriptions title="电子显微:" border :labelStyle="{width: '150px'}">
 							<el-descriptions-item label="电子显微">{{tab.emPhaseData.emPhase}}</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
@@ -209,9 +210,54 @@
 							</el-descriptions-item>
 						</el-descriptions>
 					</template>
+					<!-- 物理性能 -->
+					<template>
+						<el-descriptions title="物理性能:" border :labelStyle="{width: '150px'}">
+							<el-descriptions-item label="显气孔率(%)"></el-descriptions-item>
+							<el-descriptions-item label="真密度(g/cm3)"></el-descriptions-item>
+							<el-descriptions-item label="吸水率(%)"></el-descriptions-item>
+						</el-descriptions>
+					</template>
 				</div>
+				<!-- 样品实验详细信息 -->
 				<div v-else-if="tab.src === 'experimentId'">
+					<template>
+						<el-descriptions title="" border :column="1" :labelStyle="{width: '150px'}">
+							<el-descriptions-item label="矿物成分分析">
+								<el-table :data="mineralData" stripe border>
+									<el-table-column label="实验编号" width="90"></el-table-column>
+									<el-table-column label="砂" width="90"></el-table-column>
+									<el-table-column label="其他" width="90"></el-table-column>
+								</el-table>
+							</el-descriptions-item>
+							<el-descriptions-item label="物相成分分析">
+								<el-table :data="XRDData" stripe border>
+									<el-table-column label="实验编号" width="90"></el-table-column>
+									<el-table-column label="石英" width="90"></el-table-column>
+									<el-table-column label="云母" width="90"></el-table-column>
+								</el-table>
+							</el-descriptions-item>
+							<el-descriptions-item label="化学成分分析">
+								<el-table :data="chemistData" stripe border>
+									<el-table-column label="实验编号" width="90"></el-table-column>
+									<el-table-column width="90">
+										<template slot="header">
+											Na<sub>2</sub>O
+										</template>
+									</el-table-column>
+									<el-table-column label="MgO" width="90"></el-table-column>
+								</el-table>
+							</el-descriptions-item>
+							<el-descriptions-item label="热分析">
+								<el-table :data="thermalData" stripe border>
+									<el-table-column label="实验编号" width="90"></el-table-column>
+									<el-table-column label="终止温度" width="90"></el-table-column>
+									<el-table-column label="耐火度" width="90"></el-table-column>
+								</el-table>
+							</el-descriptions-item>
 
+						</el-descriptions>
+					</template>
 				</div>
 			</el-tab-pane>
 		</el-tabs>
@@ -222,7 +268,8 @@
 	#HomeView {
 		padding: 15px;
 	}
-	::v-deep .el-tabs--card> .el-tabs__header {
+
+	::v-deep .el-tabs--card>.el-tabs__header {
 		background-color: #fff;
 		border-bottom: 1px solid #409EFF;
 	}
@@ -239,13 +286,11 @@
 		name: 'HomeView',
 		data() {
 			return {
-				LS: {
-					"width": "150px"
-				}, //description的label样式
 				pageLink: localImg, // img解析前缀链接
 				tableData: [],
 				metalPhaseData: {},
 				minePhaseData: {},
+				taData: [],
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 1,
