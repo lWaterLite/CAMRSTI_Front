@@ -213,9 +213,12 @@
 					<!-- 物理性能 -->
 					<template>
 						<el-descriptions title="物理性能:" border :labelStyle="{width: '150px'}">
-							<el-descriptions-item label="显气孔率(%)"></el-descriptions-item>
-							<el-descriptions-item label="真密度(g/cm3)"></el-descriptions-item>
-							<el-descriptions-item label="吸水率(%)"></el-descriptions-item>
+							<el-descriptions-item label="显气孔率(%)">{{tab.physicalPorosity.apparentPorosity}}
+							</el-descriptions-item>
+							<el-descriptions-item label="真密度(g/cm3)">{{tab.physicalPorosity.trueDensity}}
+							</el-descriptions-item>
+							<el-descriptions-item label="吸水率(%)">{{tab.physicalPorosity.waterAbsorption}}
+							</el-descriptions-item>
 						</el-descriptions>
 					</template>
 				</div>
@@ -255,7 +258,6 @@
 									<el-table-column label="耐火度" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
-
 						</el-descriptions>
 					</template>
 				</div>
@@ -290,7 +292,10 @@
 				tableData: [],
 				metalPhaseData: {},
 				minePhaseData: {},
-				taData: [],
+				mineralData: [],
+				XRDDataData: [],
+				chemistData: [],
+				thermalData: [],
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 1,
@@ -325,6 +330,11 @@
 						emZoom: '无',
 						emPhotoMod: '无',
 						emImgList: []
+					},
+					physicalPorosity: {
+						apparentPorosity: 0,
+						trueDensity: 0,
+						waterAbsorption: 0
 					}
 				}],
 			}
@@ -389,7 +399,8 @@
 									src: column,
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
-									emPhaseData: response.data.emPhaseData
+									emPhaseData: response.data.emPhaseData,
+									physicalPorosity: response.data.physicalPorosity
 								});
 								this.activeTab = String(this.tabsNumber + 1);
 								this.tabsNumber++;
