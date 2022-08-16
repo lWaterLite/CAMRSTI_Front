@@ -227,35 +227,28 @@
 					<template>
 						<el-descriptions title="" border :column="1" :labelStyle="{width: '150px'}">
 							<el-descriptions-item label="矿物成分分析">
-								<el-table :data="mineralData" stripe border>
-									<el-table-column label="实验编号" width="90"></el-table-column>
-									<el-table-column label="砂" width="90"></el-table-column>
-									<el-table-column label="其他" width="90"></el-table-column>
+								<el-table :data="tab.mineralContent" stripe border>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="物相成分分析">
-								<el-table :data="XRDData" stripe border>
-									<el-table-column label="实验编号" width="90"></el-table-column>
-									<el-table-column label="石英" width="90"></el-table-column>
-									<el-table-column label="云母" width="90"></el-table-column>
+								<el-table :data="tab.XRDContent" stripe border>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+										<el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="化学成分分析">
-								<el-table :data="chemistData" stripe border>
-									<el-table-column label="实验编号" width="90"></el-table-column>
-									<el-table-column width="90">
-										<template slot="header">
-											Na<sub>2</sub>O
-										</template>
-									</el-table-column>
-									<el-table-column label="MgO" width="90"></el-table-column>
+								<el-table :data="tab.chemicalContent" stripe border>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+										<el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="热分析">
-								<el-table :data="thermalData" stripe border>
-									<el-table-column label="实验编号" width="90"></el-table-column>
-									<el-table-column label="终止温度" width="90"></el-table-column>
-									<el-table-column label="耐火度" width="90"></el-table-column>
+								<el-table :data="tab.thermalPerform" stripe border>
+										<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+										<el-table-column prop="终止温度" label="终止温度" width="90"></el-table-column>
+										<el-table-column prop="耐火度" label="耐火度" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 						</el-descriptions>
@@ -292,10 +285,11 @@
 				tableData: [],
 				metalPhaseData: {},
 				minePhaseData: {},
-				mineralData: [],
-				XRDDataData: [],
-				chemistData: [],
-				thermalData: [],
+				experimentId: [],
+				mineralContent: [],
+				XRDContent: [],
+				chemicalContent: [],
+				thermalPerform: [],
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 1,
@@ -390,7 +384,8 @@
 					if (isExist === 0) {
 
 						// axios请求
-						localGet.get('api/request/phase/' + sampleId)
+						
+									localGet.get('api/request/phase/' + sampleId)
 							.then(response => {
 								this.tabsList.push({
 									label: sampleId,
@@ -412,7 +407,7 @@
 									message: '数据请求错误，请联系管理员检查运行情况',
 									duration: 0
 								});
-							});
+							})
 					}
 				} else if (column === "experimentId") {
 					this.tabsList.forEach((tab) => {
@@ -422,15 +417,52 @@
 						}
 					})
 					if (isExist === 0) {
-						this.tabsList.push({
-							label: sampleId + "的实验",
-							name: String(this.tabsNumber + 1),
-							closable: true,
-							src: column
-						});
+							localGet.get('api/request/experiment/' + sampleId)
+							.then(response => {
+								let data=Object.values(response.data);
+								let mineralContentName=Object.keys(data[0].mineralContent);
+								let XRDContentName=Object.keys(data[0].XRDContent);
+								let chemicalContentName=Object.keys(data[0].chemicalContent);
+								let Id=[];
+								let mineral=[];
+								let XRD=[];
+								let chemical=[];
+								let thermal=[];
+								data.forEach((data) =>
+								{
+									Id.push(data.experimentId);
+									mineral.push(data.mineralContent);
+									XRD.push(data.XRDContent);
+									chemical.push(data.chemicalContent);
+									thermal.push(data.thermalPerform);
+								});
+								this.tabsList.push({
+									label: sampleId + "的实验",
+									name: String(this.tabsNumber + 1),
+									closable: true,
+									src: column,
+									experimentId: Id,
+									mineralContentName: mineralContentName,
+									XRDContentName: XRDContentName,
+									chemicalContentName: chemicalContentName,
+									mineralContent: mineral,
+									XRDContent: XRD,
+									chemicalContent: chemical,
+									thermalPerform: thermal
+								});
+								
 						this.activeTab = String(this.tabsNumber + 1);
 						this.tabsNumber++;
-					}
+					})
+					.catch(err => {
+						console.log(err);
+						this.$notify.error({
+							title: '出错了',
+							message: '数据请求错误，请联系管理员检查运行情况',
+							duration: 0
+						});
+					});
+				}
 				}
 				// this.tabsList.push({
 				// 	label: sampleId,
