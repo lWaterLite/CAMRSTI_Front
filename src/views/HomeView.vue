@@ -260,27 +260,53 @@
 		padding: 15px;
 	}
 
-	::v-deep .el-tabs--card>.el-tabs__header {
-		background-color: #fff;
-		border-bottom: 1px solid #409EFF;
-	}
+	/*::v-deep .el-tabs--card>.el-tabs__header {*/
+	/*	background-color: #fff;*/
+	/*	border-bottom: 1px solid #409EFF;*/
+	/*}*/
 </style>
 
 <script>
-	import {
-		localGet,
-		localPost,
-		localImg
-	} from "@/Utils/axios.config";
+import {localGet, localImg, localPost} from "@/Utils/axios.config";
 
-	export default {
+export default {
 		name: 'HomeView',
 		data() {
 			return {
 				pageLink: localImg, // img解析前缀链接
 				tableData: [],
-				metalPhaseData: {},
-				minePhaseData: {},
+				metalPhaseData: {
+          metalPhase: '',
+          sfFullImg: '',
+          sfDescription: '',
+          sfEquipment: '',
+          sfZoom: '',
+          sfPhotoMod: '',
+          sfImgList: []
+        },
+				minePhaseData: {
+          minePhase: '',
+          mpFullImg: '',
+          mpDescription: '',
+          mpEquipment: '',
+          mpZoom: '',
+          mpPhotoMod: '',
+          mpImgList: []
+        },
+        emPhaseData: {
+          emPhase: '',
+          emFullImg: '',
+          emDescription: '',
+          emEquipment: '',
+          emZoom: '',
+          emPhotoMod: '',
+          emImgList: []
+        },
+        physicalPorosity: {
+          apparentPorosity: '',
+          trueDensity: '',
+          waterAbsorption: ''
+        },
 				experimentId: [],
 				mineralContent: [],
 				XRDContent: [],
