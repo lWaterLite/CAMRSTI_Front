@@ -160,6 +160,16 @@ export default {
             name: 'SearchView'
           })
           break
+        case '4-1':
+          router.push({
+            name: 'CountView'
+          })
+          break
+        case '4-3':
+          router.push({
+            name:'CurveView'
+          })
+          break
         default:
           break
       }
