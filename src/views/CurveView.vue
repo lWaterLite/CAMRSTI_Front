@@ -26,7 +26,7 @@
 
 
 <script>
-
+import VChart, { THEME_KEY } from "vue-echarts";
 export default {
   name: "CurveView",
   provide: {
@@ -35,6 +35,8 @@ export default {
   data(){
     return {
       selected: '',
+      components: {
+        VChart},
 
       options: [{
         value: '选项1',
@@ -54,22 +56,22 @@ export default {
       }],
       value: '',
       option: {
-        legend: {},
+        legend: {orient: 'horizontal',x:'center', y:'top', itemGap: 40},
         tooltip: {},
         dataset: {
           source: [
-            ['product', '2015', '2016', '2017'],
-            ['Matcha Latte', 43.3, 85.8, 93.7],
-            ['Milk Tea', 83.1, 73.4, 55.1],
-            ['Cheese Cocoa', 86.4, 65.2, 82.5],
-            ['Walnut Brownie', 72.4, 53.9, 39.1]
+            ['product', '黏土基质', '石英粉砂', '空洞','砂或岩屑','其他矿物'],
+            ['HXJFM1', 62.3, 21.7, 12.7,1.3,2],
+            ['HXJFM2', 60.7, 21.7, 17,NaN,0.7],
+            ['HXJFM3', 60.3, 20.3, 18.7,NaN,0.7],
+            ['HXJFM4', 70, 19, 9.3,NaN,1.7],
           ]
         },
         xAxis: { type: 'category' },
         yAxis: {},
         // Declare several bar series, each will be mapped
         // to a column of dataset.source by default.
-        series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' }]
+        series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' },{ type: 'bar' },{ type: 'bar' }]
       }
     };
 
