@@ -68,7 +68,7 @@
 </style>
 
 <script>
-import {localPost} from "@/Utils/axios.config";
+import {httpPost} from "@/Utils/axios.config";
 
 export default {
   name: 'AddView',
@@ -138,7 +138,7 @@ export default {
       let fileObj = param.file
       let form = new FormData()
       form.append("fileToUpload", fileObj)
-      localPost.post("api/upload/img", form)
+      httpPost.post("api/upload/img", form)
       .then(response => {
         console.log(response);
       })
@@ -164,7 +164,7 @@ export default {
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.form.experimentId = this.form.experimentId.split(';'); // 实验编号处理
-            localPost.post('api/upload/base', this.form)
+            httpPost.post('api/upload/base', this.form)
                 .then(() => {
                   // 数据库上传成功后上传图片
                   this.$refs.upload.submit();

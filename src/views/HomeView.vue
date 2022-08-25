@@ -267,13 +267,13 @@
 </style>
 
 <script>
-import {localGet, localImg, localPost} from "@/Utils/axios.config";
+import {httpGet, httpPost, httpImg} from "@/Utils/axios.config";
 
 export default {
 		name: 'HomeView',
 		data() {
 			return {
-				pageLink: localImg, // img解析前缀链接
+				pageLink: httpImg, // img解析前缀链接
 				tableData: [],
 				metalPhaseData: {
           metalPhase: '',
@@ -323,7 +323,7 @@ export default {
 		},
 		methods: {
 			getData: function() {
-				localGet.get("api/request/base")
+				httpGet.get("api/request/base")
 					.then(response => {
 						this.tableData = [];
 						for (let i = 0; i < response.data.length; ++i) {
@@ -342,7 +342,7 @@ export default {
 					})
 			},
 			onDelete: function(s) {
-				localPost.post('api/request/delete', {
+				httpPost.post('api/request/delete', {
 						'sampleId': s
 					})
 					.then(() => {
@@ -368,7 +368,7 @@ export default {
 					});
 					if (isExist === 0) {
 						// axios请求
-						localGet.get('api/request/phase/' + sampleId)
+						httpGet.get('api/request/phase/' + sampleId)
 							.then(response => {
                 console.log(response);
 								this.tabsList.push({
@@ -401,7 +401,7 @@ export default {
               }
 					})
 					if (isExist === 0) {
-							localGet.get('api/request/experiment/' + sampleId)
+							httpGet.get('api/request/experiment/' + sampleId)
 							.then(response => {
                 console.log(response.data)
 								let data=Object.values(response.data);
