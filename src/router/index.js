@@ -5,7 +5,8 @@ import HomeView from '@/views/HomeView.vue'
 import AddView from '@/views/AddView'
 import SearchView from '@/views/SearchView'
 import AboutView from '@/views/AboutView'
-
+import CountView from "@/views/CountView";
+import CurveView from "@/views/CurveView";
 Vue.use(VueRouter)
 
 const routes = [
@@ -28,6 +29,16 @@ const routes = [
     path: '/about',
     name: 'AboutView',
     component: AboutView
+  },
+  {
+    path: '/count',
+    name: 'CountView',
+    component: CountView
+  },
+  {
+    path: '/curve',
+    name: 'CurveView',
+    component:CurveView
   }
 ]
 
