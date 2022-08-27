@@ -22,21 +22,22 @@
       <template>
 
       </template>
-      <template>//
-        <el-radio-group v-model="radio">
-          <el-radio :label="3">样品号</el-radio>
-          <el-radio :label="6">夯土炉壁</el-radio>
-          <el-radio :label="9">黏土坯</el-radio>
-          <el-radio :label="12">窑坯</el-radio>
-          <el-radio :label="15">炉底夯土</el-radio>
-          <el-radio :label="18">黏土饼</el-radio>
-          <el-radio :label="21">泥质砖</el-radio>
-          <el-radio :label="24">草拌泥</el-radio>
-          <el-radio :label="27">砂质砖</el-radio>
-          <el-radio :label="30">砂质材料</el-radio>
-          <el-radio :label="33">炉衬</el-radio>
-          <el-radio :label="36">出渣槽衬</el-radio>
-        </el-radio-group>
+      <template>
+        <el-tabs type="border-card">
+          <el-tab-pane label="样本编号">样本编号</el-tab-pane>
+          <el-tab-pane label="夯土炉壁">夯土炉壁</el-tab-pane>
+          <el-tab-pane label="炉底夯土">炉底夯土</el-tab-pane>
+          <el-tab-pane label="黏土坯">黏土坯</el-tab-pane>
+          <el-tab-pane label="窑坯">窑坯</el-tab-pane>
+          <el-tab-pane label="黏土饼">黏土饼</el-tab-pane>
+          <el-tab-pane label="泥质砖">泥质砖</el-tab-pane>
+          <el-tab-pane label="草拌泥">草拌泥</el-tab-pane>
+          <el-tab-pane label="泥质砖">泥质砖</el-tab-pane>
+          <el-tab-pane label="砂质砖">砂质砖</el-tab-pane>
+          <el-tab-pane label="砂质材料">砂质材料</el-tab-pane>
+          <el-tab-pane label="炉衬">炉衬</el-tab-pane>
+          <el-tab-pane label="出渣槽衬">出渣槽衬</el-tab-pane>
+        </el-tabs>
       </template>
     </el-tabs>
 </template>
@@ -61,7 +62,7 @@ export default {
         content: '页面2内容'
       }],
       tabIndex: 2,
-      radio: 12
+
     };
   },
   methods: {
