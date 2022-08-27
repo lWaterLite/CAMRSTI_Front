@@ -5,16 +5,7 @@
           <el-input v-model="form.sampleId"></el-input>
         </el-form-item>
         <el-form-item label="样品类型" prop="sampleType">
-          <el-select v-model="form.sampleType" placeholder="请选择样品类型" style="width: 100%">
-            <el-option label="炉渣" value="炉渣"></el-option>
-            <el-option label="炉壁" value="炉壁"></el-option>
-            <el-option label="陶范" value="陶范"></el-option>
-            <el-option label="坩埚" value="坩埚"></el-option>
-            <el-option label="鼓风管" value="鼓风管"></el-option>
-            <el-option label="铜" value="铜"></el-option>
-            <el-option label="铁" value="铁"></el-option>
-            <el-option label="不明" value="不明"></el-option>
-          </el-select>
+          <el-input v-model="form.sampleType"></el-input>
         </el-form-item>
         <el-form-item label="样品来源" prop="sampleSource">
           <el-input v-model="form.sampleSource"></el-input>
@@ -77,7 +68,7 @@
 </style>
 
 <script>
-import {localPost} from "@/Utils/axios.config";
+import {httpPost} from "@/Utils/axios.config";
 
 export default {
   name: 'AddView',
@@ -107,7 +98,8 @@ export default {
           {max: 20, trigger: 'blur', message: '样品编号不能超过20个字符'}
         ],
         sampleType: [
-          {required: true, trigger: 'blur', message: '请选择样品类型'}
+          {required: true, trigger: 'blur', message: '请输入样品类型'},
+          {max: 10, trigger: 'blur', message: '样品类型不能超过10个字符'}
         ],
         sampleSource: [
           {required: true, message: '请输入样品来源', trigger: 'blur'},
@@ -146,7 +138,7 @@ export default {
       let fileObj = param.file
       let form = new FormData()
       form.append("fileToUpload", fileObj)
-      localPost.post("api/upload/img", form)
+      httpPost.post("api/upload/img", form)
       .then(response => {
         console.log(response);
       })
@@ -172,7 +164,7 @@ export default {
         this.$refs.form.validate((valid) => {
           if (valid) {
             this.form.experimentId = this.form.experimentId.split(';'); // 实验编号处理
-            localPost.post('api/upload/base', this.form)
+            httpPost.post('api/upload/base', this.form)
                 .then(() => {
                   // 数据库上传成功后上传图片
                   this.$refs.upload.submit();
