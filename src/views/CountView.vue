@@ -1,12 +1,13 @@
 <template>
   <div id="CountView">
-  <template>//Element Tabs 自定义增加标签页触发器
+  <template>
+
     <div style="margin-bottom: 20px;">
       <el-button
           size="small"
           @click="addTab(editableTabsValue)"
       >
-        add tab
+        增加新页面
       </el-button>
     </div>
     <el-tabs v-model="editableTabsValue" type="card" closable @tab-remove="removeTab">
@@ -51,13 +52,13 @@ export default {
     return {
       editableTabsValue: '2',
       editableTabs: [{
-        title: 'Tab 1',
+        title: '页面 1',
         name: '1',
-        content: 'Tab 1 content'
+        content: '页面1内容'
       }, {
-        title: 'Tab 2',
+        title: '页面 2',
         name: '2',
-        content: 'Tab 2 content'
+        content: '页面2内容'
       }],
       tabIndex: 2,
       radio: 12
@@ -67,7 +68,7 @@ export default {
     addTab(targetName) {
       let newTabName = ++this.tabIndex + '';
       this.editableTabs.push({
-        title: 'New Tab',
+        title: '新页面',
         name: newTabName,
         content: 'New Tab content'
       });

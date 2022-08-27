@@ -8,7 +8,7 @@
      <el-main>
        <el-row>
          <el-button>数据集柱状图</el-button>
-         <el-button type="primary">散点图</el-button>
+
        </el-row>
        <template>
          <el-select v-model="value" clearable placeholder="请选择">
@@ -26,6 +26,10 @@
 
      </el-main>
      <el-footer>
+       <el-row>
+
+         <el-button type="primary">散点图</el-button>
+       </el-row>
        <el-select v-model="value" clearable placeholder="请选择">
          <el-option
              v-for="item in options"
