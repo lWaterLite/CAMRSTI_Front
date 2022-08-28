@@ -2,23 +2,9 @@
 	<div id="HomeView">
 		<el-tabs v-model="activeTab" type="card" @tab-remove="removeTab">
 			<el-tab-pane label="主页" name="0">
-				<!-- 徒有其表的搜索 -->
-				<template>
-					<el-form label-width="80px" :inline="true">
-						<el-form-item>
-							<el-input placeholder="关键词搜索" clearable prefix-icon="el-icon-search"
-								style="margin-bottom: 10px">
-							</el-input>
-						</el-form-item>
-						<el-form-item>
-							<el-button type="primary" icon="el-icon-search" size="medium">搜索</el-button>
-							<el-button type="primary" icon="el-icon-refresh" size="medium">重置</el-button>
-						</el-form-item>
-					</el-form>
-				</template>
 				<!-- 样品基本信息 -->
 				<template>
-					<el-table :data="tableData" stripe border height="85vh" style="width: 100%">
+					<el-table :data="tableData" stripe border height="80vh" style="width: 100%">
 						<el-table-column sortable prop="sampleId" label="样品号" width="87">
 							<template slot-scope="scope">
 								<el-link type="primary">
@@ -94,9 +80,21 @@
 					<template>
 						<el-descriptions contentClassName="metalPhaseData" title="金相:" border
 							:labelStyle="{width: '150px'}">
-							<el-descriptions-item label="金相">{{tab.metalPhaseData.metalPhase}}</el-descriptions-item>
+							<el-descriptions-item label="金相">
+								<el-select size="small" v-model="tab.metalPhaseData.metalPhase" v-show="tab.editable">
+									<el-option label="有" value="有"></el-option>
+									<el-option label="无" value="无"></el-option>
+								</el-select>
+								<span v-show="!tab.editable">{{tab.metalPhaseData.metalPhase}}</span>
+							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
-								<template>
+								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
+									multiple style="width: 100%">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
+								</el-upload>
+								<span v-show="!tab.editable">
 									<el-popover trigger="hover" placement="top">
 										<el-image style="height: 200px"
 											:src="pageLink+'api/request/img/'+tab.metalPhaseData.sfFullImg"
@@ -111,13 +109,27 @@
 												style="text-decoration: none; color: #409EAF">{{tab.metalPhaseData.sfFullImg}}</a>
 										</div>
 									</el-popover>
-								</template>
+								</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="样品全图描述">{{tab.metalPhaseData.sfDescription}}
+							<el-descriptions-item label="样品全图描述">
+								<el-input type="textarea" autosize v-model="tab.metalPhaseData.sfDescription" v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.metalPhaseData.sfDescription}}</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="设备">{{tab.metalPhaseData.sfEquipment}}</el-descriptions-item>
-							<el-descriptions-item label="放大倍数">{{tab.metalPhaseData.sfZoom}}</el-descriptions-item>
-							<el-descriptions-item label="拍摄模式">{{tab.metalPhaseData.sfPhotoMod}}</el-descriptions-item>
+							<el-descriptions-item label="设备">
+								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment" v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.metalPhaseData.sfEquipment}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="放大倍数">
+								<el-input type="text" v-model="tab.metalPhaseData.sfZoom" v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.metalPhaseData.sfZoom}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="拍摄模式">
+								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod" v-show="tab.editable">
+									<el-option label="明场" value="明场"></el-option>
+									<el-option label="暗场" value="暗场"></el-option>
+								</el-select>
+								<span v-show="!tab.editable">{{tab.metalPhaseData.sfPhotoMod}}</span>
+							</el-descriptions-item>
 							<el-descriptions-item label="金相照片">
 								<div v-if="tab.metalPhaseData.sfImgList.length">
 									<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
@@ -129,6 +141,7 @@
 								<div v-else>无</div>
 							</el-descriptions-item>
 						</el-descriptions><br />
+
 					</template>
 					<!-- 矿相信息 -->
 					<template>
@@ -220,6 +233,13 @@
 							<el-descriptions-item label="吸水率(%)">{{tab.physicalPorosity.waterAbsorption}}
 							</el-descriptions-item>
 						</el-descriptions>
+					</template><br />
+					<!-- 修改按钮 -->
+					<template>
+						<el-row>
+							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name)">修改</el-button>
+							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+						</el-row>
 					</template>
 				</div>
 				<!-- 样品实验详细信息 -->
@@ -381,11 +401,11 @@
 						// axios请求
 						httpGet.get('api/request/phase/' + sampleId)
 							.then(response => {
-								console.log(response);
 								this.tabsList.push({
 									label: sampleId,
 									name: String(this.tabsNumber + 1),
 									closable: true,
+									editable: false,
 									src: column,
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
@@ -414,7 +434,6 @@
 					if (isExist === 0) {
 						httpGet.get('api/request/experiment/' + sampleId)
 							.then(response => {
-								console.log(response.data)
 								let data = Object.values(response.data);
 								let mineralContentName = Object.keys(data[0].mineralContent);
 								mineralContentName = mineralContentName.filter(name => name !== '实验编号')
@@ -442,6 +461,7 @@
 									label: sampleId + "的实验",
 									name: String(this.tabsNumber + 1),
 									closable: true,
+									editable: false,
 									src: column,
 									experimentId: Id,
 									mineralContentName: mineralContentName,
@@ -467,16 +487,6 @@
 							});
 					}
 				}
-				// this.tabsList.push({
-				// 	label: sampleId,
-				// 	name: String(this.tabsNumber + 1),
-				// 	closable: true,
-				//   metalPhaseData: this.metalPhaseData,
-				//   minePhaseData: this.minePhaseData
-				// })
-				// console.log(this.tabsList)
-				// this.activeTab = String(this.tabsNumber + 1);
-				// this.tabsNumber++;
 			},
 			removeTab(removeName) {
 				let tabs = this.tabsList;
@@ -497,6 +507,13 @@
 				});
 				this.tabsNumber--;
 			},
+			edit(name) {
+				this.tabsList.forEach((tab) => {
+					if (tab.name === name) {
+						tab.editable = true;
+					}
+				});
+			}
 		},
 	}
 </script>

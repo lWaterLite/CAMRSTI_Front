@@ -20,7 +20,7 @@
         <el-form-item label="取样人员" prop="samplingPeople">
           <el-input v-model="form.samplingPeople"></el-input>
         </el-form-item>
-        <el-form-item label="样片照片" prop="imageId">
+        <el-form-item label="样品照片" prop="imageId">
           <!-- <el-input v-model="form.imageId"></el-input> -->
           <el-upload
               ref="upload"
@@ -34,7 +34,7 @@
               style="width: 100%">
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过1Mb</div>
+                <div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
           </el-upload>
         </el-form-item>
         <el-form-item label="样品描述" prop="sampleDescribe">
