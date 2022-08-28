@@ -213,9 +213,12 @@
 					<!-- 物理性能 -->
 					<template>
 						<el-descriptions title="物理性能:" border :labelStyle="{width: '150px'}">
-							<el-descriptions-item label="显气孔率(%)">{{tab.physicalPorosity.apparentPorosity}}</el-descriptions-item>
-							<el-descriptions-item label="真密度(g/cm3)">{{tab.physicalPorosity.trueDensity}}</el-descriptions-item>
-							<el-descriptions-item label="吸水率(%)">{{tab.physicalPorosity.waterAbsorption}}</el-descriptions-item>
+							<el-descriptions-item label="显气孔率(%)">{{tab.physicalPorosity.apparentPorosity}}
+							</el-descriptions-item>
+							<el-descriptions-item label="真密度(g/cm3)">{{tab.physicalPorosity.trueDensity}}
+							</el-descriptions-item>
+							<el-descriptions-item label="吸水率(%)">{{tab.physicalPorosity.waterAbsorption}}
+							</el-descriptions-item>
 						</el-descriptions>
 					</template>
 				</div>
@@ -225,26 +228,30 @@
 						<el-descriptions title="" border :column="1" :labelStyle="{width: '150px'}">
 							<el-descriptions-item label="矿物成分分析">
 								<el-table :data="tab.mineralContent" stripe border>
-                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name"
+										:label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="物相成分分析">
 								<el-table :data="tab.XRDContent" stripe border>
-                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-                  <el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name"
+										:label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="化学成分分析">
 								<el-table :data="tab.chemicalContent" stripe border>
-                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-                  <el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name"
+										:label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="热分析">
 								<el-table :data="tab.thermalPerform" stripe border>
-                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-                  <el-table-column v-for="name in tab.thermalPerformName" :key="name" :prop="name" :label="name" width="90"></el-table-column>
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="name in tab.thermalPerformName" :key="name" :prop="name"
+										:label="name" width="90"></el-table-column>
 								</el-table>
 							</el-descriptions-item>
 						</el-descriptions>
@@ -267,46 +274,50 @@
 </style>
 
 <script>
-import {httpGet, httpPost, httpImg} from "@/Utils/axios.config";
+	import {
+		httpGet,
+		httpPost,
+		httpImg
+	} from "@/Utils/axios.config";
 
-export default {
+	export default {
 		name: 'HomeView',
 		data() {
 			return {
 				pageLink: httpImg, // img解析前缀链接
 				tableData: [],
 				metalPhaseData: {
-          metalPhase: '',
-          sfFullImg: '',
-          sfDescription: '',
-          sfEquipment: '',
-          sfZoom: '',
-          sfPhotoMod: '',
-          sfImgList: []
-        },
+					metalPhase: '',
+					sfFullImg: '',
+					sfDescription: '',
+					sfEquipment: '',
+					sfZoom: '',
+					sfPhotoMod: '',
+					sfImgList: []
+				},
 				minePhaseData: {
-          minePhase: '',
-          mpFullImg: '',
-          mpDescription: '',
-          mpEquipment: '',
-          mpZoom: '',
-          mpPhotoMod: '',
-          mpImgList: []
-        },
-        emPhaseData: {
-          emPhase: '',
-          emFullImg: '',
-          emDescription: '',
-          emEquipment: '',
-          emZoom: '',
-          emPhotoMod: '',
-          emImgList: []
-        },
-        physicalPorosity: {
-          apparentPorosity: '',
-          trueDensity: '',
-          waterAbsorption: ''
-        },
+					minePhase: '',
+					mpFullImg: '',
+					mpDescription: '',
+					mpEquipment: '',
+					mpZoom: '',
+					mpPhotoMod: '',
+					mpImgList: []
+				},
+				emPhaseData: {
+					emPhase: '',
+					emFullImg: '',
+					emDescription: '',
+					emEquipment: '',
+					emZoom: '',
+					emPhotoMod: '',
+					emImgList: []
+				},
+				physicalPorosity: {
+					apparentPorosity: '',
+					trueDensity: '',
+					waterAbsorption: ''
+				},
 				experimentId: [],
 				mineralContent: [],
 				XRDContent: [],
@@ -370,7 +381,7 @@ export default {
 						// axios请求
 						httpGet.get('api/request/phase/' + sampleId)
 							.then(response => {
-                console.log(response);
+								console.log(response);
 								this.tabsList.push({
 									label: sampleId,
 									name: String(this.tabsNumber + 1),
@@ -379,7 +390,7 @@ export default {
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
 									emPhaseData: response.data.emPhaseData,
-                  physicalPorosity: response.data.physicalPorosity
+									physicalPorosity: response.data.physicalPorosity
 								});
 								this.activeTab = String(this.tabsNumber + 1);
 								this.tabsNumber++;
@@ -394,40 +405,39 @@ export default {
 							})
 					}
 				} else if (column === "experimentId") {
-            this.tabsList.forEach((tab) => {
-              if (tab.label === (sampleId + "的实验")) {
-                this.activeTab = tab.name;
-                isExist = 1;
-              }
+					this.tabsList.forEach((tab) => {
+						if (tab.label === (sampleId + "的实验")) {
+							this.activeTab = tab.name;
+							isExist = 1;
+						}
 					})
 					if (isExist === 0) {
-							httpGet.get('api/request/experiment/' + sampleId)
+						httpGet.get('api/request/experiment/' + sampleId)
 							.then(response => {
-                console.log(response.data)
-								let data=Object.values(response.data);
-								let mineralContentName=Object.keys(data[0].mineralContent);
-                mineralContentName = mineralContentName.filter(name => name !== '实验编号')
-								let XRDContentName=Object.keys(data[0].XRDContent);
-                XRDContentName = XRDContentName.filter(name => name !== '实验编号')
-								let chemicalContentName=Object.keys(data[0].chemicalContent);
-                chemicalContentName = chemicalContentName.filter(name => name !== '实验编号')
-                let thermalPerformName=Object.keys(data[0].thermalPerform);
-                thermalPerformName = thermalPerformName.filter(name => name !== '实验编号')
-								let Id=[];
-								let mineral=[];
-								let XRD=[];
-								let chemical=[];
-								let thermal=[];
-								data.forEach((data) =>
-								{
+								console.log(response.data)
+								let data = Object.values(response.data);
+								let mineralContentName = Object.keys(data[0].mineralContent);
+								mineralContentName = mineralContentName.filter(name => name !== '实验编号')
+								let XRDContentName = Object.keys(data[0].XRDContent);
+								XRDContentName = XRDContentName.filter(name => name !== '实验编号')
+								let chemicalContentName = Object.keys(data[0].chemicalContent);
+								chemicalContentName = chemicalContentName.filter(name => name !== '实验编号')
+								let thermalPerformName = Object.keys(data[0].thermalPerform);
+								thermalPerformName = thermalPerformName.filter(name => name !== '实验编号')
+								let Id = [];
+								let mineral = [];
+								let XRD = [];
+								let chemical = [];
+								let thermal = [];
+								data.forEach((data) => {
 									Id.push(data.experimentId);
 									mineral.push(data.mineralContent);
 									XRD.push(data.XRDContent);
 									chemical.push(data.chemicalContent);
 									thermal.push(data.thermalPerform);
 								});
-                console.log(data)
-                console.log(mineral)
+								console.log(data)
+								console.log(mineral)
 								this.tabsList.push({
 									label: sampleId + "的实验",
 									name: String(this.tabsNumber + 1),
@@ -437,25 +447,25 @@ export default {
 									mineralContentName: mineralContentName,
 									XRDContentName: XRDContentName,
 									chemicalContentName: chemicalContentName,
-                  thermalPerformName: thermalPerformName,
+									thermalPerformName: thermalPerformName,
 									mineralContent: mineral,
 									XRDContent: XRD,
 									chemicalContent: chemical,
 									thermalPerform: thermal
 								});
-            console.log(this.tabsList)
-						this.activeTab = String(this.tabsNumber + 1);
-						this.tabsNumber++;
-					})
-					.catch(err => {
-						console.log(err);
-						this.$notify.error({
-							title: '出错了',
-							message: '数据请求错误，请联系管理员检查运行情况',
-							duration: 0
-						});
-					});
-				}
+								console.log(this.tabsList)
+								this.activeTab = String(this.tabsNumber + 1);
+								this.tabsNumber++;
+							})
+							.catch(err => {
+								console.log(err);
+								this.$notify.error({
+									title: '出错了',
+									message: '数据请求错误，请联系管理员检查运行情况',
+									duration: 0
+								});
+							});
+					}
 				}
 				// this.tabsList.push({
 				// 	label: sampleId,
