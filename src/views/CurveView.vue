@@ -197,10 +197,10 @@
 	}
 	
 	.el-button {
-	  width: 90px;
-	  height: 60px;
-	  padding: 0;
-	  font-size: 20px;
+    width: 90px;
+    height: 60px;
+    padding: 0;
+    font-size: 20px;
 	}
 
 	::v-deep .el-tabs--card>.el-tabs__header {
