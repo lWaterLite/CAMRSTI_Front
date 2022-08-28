@@ -89,10 +89,10 @@
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
 								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-									multiple style="width: 100%">
+									multiple style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
-									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件</div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
 								</el-upload>
 								<span v-show="!tab.editable">
 									<el-popover trigger="hover" placement="top">
@@ -112,15 +112,18 @@
 								</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图描述">
-								<el-input type="textarea" autosize v-model="tab.metalPhaseData.sfDescription" v-show="tab.editable"></el-input>
+								<el-input type="textarea" autosize v-model="tab.metalPhaseData.sfDescription"
+									v-show="tab.editable"></el-input>
 								<span v-show="!tab.editable">{{tab.metalPhaseData.sfDescription}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="设备">
-								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment" v-show="tab.editable"></el-input>
+								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment" v-show="tab.editable">
+								</el-input>
 								<span v-show="!tab.editable">{{tab.metalPhaseData.sfEquipment}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="放大倍数">
-								<el-input type="text" v-model="tab.metalPhaseData.sfZoom" v-show="tab.editable"></el-input>
+								<el-input type="text" v-model="tab.metalPhaseData.sfZoom" v-show="tab.editable">
+								</el-input>
 								<span v-show="!tab.editable">{{tab.metalPhaseData.sfZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
@@ -131,14 +134,31 @@
 								<span v-show="!tab.editable">{{tab.metalPhaseData.sfPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="金相照片">
-								<div v-if="tab.metalPhaseData.sfImgList.length">
-									<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
-										<el-tag type="success" effect="plain" size="small">
-											{{Img}}
-										</el-tag>
-									</el-link>
-								</div>
-								<div v-else>无</div>
+								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
+									multiple style="width: 100%" :limit="30">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
+								</el-upload>
+								<span v-show="!tab.editable">
+									<div v-if="tab.metalPhaseData.sfImgList.length">
+										<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
+											<el-popover trigger="hover" placement="top">
+												<el-image style="height: 200px"
+													:src="pageLink+'api/request/img/'+Img"
+													fit="contain">
+													<div class="image-slot">
+														<i class="el-icon-picture-outline" />
+													</div>
+												</el-image>
+												<el-tag type="success" effect="plain" size="small" slot="reference">
+													{{Img}}
+												</el-tag>
+											</el-popover>
+										</el-link>
+									</div>
+									<div v-else>无</div>
+								</span>
 							</el-descriptions-item>
 						</el-descriptions><br />
 
@@ -147,9 +167,21 @@
 					<template>
 						<el-descriptions contentClassName="minePhaseData" title="矿相:" border
 							:labelStyle="{width: '150px'}">
-							<el-descriptions-item label="矿相">{{tab.minePhaseData.minePhase}}</el-descriptions-item>
+							<el-descriptions-item label="矿相">
+								<el-select size="small" v-model="tab.minePhaseData.minePhase" v-show="tab.editable">
+									<el-option label="有" value="有"></el-option>
+									<el-option label="无" value="无"></el-option>
+								</el-select>
+								<span v-show="!tab.editable">{{tab.minePhaseData.minePhase}}</span>
+							</el-descriptions-item>
 							<el-descriptions-item label="薄片扫描图">
-								<template>
+								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
+									multiple style="width: 100%" :limit="1">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
+								</el-upload>
+								<span v-show="!tab.editable">
 									<el-popover trigger="hover" placement="top">
 										<el-image style="height: 200px"
 											:src="pageLink+'api/request/img/'+tab.minePhaseData.mpFullImg"
@@ -164,73 +196,163 @@
 												style="text-decoration: none; color: #409EAF">{{tab.minePhaseData.mpFullImg}}</a>
 										</div>
 									</el-popover>
-								</template>
+								</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="薄片扫描图描述">{{tab.minePhaseData.mpDescription}}
+							<el-descriptions-item label="薄片扫描图描述">
+								<el-input type="textarea" autosize v-model="tab.minePhaseData.mpDescription"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.minePhaseData.mpDescription}}</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="设备">{{tab.minePhaseData.mpEquipment}}
+							<el-descriptions-item label="设备">
+								<el-input type="text" autosize v-model="tab.minePhaseData.mpEquipment"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.minePhaseData.mpEquipment}}</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="放大倍数">{{tab.minePhaseData.mpZoom}}</el-descriptions-item>
-							<el-descriptions-item label="拍摄模式">{{tab.minePhaseData.mpPhotoMod}}
+							<el-descriptions-item label="放大倍数">
+								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.minePhaseData.mpZoom}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="拍摄模式">
+								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod" v-show="tab.editable">
+									<el-option label="XPL" value="XPL"></el-option>
+									<el-option label="PPL" value="PPL"></el-option>
+								</el-select>
+								<span v-show="!tab.editable">{{tab.minePhaseData.mpPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="矿相照片">
-								<div v-if="tab.minePhaseData.mpImgList.length">
-									<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
-										<el-tag type="success" effect="plain" size="small">
-											{{Img}}
-										</el-tag>
-									</el-link>
-								</div>
-								<div v-else>无</div>
+								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
+									multiple style="width: 100%" :limit="30">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
+								</el-upload>
+								<span v-show="!tab.editable">
+									<div v-if="tab.minePhaseData.mpImgList.length">
+										<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
+											<el-popover trigger="hover" placement="top">
+												<el-image style="height: 200px"
+													:src="pageLink+'api/request/img/'+Img"
+													fit="contain">
+													<div class="image-slot">
+														<i class="el-icon-picture-outline" />
+													</div>
+												</el-image>
+												<el-tag type="success" effect="plain" size="small" slot="reference">
+													{{Img}}
+												</el-tag>
+											</el-popover>
+										</el-link>
+									</div>
+									<div v-else>无</div>
+								</span>
 							</el-descriptions-item>
 						</el-descriptions><br />
 					</template>
 					<!-- 电子显微信息 -->
 					<template>
 						<el-descriptions title="电子显微:" border :labelStyle="{width: '150px'}">
-							<el-descriptions-item label="电子显微">{{tab.emPhaseData.emPhase}}</el-descriptions-item>
+							<el-descriptions-item label="电子显微">
+								<el-select size="small" v-model="tab.emPhaseData.emPhase" v-show="tab.editable">
+									<el-option label="有" value="有"></el-option>
+									<el-option label="无" value="无"></el-option>
+								</el-select>
+								<span v-show="!tab.editable">{{tab.emPhaseData.emPhase}}</span>
+							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
 								<template>
-									<el-popover trigger="hover" placement="top">
-										<el-image style="height: 200px"
-											:src="pageLink+'api/request/img/'+tab.emPhaseData.emFullImg" fit="contain">
-											<div class="image-slot">
-												<i class="el-icon-picture-outline" />
+									<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
+										multiple style="width: 100%" :limit="1">
+										<i class="el-icon-upload"></i>
+										<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+										<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
+									</el-upload>
+									<span v-show="!tab.editable">
+										<el-popover trigger="hover" placement="top">
+											<el-image style="height: 200px"
+												:src="pageLink+'api/request/img/'+tab.emPhaseData.emFullImg"
+												fit="contain">
+												<div class="image-slot">
+													<i class="el-icon-picture-outline" />
+												</div>
+											</el-image>
+											<div class="name-wrapper" slot="reference">
+												<a :href="pageLink+'api/request/img/'+tab.emPhaseData.emFullImg"
+													target="_blank"
+													style="text-decoration: none; color: #409EAF">{{tab.emPhaseData.emFullImg}}</a>
 											</div>
-										</el-image>
-										<div class="name-wrapper" slot="reference">
-											<a :href="pageLink+'api/request/img/'+tab.emPhaseData.emFullImg"
-												target="_blank"
-												style="text-decoration: none; color: #409EAF">{{tab.emPhaseData.emFullImg}}</a>
-										</div>
-									</el-popover>
+										</el-popover>
+									</span>
 								</template>
 							</el-descriptions-item>
-							<el-descriptions-item label="样品全图描述">{{tab.emPhaseData.emDescription}}
+							<el-descriptions-item label="样品全图描述">
+								<el-input type="textarea" autosize v-model="tab.emPhaseData.emDescription"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.emPhaseData.emDescription}}</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="设备">{{tab.emPhaseData.emEquipment}}</el-descriptions-item>
-							<el-descriptions-item label="放大倍数">{{tab.emPhaseData.emZoom}}</el-descriptions-item>
-							<el-descriptions-item label="拍摄模式">{{tab.emPhaseData.emPhotoMod}}</el-descriptions-item>
+							<el-descriptions-item label="设备">
+								<el-input type="text" autosize v-model="tab.emPhaseData.emEquipment"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.emPhaseData.emEquipment}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="放大倍数">
+								<el-input type="text" autosize v-model="tab.emPhaseData.emZoom"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.emPhaseData.emZoom}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="拍摄模式">
+								<el-select size="small" v-model="tab.emPhaseData.emPhotoMod" v-show="tab.editable">
+									<el-option label="SE" value="SE"></el-option>
+									<el-option label="BSE" value="BSE"></el-option>
+								</el-select>
+								<span v-show="!tab.editable">{{tab.emPhaseData.emPhotoMod}}</span>
+							</el-descriptions-item>
 							<el-descriptions-item label="电子显微照片">
-								<div v-if="tab.emPhaseData.emImgList.length">
-									<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
-										<el-tag type="success" effect="plain" size="small">
-											{{Img}}
-										</el-tag>
-									</el-link>
-								</div>
-								<div v-else>无</div>
+								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
+									multiple style="width: 100%" :limit="30">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
+								</el-upload>
+								<span v-show="!tab.editable">
+									<div v-if="tab.emPhaseData.emImgList.length">
+										<el-link v-for="Img in tab.emPhaseData.emImgList" type="primary" :key="Img">
+											<el-popover trigger="hover" placement="top">
+												<el-image style="height: 200px"
+													:src="pageLink+'api/request/img/'+Img"
+													fit="contain">
+													<div class="image-slot">
+														<i class="el-icon-picture-outline" />
+													</div>
+												</el-image>
+												<el-tag type="success" effect="plain" size="small" slot="reference">
+													{{Img}}
+												</el-tag>
+											</el-popover>
+										</el-link>
+									</div>
+									<div v-else>无</div>
+								</span>
 							</el-descriptions-item>
 						</el-descriptions>
 					</template>
 					<!-- 物理性能 -->
 					<template>
 						<el-descriptions title="物理性能:" border :labelStyle="{width: '150px'}">
-							<el-descriptions-item label="显气孔率(%)">{{tab.physicalPorosity.apparentPorosity}}
+							<el-descriptions-item label="显气孔率(%)">
+								<el-input type="text" autosize v-model="tab.physicalPorosity.apparentPorosity"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.physicalPorosity.apparentPorosity}}</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="真密度(g/cm3)">{{tab.physicalPorosity.trueDensity}}
+							<el-descriptions-item label="真密度(g/cm3)">
+								<el-input type="text" autosize v-model="tab.physicalPorosity.trueDensity"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.physicalPorosity.trueDensity}}</span>
 							</el-descriptions-item>
-							<el-descriptions-item label="吸水率(%)">{{tab.physicalPorosity.waterAbsorption}}
+							<el-descriptions-item label="吸水率(%)">
+								<el-input type="text" autosize v-model="tab.physicalPorosity.waterAbsorption"
+									v-show="tab.editable"></el-input>
+								<span v-show="!tab.editable">{{tab.physicalPorosity.waterAbsorption}}</span>
 							</el-descriptions-item>
 						</el-descriptions>
 					</template><br />
