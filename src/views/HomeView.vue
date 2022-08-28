@@ -144,14 +144,14 @@
 									<div v-if="tab.metalPhaseData.sfImgList.length">
 										<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
 											<el-popover trigger="hover" placement="top">
-												<el-image style="height: 200px"
-													:src="pageLink+'api/request/img/'+Img"
+												<el-image style="height: 200px" :src="pageLink+'api/request/img/'+Img"
 													fit="contain">
 													<div class="image-slot">
 														<i class="el-icon-picture-outline" />
 													</div>
 												</el-image>
-												<el-tag type="success" effect="plain" size="small" slot="reference">
+												<el-tag type="success" effect="plain" size="small" slot="reference"
+													@click.native="addTab(Img,'Image')">
 													{{Img}}
 												</el-tag>
 											</el-popover>
@@ -209,8 +209,8 @@
 								<span v-show="!tab.editable">{{tab.minePhaseData.mpEquipment}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="放大倍数">
-								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom"
-									v-show="tab.editable"></el-input>
+								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom" v-show="tab.editable">
+								</el-input>
 								<span v-show="!tab.editable">{{tab.minePhaseData.mpZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
@@ -231,14 +231,14 @@
 									<div v-if="tab.minePhaseData.mpImgList.length">
 										<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
 											<el-popover trigger="hover" placement="top">
-												<el-image style="height: 200px"
-													:src="pageLink+'api/request/img/'+Img"
+												<el-image style="height: 200px" :src="pageLink+'api/request/img/'+Img"
 													fit="contain">
 													<div class="image-slot">
 														<i class="el-icon-picture-outline" />
 													</div>
 												</el-image>
-												<el-tag type="success" effect="plain" size="small" slot="reference">
+												<el-tag type="success" effect="plain" size="small" slot="reference"
+													@click.native="addTab(Img,'Image')">
 													{{Img}}
 												</el-tag>
 											</el-popover>
@@ -296,8 +296,8 @@
 								<span v-show="!tab.editable">{{tab.emPhaseData.emEquipment}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="放大倍数">
-								<el-input type="text" autosize v-model="tab.emPhaseData.emZoom"
-									v-show="tab.editable"></el-input>
+								<el-input type="text" autosize v-model="tab.emPhaseData.emZoom" v-show="tab.editable">
+								</el-input>
 								<span v-show="!tab.editable">{{tab.emPhaseData.emZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
@@ -318,14 +318,14 @@
 									<div v-if="tab.emPhaseData.emImgList.length">
 										<el-link v-for="Img in tab.emPhaseData.emImgList" type="primary" :key="Img">
 											<el-popover trigger="hover" placement="top">
-												<el-image style="height: 200px"
-													:src="pageLink+'api/request/img/'+Img"
+												<el-image style="height: 200px" :src="pageLink+'api/request/img/'+Img"
 													fit="contain">
 													<div class="image-slot">
 														<i class="el-icon-picture-outline" />
 													</div>
 												</el-image>
-												<el-tag type="success" effect="plain" size="small" slot="reference">
+												<el-tag type="success" effect="plain" size="small" slot="reference"
+													@click.native="addTab(Img,'Image')">
 													{{Img}}
 												</el-tag>
 											</el-popover>
@@ -397,6 +397,48 @@
 								</el-table>
 							</el-descriptions-item>
 						</el-descriptions>
+					</template>
+				</div>
+				<!-- 照片详细信息页 -->
+				<div v-else-if="tab.src === 'Image'">
+					<template>
+						<el-descriptions border :labelStyle="{width: '150px'}">
+							<el-descriptions-item label="照片">
+								<el-image style="height: 200px" :src="pageLink+'api/request/img/'+tab.imageIndex"
+									fit="contain">
+									<div class="image-slot">
+										<i class="el-icon-picture-outline" />
+									</div>
+								</el-image>
+							</el-descriptions-item>
+							<el-descriptions-item label="描述">
+								<el-input type="textarea" autosize v-model="tab.omDescription" v-show="tab.editable">
+								</el-input>
+								<span v-show="!tab.editable">{{tab.omDescription}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="设备">
+								<el-input type="text" v-model="tab.omEquipment" v-show="tab.editable">
+								</el-input>
+								<span v-show="!tab.editable">{{tab.omEquipment}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="放大倍数">
+								<el-input type="text" v-model="tab.omZoom" v-show="tab.editable">
+								</el-input>
+								<span v-show="!tab.editable">{{tab.omZoom}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="拍摄模式">
+								<el-input type="text" v-model="tab.omPhotoMod" v-show="tab.editable">
+								</el-input>
+								<span v-show="!tab.editable">{{tab.omPhotoMod}}</span>
+							</el-descriptions-item>
+						</el-descriptions>
+					</template><br />
+					<!-- 修改按钮 -->
+					<template>
+						<el-row>
+							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name)">修改</el-button>
+							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+						</el-row>
 					</template>
 				</div>
 			</el-tab-pane>
@@ -510,25 +552,25 @@
 						console.log(error);
 					})
 			},
-			addTab(sampleId, column) {
+			addTab(id, type) {
 				let isExist = 0;
-				if (column === "sampleId") {
+				if (type === "sampleId") {
 					this.tabsList.forEach((tab) => {
-						if (tab.label === sampleId) {
+						if (tab.label === id) {
 							this.activeTab = tab.name;
 							isExist = 1;
 						}
 					});
 					if (isExist === 0) {
 						// axios请求
-						httpGet.get('api/request/phase/' + sampleId)
+						httpGet.get('api/request/phase/' + id)
 							.then(response => {
 								this.tabsList.push({
-									label: sampleId,
+									label: id,
 									name: String(this.tabsNumber + 1),
 									closable: true,
 									editable: false,
-									src: column,
+									src: type,
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
 									emPhaseData: response.data.emPhaseData,
@@ -546,15 +588,15 @@
 								});
 							})
 					}
-				} else if (column === "experimentId") {
+				} else if (type === "experimentId") {
 					this.tabsList.forEach((tab) => {
-						if (tab.label === (sampleId + "的实验")) {
+						if (tab.label === (id + "的实验")) {
 							this.activeTab = tab.name;
 							isExist = 1;
 						}
 					})
 					if (isExist === 0) {
-						httpGet.get('api/request/experiment/' + sampleId)
+						httpGet.get('api/request/experiment/' + id)
 							.then(response => {
 								let data = Object.values(response.data);
 								let mineralContentName = Object.keys(data[0].mineralContent);
@@ -577,14 +619,12 @@
 									chemical.push(data.chemicalContent);
 									thermal.push(data.thermalPerform);
 								});
-								console.log(data)
-								console.log(mineral)
 								this.tabsList.push({
-									label: sampleId + "的实验",
+									label: id + "的实验",
 									name: String(this.tabsNumber + 1),
 									closable: true,
 									editable: false,
-									src: column,
+									src: type,
 									experimentId: Id,
 									mineralContentName: mineralContentName,
 									XRDContentName: XRDContentName,
@@ -595,7 +635,6 @@
 									chemicalContent: chemical,
 									thermalPerform: thermal
 								});
-								console.log(this.tabsList)
 								this.activeTab = String(this.tabsNumber + 1);
 								this.tabsNumber++;
 							})
@@ -608,7 +647,31 @@
 								});
 							});
 					}
+				} else if (type === "Image") {
+					this.tabsList.forEach((tab) => {
+						if (tab.label === id) {
+							this.activeTab = tab.name;
+							isExist = 1;
+						}
+					})
+					if (isExist === 0) {
+						this.tabsList.push({
+							label: id,
+							name: String(this.tabsNumber + 1),
+							closable: true,
+							editable: false,
+							src: type,
+							imageIndex: id,
+							omDescription: 0,
+							omEquipment: 0,
+							omZoom: 0,
+							omPhotoMod: 0,
+						});
+						this.activeTab = String(this.tabsNumber + 1);
+						this.tabsNumber++;
+					}
 				}
+
 			},
 			removeTab(removeName) {
 				let tabs = this.tabsList;
