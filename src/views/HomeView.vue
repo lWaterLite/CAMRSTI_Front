@@ -88,8 +88,16 @@
 								<span v-show="!tab.editable">{{tab.metalPhaseData.metalPhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
-								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-									multiple style="width: 100%" :limit="1">
+								<el-upload v-show="tab.editable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="sfSingleHandleChange"
+                           :http-request="uploadFile"
+                           show-file-list
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -134,13 +142,20 @@
 								<span v-show="!tab.editable">{{tab.metalPhaseData.sfPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="金相照片">
-								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-									multiple style="width: 100%" :limit="30">
+								<el-upload v-show="tab.editable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="sfListHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
 								</el-upload>
-								<span v-show="!tab.editable">
+								<div v-show="!tab.editable">
 									<div v-if="tab.metalPhaseData.sfImgList.length">
 										<el-link v-for="Img in tab.metalPhaseData.sfImgList" type="primary" :key="Img">
 											<el-popover trigger="hover" placement="top">
@@ -158,7 +173,7 @@
 										</el-link>
 									</div>
 									<div v-else>无</div>
-								</span>
+								</div>
 							</el-descriptions-item>
 						</el-descriptions><br />
 
@@ -175,8 +190,15 @@
 								<span v-show="!tab.editable">{{tab.minePhaseData.minePhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="薄片扫描图">
-								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-									multiple style="width: 100%" :limit="1">
+								<el-upload v-show="tab.editable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="mpSingleHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -221,13 +243,20 @@
 								<span v-show="!tab.editable">{{tab.minePhaseData.mpPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="矿相照片">
-								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-									multiple style="width: 100%" :limit="30">
+								<el-upload v-show="tab.editable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="mpListHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
 								</el-upload>
-								<span v-show="!tab.editable">
+								<div v-show="!tab.editable">
 									<div v-if="tab.minePhaseData.mpImgList.length">
 										<el-link v-for="Img in tab.minePhaseData.mpImgList" type="primary" :key="Img">
 											<el-popover trigger="hover" placement="top">
@@ -245,7 +274,7 @@
 										</el-link>
 									</div>
 									<div v-else>无</div>
-								</span>
+								</div>
 							</el-descriptions-item>
 						</el-descriptions><br />
 					</template>
@@ -261,8 +290,15 @@
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
 								<template>
-									<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-										multiple style="width: 100%" :limit="1">
+									<el-upload v-show="tab.editable"
+                             ref="upload"
+                             :auto-upload="false"
+                             :on-change="emSingleHandleChange"
+                             :http-request="uploadFile"
+                             action=""
+                             multiple
+                             style="width: 100%"
+                             :limit="1">
 										<i class="el-icon-upload"></i>
 										<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 										<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -308,13 +344,20 @@
 								<span v-show="!tab.editable">{{tab.emPhaseData.emPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="电子显微照片">
-								<el-upload v-show="tab.editable" ref="upload" :auto-upload="false" drag action=""
-									multiple style="width: 100%" :limit="30">
+								<el-upload v-show="tab.editable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="emListHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
 								</el-upload>
-								<span v-show="!tab.editable">
+								<div v-show="!tab.editable">
 									<div v-if="tab.emPhaseData.emImgList.length">
 										<el-link v-for="Img in tab.emPhaseData.emImgList" type="primary" :key="Img">
 											<el-popover trigger="hover" placement="top">
@@ -332,7 +375,7 @@
 										</el-link>
 									</div>
 									<div v-else>无</div>
-								</span>
+								</div>
 							</el-descriptions-item>
 						</el-descriptions>
 					</template>
@@ -517,6 +560,47 @@
 			this.getData();
 		},
 		methods: {
+      sfSingleHandleChange: function (file) {
+        this.metalPhaseData.sfFullImg = file.name;
+      },
+      sfListHandleChange: function (file, fileList) {
+        this.metalPhaseData.sfImgList = fileList.map((item) => {
+          return item.name
+        });
+      },
+      mpSingleHandleChange: function (file) {
+        this.minePhaseData.mpFullImg = file.name;
+      },
+      mpListHandleChange: function (file, fileList) {
+        this.minePhaseData.mpImgList = fileList.map((item) => {
+          return item.name;
+        });
+      },
+      emSingleHandleChange: function (file) {
+        this.emPhaseData.emFullImg = file.name;
+      },
+      emListHandleChange: function (file, fileList) {
+        this.emPhaseData.emImgList = fileList.map((item) => {
+          return item.name;
+        })
+      },
+      uploadFile: function (param) {
+        let fileObj = param.file;
+        let form = new FormData();
+        form.append('fileToUpload', fileObj)
+        httpPost.post("api/upload/img", form)
+        .then(response => {
+          console.log(response);
+        })
+        .catch(err => {
+          console.log(err);
+          this.$notify.error({
+            title: '错误',
+            message: '图片上传发生了错误，请检查后端状况\n错误信息：',
+            duration: 0
+          });
+        })
+      },
 			getData: function() {
 				httpGet.get("api/request/base")
 					.then(response => {
