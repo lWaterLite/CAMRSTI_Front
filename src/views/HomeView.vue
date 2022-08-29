@@ -81,23 +81,17 @@
 						<el-descriptions contentClassName="metalPhaseData" title="金相:" border
 							:labelStyle="{width: '150px'}">
 							<el-descriptions-item label="金相">
-								<el-select size="small" v-model="tab.metalPhaseData.metalPhase" v-show="tab.metalEditable">
+								<el-select size="small" v-model="tab.metalPhaseData.metalPhase"
+									v-show="tab.metalEditable">
 									<el-option label="有" value="有"></el-option>
 									<el-option label="无" value="无"></el-option>
 								</el-select>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.metalPhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
-								<el-upload v-show="tab.metalEditable"
-                           ref="upload"
-                           :auto-upload="false"
-                           :on-change="sfSingleHandleChange"
-                           :http-request="uploadFile"
-                           show-file-list
-                           action=""
-                           multiple
-                           style="width: 100%"
-                           :limit="1">
+								<el-upload v-show="tab.metalEditable" ref="upload" :auto-upload="false"
+									:on-change="sfSingleHandleChange" :http-request="uploadFile" show-file-list
+									action="" multiple style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -125,7 +119,8 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfDescription}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="设备">
-								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment" v-show="tab.metalEditable">
+								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment"
+									v-show="tab.metalEditable">
 								</el-input>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfEquipment}}</span>
 							</el-descriptions-item>
@@ -135,22 +130,17 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
-								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod" v-show="tab.metalEditable">
+								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod"
+									v-show="tab.metalEditable">
 									<el-option label="明场" value="明场"></el-option>
 									<el-option label="暗场" value="暗场"></el-option>
 								</el-select>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="金相照片">
-								<el-upload v-show="tab.metalEditable"
-                           ref="upload"
-                           :auto-upload="false"
-                           :on-change="sfListHandleChange"
-                           :http-request="uploadFile"
-                           action=""
-                           multiple
-                           style="width: 100%"
-                           :limit="30">
+								<el-upload v-show="tab.metalEditable" ref="upload" :auto-upload="false"
+									:on-change="sfListHandleChange" :http-request="uploadFile" action="" multiple
+									style="width: 100%" :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
@@ -179,14 +169,18 @@
 					</template>
 					<!-- 修改按钮 -->
 					<template>
-						<el-row>
-							<template>
-								<el-button v-show="tab.metalEditable" type="primary" icon="el-icon-circle-close" @click="unedit(tab.name,'metalPhaseData')">取消</el-button>
+						<el-row :gutter="20">
+							<el-col :span="4" :push="7">
+								<el-button v-show="tab.metalEditable" type="primary" icon="el-icon-circle-close"
+									@click="unedit(tab.name,'metalPhaseData')">取消</el-button>
 								<span v-show="!tab.metalEditable">
-							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'metalPhaseData')">修改</el-button>
-							</span>
-							</template>
-							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+									<el-button type="primary" icon="el-icon-edit"
+										@click="edit(tab.name,'metalPhaseData')">修改</el-button>
+								</span>
+							</el-col>
+							<el-col :span="4" :push="7">
+								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+							</el-col>
 						</el-row><br />
 					</template>
 					<!-- 矿相信息 -->
@@ -201,15 +195,9 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.minePhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="薄片扫描图">
-								<el-upload v-show="tab.mineEditable"
-                           ref="upload"
-                           :auto-upload="false"
-                           :on-change="mpSingleHandleChange"
-                           :http-request="uploadFile"
-                           action=""
-                           multiple
-                           style="width: 100%"
-                           :limit="1">
+								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
+									:on-change="mpSingleHandleChange" :http-request="uploadFile" action="" multiple
+									style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -242,27 +230,23 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpEquipment}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="放大倍数">
-								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom" v-show="tab.mineEditable">
+								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom"
+									v-show="tab.mineEditable">
 								</el-input>
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
-								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod" v-show="tab.mineEditable">
+								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod"
+									v-show="tab.mineEditable">
 									<el-option label="XPL" value="XPL"></el-option>
 									<el-option label="PPL" value="PPL"></el-option>
 								</el-select>
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="矿相照片">
-								<el-upload v-show="tab.mineEditable"
-                           ref="upload"
-                           :auto-upload="false"
-                           :on-change="mpListHandleChange"
-                           :http-request="uploadFile"
-                           action=""
-                           multiple
-                           style="width: 100%"
-                           :limit="30">
+								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
+									:on-change="mpListHandleChange" :http-request="uploadFile" action="" multiple
+									style="width: 100%" :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
@@ -291,14 +275,18 @@
 					</template>
 					<!-- 修改按钮 -->
 					<template>
-						<el-row>
-							<template>
-								<el-button v-show="tab.mineEditable" type="primary" icon="el-icon-circle-close" @click="unedit(tab.name,'minePhaseData')">取消</el-button>
+						<el-row :gutter="20">
+							<el-col :span="4" :push="7">
+								<el-button v-show="tab.mineEditable" type="primary" icon="el-icon-circle-close"
+									@click="unedit(tab.name,'minePhaseData')">取消</el-button>
 								<span v-show="!tab.mineEditable">
-							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'minePhaseData')">修改</el-button>
-							</span>
-							</template>
-							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+									<el-button type="primary" icon="el-icon-edit"
+										@click="edit(tab.name,'minePhaseData')">修改</el-button>
+								</span>
+							</el-col>
+							<el-col :span="4" :push="7">
+								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+							</el-col>
 						</el-row><br />
 					</template>
 					<!-- 电子显微信息 -->
@@ -313,15 +301,9 @@
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
 								<template>
-									<el-upload v-show="tab.emEditable"
-                             ref="upload"
-                             :auto-upload="false"
-                             :on-change="emSingleHandleChange"
-                             :http-request="uploadFile"
-                             action=""
-                             multiple
-                             style="width: 100%"
-                             :limit="1">
+									<el-upload v-show="tab.emEditable" ref="upload" :auto-upload="false"
+										:on-change="emSingleHandleChange" :http-request="uploadFile" action="" multiple
+										style="width: 100%" :limit="1">
 										<i class="el-icon-upload"></i>
 										<div class="el-upload__text"><em>点击上传</em></div>
 										<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -367,15 +349,9 @@
 								<span v-show="!tab.emEditable">{{tab.emPhaseData.emPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="电子显微照片">
-								<el-upload v-show="tab.emEditable"
-                           ref="upload"
-                           :auto-upload="false"
-                           :on-change="emListHandleChange"
-                           :http-request="uploadFile"
-                           action=""
-                           multiple
-                           style="width: 100%"
-                           :limit="30">
+								<el-upload v-show="tab.emEditable" ref="upload" :auto-upload="false"
+									:on-change="emListHandleChange" :http-request="uploadFile" action="" multiple
+									style="width: 100%" :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
@@ -404,14 +380,18 @@
 					</template><br />
 					<!-- 修改按钮 -->
 					<template>
-						<el-row>
-							<template>
-								<el-button v-show="tab.emEditable" type="primary" icon="el-icon-circle-close" @click="unedit(tab.name,'emPhaseData')">取消</el-button>
+						<el-row :gutter="20">
+							<el-col :span="4" :push="7">
+								<el-button v-show="tab.emEditable" type="primary" icon="el-icon-circle-close"
+									@click="unedit(tab.name,'emPhaseData')">取消</el-button>
 								<span v-show="!tab.emEditable">
-							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'emPhaseData')">修改</el-button>
-							</span>
-							</template>
-							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+									<el-button type="primary" icon="el-icon-edit"
+										@click="edit(tab.name,'emPhaseData')">修改</el-button>
+								</span>
+							</el-col>
+							<el-col :span="4" :push="7">
+								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+							</el-col>
 						</el-row><br />
 					</template>
 					<!-- 物理性能 -->
@@ -436,14 +416,18 @@
 					</template><br />
 					<!-- 修改按钮 -->
 					<template>
-						<el-row>
-							<template>
-								<el-button v-show="tab.physicalEditable" type="primary" icon="el-icon-circle-close" @click="unedit(tab.name,'physicalPorosity')">取消</el-button>
+						<el-row :gutter="20">
+							<el-col :span="4" :push="7">
+								<el-button v-show="tab.physicalEditable" type="primary" icon="el-icon-circle-close"
+									@click="unedit(tab.name,'physicalPorosity')">取消</el-button>
 								<span v-show="!tab.physicalEditable">
-							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'physicalPorosity')">修改</el-button>
-							</span>
-							</template>
-							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+									<el-button type="primary" icon="el-icon-edit"
+										@click="edit(tab.name,'physicalPorosity')">修改</el-button>
+								</span>
+							</el-col>
+							<el-col :span="4" :push="7">
+								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+							</el-col>
 						</el-row>
 					</template>
 				</div>
@@ -457,46 +441,103 @@
 									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name"
 										:label="name" width="150">
 										<template slot="header" slot-scope="scope">
-											<el-row>
-												<el-input size="mini" name="colNameList" :value="name"></el-input>
-												<el-button size="mini" type="danger" icon="el-icon-delete">
+												<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeColumn(tab.name,'mineralContent',name)">
 												</el-button>
-											</el-row>
+												</el-input>
+												<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]"></el-input>
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
+											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
 									</el-table-column>
 								</el-table>
+								<!-- 新增行列按钮 -->
+								<template>
+								<el-row :gutter="20" v-show="tab.editable">
+								      <el-col :span="4" :push="8">
+								        <el-button type="primary" >新增行</el-button>
+								      </el-col>
+								      <el-col :span="4" :push="8">
+								        <el-button type="primary" >新增列</el-button>
+								      </el-col>
+								    </el-row>
+									</template>
 							</el-descriptions-item>
 							<el-descriptions-item label="物相成分分析">
 								<el-table :data="tab.XRDContent" stripe border style="width: 175vh">
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name"
-										:label="name" width="150"></el-table-column>
+										:label="name" width="150">
+											<template slot="header" slot-scope="scope">
+													<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
+													<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeColumn(tab.name,'XRDContent',name)">
+													</el-button>
+													</el-input>
+													<span v-show="!tab.editable">{{name}}</span>
+											</template>
+											<template slot-scope="scope">
+												<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
+												<span v-show="!tab.editable">{{scope.row[name]}}</span>
+											</template>
+										</el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="化学成分分析">
 								<el-table :data="tab.chemicalContent" stripe border style="width: 175vh">
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name"
-										:label="name" width="150"></el-table-column>
+										:label="name" width="150">
+											<template slot="header" slot-scope="scope">
+													<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
+													<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeColumn(tab.name,'chemicalContent',name)">
+													</el-button>
+													</el-input>
+													<span v-show="!tab.editable">{{name}}</span>
+											</template>
+											<template slot-scope="scope">
+												<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
+												<span v-show="!tab.editable">{{scope.row[name]}}</span>
+											</template>
+										</el-table-column>
 								</el-table>
 							</el-descriptions-item>
 							<el-descriptions-item label="热分析">
 								<el-table :data="tab.thermalPerform" stripe border>
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.thermalPerformName" :key="name" :prop="name"
-										:label="name" width="150"></el-table-column>
+										:label="name" width="150">
+											<template slot="header" slot-scope="scope">
+													<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
+													<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeColumn(tab.name,'thermalPerform',name)">
+													</el-button>
+													</el-input>
+													<span v-show="!tab.editable">{{name}}</span>
+											</template>
+											<template slot-scope="scope">
+												<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
+												<span v-show="!tab.editable">{{scope.row[name]}}</span>
+											</template>
+										</el-table-column>
 								</el-table>
 							</el-descriptions-item>
 						</el-descriptions>
 					</template><br />
 					<!-- 修改按钮 -->
 					<template>
-						<el-row>
-							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name)">修改</el-button>
-							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+						<el-row :gutter="20">
+							<el-col :span="4" :push="7">
+								<el-button v-show="tab.editable" type="primary" icon="el-icon-circle-close"
+									@click="unedit(tab.name,'experiment')">取消</el-button>
+								<span v-show="!tab.editable">
+									<el-button type="primary" icon="el-icon-edit"
+										@click="edit(tab.name,'experiment')">修改</el-button>
+								</span>
+							</el-col>
+							<el-col :span="4" :push="7">
+								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+							</el-col>
 						</el-row>
 					</template>
 				</div>
@@ -536,9 +577,18 @@
 					</template><br />
 					<!-- 修改按钮 -->
 					<template>
-						<el-row>
-							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name)">修改</el-button>
-							<el-button type="primary" icon="el-icon-upload">上传</el-button>
+						<el-row :gutter="20">
+							<el-col :span="4" :push="7">
+								<el-button v-show="tab.editable" type="primary" icon="el-icon-circle-close"
+									@click="unedit(tab.name,'Img')">取消</el-button>
+								<span v-show="!tab.editable">
+									<el-button type="primary" icon="el-icon-edit"
+										@click="edit(tab.name,'Img')">修改</el-button>
+								</span>
+							</el-col>
+							<el-col :span="4" :push="7">
+								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+							</el-col>
 						</el-row>
 					</template>
 				</div>
@@ -552,7 +602,7 @@
 		padding: 15px;
 	}
 
-	/*::v-deep .el-tabs--card>.el-tabs__header {*/
+	/*:deep .el-tabs--card>.el-tabs__header {*/
 	/*	background-color: #fff;*/
 	/*	border-bottom: 1px solid #409EFF;*/
 	/*}*/
@@ -612,53 +662,54 @@
 				activeTab: "0",
 				tabsNumber: 0,
 				tabsList: [],
+				fixDataList: [],
 			}
 		},
 		mounted() {
 			this.getData();
 		},
 		methods: {
-      sfSingleHandleChange: function (file) {
-        this.metalPhaseData.sfFullImg = file.name;
-      },
-      sfListHandleChange: function (file, fileList) {
-        this.metalPhaseData.sfImgList = fileList.map((item) => {
-          return item.name
-        });
-      },
-      mpSingleHandleChange: function (file) {
-        this.minePhaseData.mpFullImg = file.name;
-      },
-      mpListHandleChange: function (file, fileList) {
-        this.minePhaseData.mpImgList = fileList.map((item) => {
-          return item.name;
-        });
-      },
-      emSingleHandleChange: function (file) {
-        this.emPhaseData.emFullImg = file.name;
-      },
-      emListHandleChange: function (file, fileList) {
-        this.emPhaseData.emImgList = fileList.map((item) => {
-          return item.name;
-        })
-      },
-      uploadFile: function (param) {
-        let fileObj = param.file;
-        let form = new FormData();
-        form.append('fileToUpload', fileObj)
-        httpPost.post("api/upload/img", form)
-        .then(response => {
-          console.log(response);
-        })
-        .catch(err => {
-          console.log(err);
-          this.$notify.error({
-            title: '错误',
-            message: '图片上传发生了错误，请检查后端状况\n错误信息：',
-            duration: 0
-          });
-        })
-      },
+			sfSingleHandleChange: function(file) {
+				this.metalPhaseData.sfFullImg = file.name;
+			},
+			sfListHandleChange: function(file, fileList) {
+				this.metalPhaseData.sfImgList = fileList.map((item) => {
+					return item.name
+				});
+			},
+			mpSingleHandleChange: function(file) {
+				this.minePhaseData.mpFullImg = file.name;
+			},
+			mpListHandleChange: function(file, fileList) {
+				this.minePhaseData.mpImgList = fileList.map((item) => {
+					return item.name;
+				});
+			},
+			emSingleHandleChange: function(file) {
+				this.emPhaseData.emFullImg = file.name;
+			},
+			emListHandleChange: function(file, fileList) {
+				this.emPhaseData.emImgList = fileList.map((item) => {
+					return item.name;
+				})
+			},
+			uploadFile: function(param) {
+				let fileObj = param.file;
+				let form = new FormData();
+				form.append('fileToUpload', fileObj)
+				httpPost.post("api/upload/img", form)
+					.then(response => {
+						console.log(response);
+					})
+					.catch(err => {
+						console.log(err);
+						this.$notify.error({
+							title: '错误',
+							message: '图片上传发生了错误，请检查后端状况\n错误信息：',
+							duration: 0
+						});
+					})
+			},
 			getData: function() {
 				httpGet.get("api/request/base")
 					.then(response => {
@@ -837,38 +888,64 @@
 				});
 				this.tabsNumber--;
 			},
-			edit(name,element) {
+			removeColumn(tabName,tableName,colName) {
 				this.tabsList.forEach((tab) => {
-					if (tab.name === name) {
+					if (tab.name === tabName) {
+						if (tableName === "mineralContent") {
+							tab.mineralContentName = tab.mineralContentName.filter(name => name !== colName);
+						} else if (tableName === "XRDContent") {
+							tab.XRDContentName = tab.XRDContentName.filter(name => name !== colName);
+						} else if (tableName === "chemicalContent") {
+							tab.chemicalContentName = tab.chemicalContentName.filter(name => name !== colName);
+						} else if (tableName === "thermalPerform") {
+							tab.thermalPerformName = tab.thermalPerformName.filter(name => name !== colName);
+						}
+					}
+				});
+				
+			},
+			edit(tabName, element) {
+				this.tabsList.forEach((tab) => {
+					if (tab.name === tabName) {
 						if (element === "metalPhaseData") {
+							let oldData = tab.metalPhaseData;
+							this.fixDataList.push({
+								position: tab.name,
+								name: "metalPhaseData",
+								data: oldData,
+							})
 							tab.metalEditable = true;
-						}
-						else if (element === "minePhaseData") {
+						} else if (element === "minePhaseData") {
 							tab.mineEditable = true
-						}
-						else if (element === "emPhaseData") {
+						} else if (element === "emPhaseData") {
 							tab.emEditable = true
-						}
-						else if (element === "physicalPorosity") {
+						} else if (element === "physicalPorosity") {
 							tab.physicalEditable = true
+						} else if (element === "Img" || element === "experiment") {
+							tab.editable = true
 						}
 					}
 				});
 			},
-			unedit(name,element) {
+			unedit(tabName, element) {
+				console.log(this.fixDataList)
 				this.tabsList.forEach((tab) => {
-					if (tab.name === name) {
+					if (tab.name === tabName) {
 						if (element === "metalPhaseData") {
 							tab.metalEditable = false;
-						}
-						else if (element === "minePhaseData") {
+							this.fixDataList.forEach((item) => {
+								if (item.position === name && item.name === element) {
+									tab.metalPhaseData = item.data;
+								}
+							});
+						} else if (element === "minePhaseData") {
 							tab.mineEditable = false;
-						}
-						else if (element === "emPhaseData") {
+						} else if (element === "emPhaseData") {
 							tab.emEditable = false;
-						}
-						else if (element === "physicalPorosity") {
+						} else if (element === "physicalPorosity") {
 							tab.physicalEditable = false;
+						} else if (element === "Img" || element === "experiment") {
+							tab.editable = false;
 						}
 					}
 				});
