@@ -5,89 +5,47 @@
 				<!-- 样品基本信息 -->
 				<template>
 					<el-table :data="tableData" stripe border height="80vh" style="width: 100%">
-						<el-table-column sortable prop="sampleId" label="样品号" width="120">
+						<el-table-column sortable prop="sampleId" label="样品号" width="87">
 							<template slot-scope="scope">
-								<el-input type="text" v-model="scope.row.sampleId" v-show="scope.row.editable">
-								</el-input>
-								<span v-show="!scope.row.editable">
-									<el-link type="primary">
-										<el-tag type="success" effect="plain" size="small"
-											@click="addTab(scope.row.sampleId,scope.column.property)">
-											{{ scope.row.sampleId }}
-										</el-tag>
-									</el-link>
-								</span>
+								<el-link type="primary">
+									<el-tag type="success" effect="plain" size="small"
+										@click="addTab(scope.row.sampleId,scope.column.property)">
+										{{ scope.row.sampleId }}
+									</el-tag>
+								</el-link>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="sampleType" label="样品类型" width="101">
+						<el-table-column sortable prop="sampleType" label="样品类型" width="101"></el-table-column>
+						<el-table-column sortable prop="sampleSource" label="样品来源" width="120"></el-table-column>
+						<el-table-column sortable prop="samplingYear" label="取样年份" width="101">
 							<template slot-scope="scope">
-								<el-input type="text" v-model="scope.row.sampleType" v-show="scope.row.editable">
-								</el-input>
-								<span v-show="!scope.row.editable">{{scope.row.sampleType}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="sampleSource" label="样品来源" width="120">
-							<template slot-scope="scope">
-								<el-input type="textarea" v-model="scope.row.sampleSource" v-show="scope.row.editable">
-								</el-input>
-								<span v-show="!scope.row.editable">{{scope.row.sampleSource}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column sortable prop="samplingYear" label="取样年份" width="120">
-							<template slot-scope="scope">
-								<el-date-picker type="year" v-model="scope.row.samplingyear" v-show="scope.row.editable"
-									style="width: 100%"></el-date-picker>
-								<span v-show="!scope.row.editable">{{ scope.row.samplingYear }}</span>
+								<i class="el-icon-time"></i>
+								<span style="margin-left: 8px">{{ scope.row.samplingYear }}</span>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="samplingPeople" label="取样人" width="87">
 							<template slot-scope="scope">
-								<el-input type="text" v-model="scope.row.samplingPeople" v-show="scope.row.editable">
-								</el-input>
-								<el-tag size="medium" v-show="!scope.row.editable">{{ scope.row.samplingPeople }}
-								</el-tag>
+								<el-tag size="medium">{{ scope.row.samplingPeople }}</el-tag>
 							</template>
 						</el-table-column>
 						<el-table-column prop="imageId" label="照片号" width="260">
 							<template slot-scope="scope">
-								<el-upload v-show="scope.row.editable" ref="upload" :auto-upload="false"
-									:http-request="uploadFile" show-file-list action="" multiple style="width: 100%">
-									<i class="el-icon-upload"></i>
-									<div class="el-upload__text"><em>点击上传</em></div>
-									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
-								</el-upload>
-								<span v-show="!scope.row.editable">
-									<el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId"
-										:key="img">
-										<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
-											fit="contain">
-											<div slot="error" class="image-slot">
-												<i class="el-icon-picture-outline"></i>
-											</div>
-										</el-image>
-										<div slot="reference" class="name-wrapper">
-											<a :href="pageLink+'api/request/img/' + img" target="_blank"
-												style="text-decoration: none; color: #409EAF">{{ img }}</a>
+								<el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId" :key="img">
+									<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
+										fit="contain">
+										<div slot="error" class="image-slot">
+											<i class="el-icon-picture-outline"></i>
 										</div>
-									</el-popover>
-								</span>
+									</el-image>
+									<div slot="reference" class="name-wrapper">
+										<a :href="pageLink+'api/request/img/' + img" target="_blank"
+											style="text-decoration: none; color: #409EAF">{{ img }}</a>
+									</div>
+								</el-popover>
 							</template>
 						</el-table-column>
-						<el-table-column prop="sampleDescribe" label="描述" width="190">
-							<template slot-scope="scope">
-								<el-input type="textarea" v-model="scope.row.sampleDescribe"
-									v-show="scope.row.editable">
-								</el-input>
-								<span v-show="!scope.row.editable">{{scope.row.sampleDescribe}}</span>
-							</template>
-						</el-table-column>
-						<el-table-column prop="sampleExplain" label="样品制备说明" width="300">
-							<template slot-scope="scope">
-								<el-input type="textarea" v-model="scope.row.sampleExplain" v-show="scope.row.editable">
-								</el-input>
-								<span v-show="!scope.row.editable">{{scope.row.sampleExplain}}</span>
-							</template>
-						</el-table-column>
+						<el-table-column prop="sampleDescribe" label="描述" width="190"></el-table-column>
+						<el-table-column prop="sampleExplain" label="样品制备说明" width="300"></el-table-column>
 						<el-table-column prop="experimentId" label="实验编号" width="160">
 							<template slot-scope="scope">
 								<el-link type="primary" v-for="sc in scope.row.experimentId" :key="sc">
@@ -100,14 +58,8 @@
 						</el-table-column>
 						<el-table-column label="操作" width="62">
 							<template slot-scope="scope">
-								<el-button size="mini" round plain type="warning" icon="el-icon-success"
-									@click="unedit('主页',scope.row.sampleId)" v-show="scope.row.editable">
-								</el-button>
-								<span v-show="!scope.row.editable">
-									<el-button size="mini" round plain type="warning" icon="el-icon-edit"
-										@click="edit('主页',scope.row.sampleId)">
-									</el-button>
-								</span><br>
+								<span style="display: none;">{{ scope.row.sampleId }}</span>
+								<el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
 								<el-popconfirm @confirm="onDelete(scope.row.sampleId)" confirm-button-text='确定'
 									cancel-button-text='取消' icon="el-icon-info" icon-color="red" title="确定删除这一条记录吗？">
 									<el-button size="mini" round plain type="danger" icon="el-icon-delete"
@@ -129,17 +81,23 @@
 						<el-descriptions contentClassName="metalPhaseData" title="金相:" border
 							:labelStyle="{width: '150px'}">
 							<el-descriptions-item label="金相">
-								<el-select size="small" v-model="tab.metalPhaseData.metalPhase"
-									v-show="tab.metalEditable">
+								<el-select size="small" v-model="tab.metalPhaseData.metalPhase" v-show="tab.metalEditable">
 									<el-option label="有" value="有"></el-option>
 									<el-option label="无" value="无"></el-option>
 								</el-select>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.metalPhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
-								<el-upload v-show="tab.metalEditable" ref="upload" :auto-upload="false"
-									:on-change="sfSingleHandleChange" :http-request="uploadFile" show-file-list
-									action="" multiple style="width: 100%" :limit="1">
+								<el-upload v-show="tab.metalEditable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="sfSingleHandleChange"
+                           :http-request="uploadFile"
+                           show-file-list
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -167,8 +125,7 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfDescription}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="设备">
-								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment"
-									v-show="tab.metalEditable">
+								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment" v-show="tab.metalEditable">
 								</el-input>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfEquipment}}</span>
 							</el-descriptions-item>
@@ -178,17 +135,22 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
-								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod"
-									v-show="tab.metalEditable">
+								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod" v-show="tab.metalEditable">
 									<el-option label="明场" value="明场"></el-option>
 									<el-option label="暗场" value="暗场"></el-option>
 								</el-select>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="金相照片">
-								<el-upload v-show="tab.metalEditable" ref="upload" :auto-upload="false"
-									:on-change="sfListHandleChange" :http-request="uploadFile" action="" multiple
-									style="width: 100%" :limit="30">
+								<el-upload v-show="tab.metalEditable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="sfListHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
@@ -217,18 +179,14 @@
 					</template>
 					<!-- 修改按钮 -->
 					<template>
-						<el-row :gutter="20">
-							<el-col :span="4" :push="7">
-								<el-button v-show="tab.metalEditable" type="primary" icon="el-icon-circle-close"
-									@click="unedit(tab.name,'metalPhaseData')">取消</el-button>
+						<el-row>
+							<template>
+								<el-button v-show="tab.metalEditable" type="primary" icon="el-icon-circle-close" @click="unedit(tab.name,'metalPhaseData')">取消</el-button>
 								<span v-show="!tab.metalEditable">
-									<el-button type="primary" icon="el-icon-edit"
-										@click="edit(tab.name,'metalPhaseData')">修改</el-button>
-								</span>
-							</el-col>
-							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
-							</el-col>
+							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'metalPhaseData')">修改</el-button>
+							</span>
+							</template>
+							<el-button type="primary" icon="el-icon-upload">上传</el-button>
 						</el-row><br />
 					</template>
 					<!-- 矿相信息 -->
@@ -243,9 +201,15 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.minePhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="薄片扫描图">
-								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
-									:on-change="mpSingleHandleChange" :http-request="uploadFile" action="" multiple
-									style="width: 100%" :limit="1">
+								<el-upload v-show="tab.mineEditable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="mpSingleHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
@@ -278,23 +242,27 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpEquipment}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="放大倍数">
-								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom"
-									v-show="tab.mineEditable">
+								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom" v-show="tab.mineEditable">
 								</el-input>
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
-								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod"
-									v-show="tab.mineEditable">
+								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod" v-show="tab.mineEditable">
 									<el-option label="XPL" value="XPL"></el-option>
 									<el-option label="PPL" value="PPL"></el-option>
 								</el-select>
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="矿相照片">
-								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
-									:on-change="mpListHandleChange" :http-request="uploadFile" action="" multiple
-									style="width: 100%" :limit="30">
+								<el-upload v-show="tab.mineEditable"
+                           ref="upload"
+                           :auto-upload="false"
+                           :on-change="mpListHandleChange"
+                           :http-request="uploadFile"
+                           action=""
+                           multiple
+                           style="width: 100%"
+                           :limit="30">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传30张)</div>
@@ -323,18 +291,14 @@
 					</template>
 					<!-- 修改按钮 -->
 					<template>
-						<el-row :gutter="20">
-							<el-col :span="4" :push="7">
-								<el-button v-show="tab.mineEditable" type="primary" icon="el-icon-circle-close"
-									@click="unedit(tab.name,'minePhaseData')">取消</el-button>
+						<el-row>
+							<template>
+								<el-button v-show="tab.mineEditable" type="primary" icon="el-icon-circle-close" @click="unedit(tab.name,'minePhaseData')">取消</el-button>
 								<span v-show="!tab.mineEditable">
-									<el-button type="primary" icon="el-icon-edit"
-										@click="edit(tab.name,'minePhaseData')">修改</el-button>
-								</span>
-							</el-col>
-							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
-							</el-col>
+							<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'minePhaseData')">修改</el-button>
+							</span>
+							</template>
+							<el-button type="primary" icon="el-icon-upload">上传</el-button>
 						</el-row><br />
 					</template>
 					<!-- 电子显微信息 -->
@@ -349,9 +313,15 @@
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
 								<template>
-									<el-upload v-show="tab.emEditable" ref="upload" :auto-upload="false"
-										:on-change="emSingleHandleChange" :http-request="uploadFile" action="" multiple
-										style="width: 100%" :limit="1">
+									<el-upload v-show="tab.emEditable"
+                             ref="upload"
+                             :auto-upload="false"
+                             :on-change="emSingleHandleChange"
+                             :http-request="uploadFile"
+                             action=""
+                             multiple
+                             style="width: 100%"
+                             :limit="1">
 										<i class="el-icon-upload"></i>
 										<div class="el-upload__text"><em>点击上传</em></div>
 										<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>

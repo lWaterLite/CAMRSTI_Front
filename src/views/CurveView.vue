@@ -9,42 +9,93 @@
 		</el-tab-pane>
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name" :label="tab.label">
 
-
-		<el-row>
-			<el-button>数据集柱状图</el-button>
-
-		</el-row>
-		<template>
-			<el-select v-model="value" clearable placeholder="请选择">
-				<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-				</el-option>
-			</el-select>
-		</template>
-		<template>
-			<v-chart class="chart" :option="option1" />
-		</template>
-		<el-row>
-			<el-button type="primary">散点图</el-button>
-		</el-row>
-		<el-select v-model="value" clearable placeholder="请选择">
-			<el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value">
-			</el-option>
-		</el-select>
-		<template>
-			<v-chart class="chart" :option="option2" />
-		</template>
         <template>
+          <div>
+            <span>
+    <el-row>
+
+  <el-button type="success"round>
+                  折线图
+  </el-button>
+
+     </el-row>
+
+              <template>
           <v-chart class="chart" :option="option3" />
         </template>
-        <template>
-          <v-chart class="chart" :option="option4" />
+            </span>
+            <el-divider></el-divider>
+
+            <span>
+    <el-row>
+  <el-button type="success"round>
+                  矿物含量信息柱状图
+  </el-button>
+     </el-row>
+              <template>
+			<v-chart class="chart" :option="option2" />
+		       </template>
+            </span>
+            <el-divider></el-divider>
+
+            <span>
+      <el-row>
+  <el-button type="success"round>
+                  矿物测量信息柱状图
+  </el-button>
+     </el-row>
+
+
+              <template>
+			<v-chart class="chart" :option="option1" />
+		       </template>
+            </span>
+            <el-divider></el-divider>
+
+            <span>
+     <el-row>
+  <el-button type="success"round>
+                  XRD分析数据柱状图
+  </el-button>
+     </el-row>
+
+              <template>
+			<v-chart class="chart" :option="option4" />
+		       </template>
+            </span>
+            <el-divider></el-divider>
+
+            <span>
+
+     <el-row>
+  <el-button type="success"round>
+                  化学成分数据柱状图
+  </el-button>
+     </el-row>
+
+
+              <template>
+			<v-chart class="chart" :option="option5" />
+		       </template>
+            </span>
+            <el-divider></el-divider>
+
+            <span>
+     <el-row>
+  <el-button type="success"round>
+                  物理结构数据柱状图
+  </el-button>
+     </el-row>
+
+              <template>
+			<v-chart class="chart" :option="option6" />
+		       </template>
+            </span>
+            <el-divider></el-divider>
+
+          </div>
         </template>
-        <template>
-          <v-chart class="chart" :option="option5" />
-        </template>
-        <template>
-          <v-chart class="chart" :option="option6" />
-        </template>
+
 		</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -69,23 +120,9 @@
 				components: {
 					VChart
 				},
-				options: [{
-					value: '选项1',
-					label: '样品号'
-				}, {
-					value: '选项2',
-					label: '夯土炉壁'
-				}, {
-					value: '选项3',
-					label: '炉底夯土'
-				}, {
-					value: '选项4',
-					label: '黏土坯'
-				}, {
-					value: '选项5',
-					label: '窑坯'
-				}],
+
 				value: '',
+
         option1:{
           backgroundColor: 'white',
           legend: {},
@@ -315,13 +352,12 @@
 		padding: 15px;
 	}
 
-	.el-button {
-    width: 120px;
+  .el-button  {
+    width: 250px;
     height: 80px;
     padding: 0;
     font-size: 20px;
-	}
-
+  }
 	:deep .el-tabs--card>.el-tabs__header {
 		background-color: #fff;
 		border-bottom: 1px solid #409EFF;
