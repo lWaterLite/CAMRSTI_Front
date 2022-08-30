@@ -5,47 +5,89 @@
 				<!-- 样品基本信息 -->
 				<template>
 					<el-table :data="tableData" stripe border height="80vh" style="width: 100%">
-						<el-table-column sortable prop="sampleId" label="样品号" width="87">
+						<el-table-column sortable prop="sampleId" label="样品号" width="120">
 							<template slot-scope="scope">
-								<el-link type="primary">
-									<el-tag type="success" effect="plain" size="small"
-										@click="addTab(scope.row.sampleId,scope.column.property)">
-										{{ scope.row.sampleId }}
-									</el-tag>
-								</el-link>
+								<el-input type="text" v-model="scope.row.sampleId" v-show="scope.row.editable">
+								</el-input>
+								<span v-show="!scope.row.editable">
+									<el-link type="primary">
+										<el-tag type="success" effect="plain" size="small"
+											@click="addTab(scope.row.sampleId,scope.column.property)">
+											{{ scope.row.sampleId }}
+										</el-tag>
+									</el-link>
+								</span>
 							</template>
 						</el-table-column>
-						<el-table-column sortable prop="sampleType" label="样品类型" width="101"></el-table-column>
-						<el-table-column sortable prop="sampleSource" label="样品来源" width="120"></el-table-column>
-						<el-table-column sortable prop="samplingYear" label="取样年份" width="101">
+						<el-table-column sortable prop="sampleType" label="样品类型" width="101">
 							<template slot-scope="scope">
-								<i class="el-icon-time"></i>
-								<span style="margin-left: 8px">{{ scope.row.samplingYear }}</span>
+								<el-input type="text" v-model="scope.row.sampleType" v-show="scope.row.editable">
+								</el-input>
+								<span v-show="!scope.row.editable">{{scope.row.sampleType}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column sortable prop="sampleSource" label="样品来源" width="120">
+							<template slot-scope="scope">
+								<el-input type="textarea" v-model="scope.row.sampleSource" v-show="scope.row.editable">
+								</el-input>
+								<span v-show="!scope.row.editable">{{scope.row.sampleSource}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column sortable prop="samplingYear" label="取样年份" width="120">
+							<template slot-scope="scope">
+								<el-date-picker type="year" v-model="scope.row.samplingyear" v-show="scope.row.editable"
+									style="width: 100%"></el-date-picker>
+								<span v-show="!scope.row.editable">{{ scope.row.samplingYear }}</span>
 							</template>
 						</el-table-column>
 						<el-table-column sortable prop="samplingPeople" label="取样人" width="87">
 							<template slot-scope="scope">
-								<el-tag size="medium">{{ scope.row.samplingPeople }}</el-tag>
+								<el-input type="text" v-model="scope.row.samplingPeople" v-show="scope.row.editable">
+								</el-input>
+								<el-tag size="medium" v-show="!scope.row.editable">{{ scope.row.samplingPeople }}
+								</el-tag>
 							</template>
 						</el-table-column>
 						<el-table-column prop="imageId" label="照片号" width="260">
 							<template slot-scope="scope">
-								<el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId" :key="img">
-									<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
-										fit="contain">
-										<div slot="error" class="image-slot">
-											<i class="el-icon-picture-outline"></i>
+								<el-upload v-show="scope.row.editable" ref="upload" :auto-upload="false"
+									:http-request="uploadFile" show-file-list action="" multiple style="width: 100%">
+									<i class="el-icon-upload"></i>
+									<div class="el-upload__text"><em>点击上传</em></div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
+								</el-upload>
+								<span v-show="!scope.row.editable">
+									<el-popover trigger="hover" placement="top" v-for="img in scope.row.imageId"
+										:key="img">
+										<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
+											fit="contain">
+											<div slot="error" class="image-slot">
+												<i class="el-icon-picture-outline"></i>
+											</div>
+										</el-image>
+										<div slot="reference" class="name-wrapper">
+											<a :href="pageLink+'api/request/img/' + img" target="_blank"
+												style="text-decoration: none; color: #409EAF">{{ img }}</a>
 										</div>
-									</el-image>
-									<div slot="reference" class="name-wrapper">
-										<a :href="pageLink+'api/request/img/' + img" target="_blank"
-											style="text-decoration: none; color: #409EAF">{{ img }}</a>
-									</div>
-								</el-popover>
+									</el-popover>
+								</span>
 							</template>
 						</el-table-column>
-						<el-table-column prop="sampleDescribe" label="描述" width="190"></el-table-column>
-						<el-table-column prop="sampleExplain" label="样品制备说明" width="300"></el-table-column>
+						<el-table-column prop="sampleDescribe" label="描述" width="190">
+							<template slot-scope="scope">
+								<el-input type="textarea" v-model="scope.row.sampleDescribe"
+									v-show="scope.row.editable">
+								</el-input>
+								<span v-show="!scope.row.editable">{{scope.row.sampleDescribe}}</span>
+							</template>
+						</el-table-column>
+						<el-table-column prop="sampleExplain" label="样品制备说明" width="300">
+							<template slot-scope="scope">
+								<el-input type="textarea" v-model="scope.row.sampleExplain" v-show="scope.row.editable">
+								</el-input>
+								<span v-show="!scope.row.editable">{{scope.row.sampleExplain}}</span>
+							</template>
+						</el-table-column>
 						<el-table-column prop="experimentId" label="实验编号" width="160">
 							<template slot-scope="scope">
 								<el-link type="primary" v-for="sc in scope.row.experimentId" :key="sc">
@@ -58,8 +100,14 @@
 						</el-table-column>
 						<el-table-column label="操作" width="62">
 							<template slot-scope="scope">
-								<span style="display: none;">{{ scope.row.sampleId }}</span>
-								<el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
+								<el-button size="mini" round plain type="warning" icon="el-icon-success"
+									@click="unedit('主页',scope.row.sampleId)" v-show="scope.row.editable">
+								</el-button>
+								<span v-show="!scope.row.editable">
+									<el-button size="mini" round plain type="warning" icon="el-icon-edit"
+										@click="edit('主页',scope.row.sampleId)">
+									</el-button>
+								</span><br>
 								<el-popconfirm @confirm="onDelete(scope.row.sampleId)" confirm-button-text='确定'
 									cancel-button-text='取消' icon="el-icon-info" icon-color="red" title="确定删除这一条记录吗？">
 									<el-button size="mini" round plain type="danger" icon="el-icon-delete"
@@ -385,8 +433,8 @@
 								<el-button v-show="tab.emEditable" type="primary" icon="el-icon-circle-close"
 									@click="unedit(tab.name,'emPhaseData')">取消</el-button>
 								<span v-show="!tab.emEditable">
-									<el-button type="primary" icon="el-icon-edit"
-										@click="edit(tab.name,'emPhaseData')">修改</el-button>
+									<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'emPhaseData')">
+										修改</el-button>
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
@@ -441,25 +489,29 @@
 									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name"
 										:label="name" width="150">
 										<template slot="header" slot-scope="scope">
-												<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
-												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeCol(tab.name,'mineralContent',name)">
+											<el-input size="mini" name="colNameList" :value="name"
+												v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+													@click="removeCol(tab.name,'mineralContent',name)">
 												</el-button>
-												</el-input>
-												<span v-show="!tab.editable">{{name}}</span>
+											</el-input>
+											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
 									</el-table-column>
 								</el-table><br />
 								<!-- 新增列按钮 -->
 								<template>
-								<el-row v-show="tab.editable">
-								      <el-col :span="4" :offset="23">
-								        <el-button type="primary" @click="addCol(tab.name,'mineralContent')">新增列</el-button>
-								      </el-col>
-								    </el-row>
+									<el-row v-show="tab.editable">
+										<el-col :span="4" :offset="23">
+											<el-button type="primary" @click="addCol(tab.name,'mineralContent')">新增列
+											</el-button>
+										</el-col>
+									</el-row>
 								</template>
 							</el-descriptions-item>
 							<el-descriptions-item label="物相成分分析">
@@ -467,26 +519,30 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name"
 										:label="name" width="150">
-											<template slot="header" slot-scope="scope">
-													<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
-													<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeCol(tab.name,'XRDContent',name)">
-													</el-button>
-													</el-input>
-													<span v-show="!tab.editable">{{name}}</span>
-											</template>
-											<template slot-scope="scope">
-												<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
-												<span v-show="!tab.editable">{{scope.row[name]}}</span>
-											</template>
-										</el-table-column>
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" :value="name"
+												v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+													@click="removeCol(tab.name,'XRDContent',name)">
+												</el-button>
+											</el-input>
+											<span v-show="!tab.editable">{{name}}</span>
+										</template>
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											</el-input>
+											<span v-show="!tab.editable">{{scope.row[name]}}</span>
+										</template>
+									</el-table-column>
 								</el-table><br />
 								<!-- 新增列按钮 -->
 								<template>
-								<el-row v-show="tab.editable">
-								      <el-col :span="4" :offset="23">
-								        <el-button type="primary" @click="addCol(tab.name,'XRDContent')">新增列</el-button>
-								      </el-col>
-								    </el-row>
+									<el-row v-show="tab.editable">
+										<el-col :span="4" :offset="23">
+											<el-button type="primary" @click="addCol(tab.name,'XRDContent')">新增列
+											</el-button>
+										</el-col>
+									</el-row>
 								</template>
 							</el-descriptions-item>
 							<el-descriptions-item label="化学成分分析">
@@ -494,26 +550,30 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name"
 										:label="name" width="150">
-											<template slot="header" slot-scope="scope">
-													<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
-													<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeCol(tab.name,'chemicalContent',name)">
-													</el-button>
-													</el-input>
-													<span v-show="!tab.editable">{{name}}</span>
-											</template>
-											<template slot-scope="scope">
-												<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
-												<span v-show="!tab.editable">{{scope.row[name]}}</span>
-											</template>
-										</el-table-column>
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" :value="name"
+												v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+													@click="removeCol(tab.name,'chemicalContent',name)">
+												</el-button>
+											</el-input>
+											<span v-show="!tab.editable">{{name}}</span>
+										</template>
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											</el-input>
+											<span v-show="!tab.editable">{{scope.row[name]}}</span>
+										</template>
+									</el-table-column>
 								</el-table><br />
 								<!-- 新增列按钮 -->
 								<template>
-								<el-row v-show="tab.editable">
-								      <el-col :span="4" :offset="23">
-								        <el-button type="primary" @click="addCol(tab.name,'chemicalContent')">新增列</el-button>
-								      </el-col>
-								    </el-row>
+									<el-row v-show="tab.editable">
+										<el-col :span="4" :offset="23">
+											<el-button type="primary" @click="addCol(tab.name,'chemicalContent')">新增列
+											</el-button>
+										</el-col>
+									</el-row>
 								</template>
 							</el-descriptions-item>
 							<el-descriptions-item label="热分析">
@@ -521,27 +581,31 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.thermalPerformName" :key="name" :prop="name"
 										:label="name" width="150">
-											<template slot="header" slot-scope="scope">
-													<el-input size="mini" name="colNameList" :value="name" v-show="tab.editable">
-													<el-button slot="append" size="mini" type="danger" icon="el-icon-delete" @click="removeCol(tab.name,'thermalPerform',name)">
-													</el-button>
-													</el-input>
-													<span v-show="!tab.editable">{{name}}</span>
-											</template>
-											<template slot-scope="scope">
-												<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"></el-input>
-												<span v-show="!tab.editable">{{scope.row[name]}}</span>
-											</template>
-										</el-table-column>
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" :value="name"
+												v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+													@click="removeCol(tab.name,'thermalPerform',name)">
+												</el-button>
+											</el-input>
+											<span v-show="!tab.editable">{{name}}</span>
+										</template>
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											</el-input>
+											<span v-show="!tab.editable">{{scope.row[name]}}</span>
+										</template>
+									</el-table-column>
 								</el-table>
 								<br />
 								<!-- 新增列按钮 -->
 								<template>
-								<el-row v-show="tab.editable">
-								      <el-col :span="4" :offset="23">
-								        <el-button type="primary" @click="addCol(tab.name,'thermalPerform')">新增列</el-button>
-								      </el-col>
-								    </el-row>
+									<el-row v-show="tab.editable">
+										<el-col :span="4" :offset="23">
+											<el-button type="primary" @click="addCol(tab.name,'thermalPerform')">新增列
+											</el-button>
+										</el-col>
+									</el-row>
 								</template>
 							</el-descriptions-item>
 						</el-descriptions>
@@ -553,8 +617,8 @@
 								<el-button v-show="tab.editable" type="primary" icon="el-icon-circle-close"
 									@click="unedit(tab.name,'experiment')">取消</el-button>
 								<span v-show="!tab.editable">
-									<el-button type="primary" icon="el-icon-edit"
-										@click="edit(tab.name,'experiment')">修改</el-button>
+									<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'experiment')">
+										修改</el-button>
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
@@ -604,8 +668,8 @@
 								<el-button v-show="tab.editable" type="primary" icon="el-icon-circle-close"
 									@click="unedit(tab.name,'Img')">取消</el-button>
 								<span v-show="!tab.editable">
-									<el-button type="primary" icon="el-icon-edit"
-										@click="edit(tab.name,'Img')">修改</el-button>
+									<el-button type="primary" icon="el-icon-edit" @click="edit(tab.name,'Img')">修改
+									</el-button>
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
@@ -737,6 +801,7 @@
 					.then(response => {
 						this.tableData = [];
 						for (let i = 0; i < response.data.length; ++i) {
+							response.data[i].editable = false;
 							this.tableData.push(response.data[i])
 						}
 					})
@@ -910,7 +975,7 @@
 				});
 				this.tabsNumber--;
 			},
-			addCol(tabName,tableName) {
+			addCol(tabName, tableName) {
 				this.tabsList.forEach((tab) => {
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
@@ -925,7 +990,7 @@
 					}
 				});
 			},
-			removeCol(tabName,tableName,colName) {
+			removeCol(tabName, tableName, colName) {
 				this.tabsList.forEach((tab) => {
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
@@ -939,53 +1004,68 @@
 						}
 					}
 				});
-				
+
 			},
 			edit(tabName, element) {
-				this.tabsList.forEach((tab) => {
-					if (tab.name === tabName) {
-						if (element === "metalPhaseData") {
-							let oldData = tab.metalPhaseData;
-							this.fixDataList.push({
-								position: tab.name,
-								name: "metalPhaseData",
-								data: oldData,
-							})
-							tab.metalEditable = true;
-						} else if (element === "minePhaseData") {
-							tab.mineEditable = true
-						} else if (element === "emPhaseData") {
-							tab.emEditable = true
-						} else if (element === "physicalPorosity") {
-							tab.physicalEditable = true
-						} else if (element === "Img" || element === "experiment") {
-							tab.editable = true
+				if (tabName !== "主页") {
+					this.tabsList.forEach((tab) => {
+						if (tab.name === tabName) {
+							if (element === "metalPhaseData") {
+								let oldData = tab.metalPhaseData;
+								this.fixDataList.push({
+									position: tab.name,
+									name: "metalPhaseData",
+									data: oldData,
+								})
+								tab.metalEditable = true;
+							} else if (element === "minePhaseData") {
+								tab.mineEditable = true;
+							} else if (element === "emPhaseData") {
+								tab.emEditable = true;
+							} else if (element === "physicalPorosity") {
+								tab.physicalEditable = true;
+							} else if (element === "Img" || element === "experiment") {
+								tab.editable = true;
+							}
 						}
-					}
-				});
+					});
+				} else {
+					this.tableData.forEach((row) => {
+						if (row.sampleId === element) {
+							row.editable = true;
+						}
+					})
+				}
 			},
 			unedit(tabName, element) {
-				console.log(this.fixDataList)
-				this.tabsList.forEach((tab) => {
-					if (tab.name === tabName) {
-						if (element === "metalPhaseData") {
-							tab.metalEditable = false;
-							this.fixDataList.forEach((item) => {
-								if (item.position === name && item.name === element) {
-									tab.metalPhaseData = item.data;
-								}
-							});
-						} else if (element === "minePhaseData") {
-							tab.mineEditable = false;
-						} else if (element === "emPhaseData") {
-							tab.emEditable = false;
-						} else if (element === "physicalPorosity") {
-							tab.physicalEditable = false;
-						} else if (element === "Img" || element === "experiment") {
-							tab.editable = false;
+				if (tabName !== "主页") {
+					this.tabsList.forEach((tab) => {
+						if (tab.name === tabName) {
+							if (element === "metalPhaseData") {
+								tab.metalEditable = false;
+								this.fixDataList.forEach((item) => {
+									if (item.position === name && item.name === element) {
+										tab.metalPhaseData = item.data;
+									}
+								});
+							} else if (element === "minePhaseData") {
+								tab.mineEditable = false;
+							} else if (element === "emPhaseData") {
+								tab.emEditable = false;
+							} else if (element === "physicalPorosity") {
+								tab.physicalEditable = false;
+							} else if (element === "Img" || element === "experiment") {
+								tab.editable = false;
+							}
 						}
-					}
-				});
+					});
+				} else {
+					this.tableData.forEach((row) => {
+						if (row.sampleId === element) {
+							row.editable = false;
+						}
+					})
+				}
 			}
 		},
 	}
