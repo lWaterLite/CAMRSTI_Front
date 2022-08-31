@@ -41,7 +41,7 @@ use([
 // register globally (or you can do it locally)
 Vue.component('v-chart', ECharts)
 
-import * as echarts from 'echarts';
+
 
 
 

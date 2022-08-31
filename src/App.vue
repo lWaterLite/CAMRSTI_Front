@@ -44,7 +44,7 @@
                 <template slot="title">统计</template>
                 <el-menu-item index="4-1">计数</el-menu-item>
                 <el-menu-item index="4-2">均值</el-menu-item>
-                <el-menu-item index="4-3">曲线</el-menu-item>
+                <el-menu-item index="4-3">图表</el-menu-item>
               </el-menu-item-group>
             </el-submenu>
           </el-menu>
