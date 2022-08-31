@@ -35,7 +35,7 @@
 						</el-table-column>
 						<el-table-column sortable prop="samplingYear" label="取样年份" width="120">
 							<template slot-scope="scope">
-								<el-date-picker type="year" v-model="scope.row.samplingyear" v-show="scope.row.editable"
+								<el-date-picker type="year" v-model="scope.row.samplingYear" v-show="scope.row.editable"
 									style="width: 100%"></el-date-picker>
 								<span v-show="!scope.row.editable">{{ scope.row.samplingYear }}</span>
 							</template>
@@ -137,7 +137,9 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.metalPhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
-								<el-upload v-show="tab.metalEditable" ref="upload" :auto-upload="false"
+								<el-upload v-show="tab.metalEditable"
+                           ref="sfSingUpload"
+                           :auto-upload="false"
 									:on-change="sfSingleHandleChange" :http-request="uploadFile" show-file-list
 									action="" multiple style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
@@ -186,7 +188,7 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="金相照片">
-								<el-upload v-show="tab.metalEditable" ref="upload" :auto-upload="false"
+								<el-upload v-show="tab.metalEditable" ref="sfListUpload" :auto-upload="false"
 									:on-change="sfListHandleChange" :http-request="uploadFile" action="" multiple
 									style="width: 100%" :limit="30">
 									<i class="el-icon-upload"></i>
@@ -227,7 +229,7 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="metalPhaseUpload(tab)">上传</el-button>
 							</el-col>
 						</el-row><br />
 					</template>
@@ -243,7 +245,7 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.minePhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="薄片扫描图">
-								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
+								<el-upload v-show="tab.mineEditable" ref="mpSingleUpload" :auto-upload="false"
 									:on-change="mpSingleHandleChange" :http-request="uploadFile" action="" multiple
 									style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
@@ -292,7 +294,7 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="矿相照片">
-								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
+								<el-upload v-show="tab.mineEditable" ref="mpListUpload" :auto-upload="false"
 									:on-change="mpListHandleChange" :http-request="uploadFile" action="" multiple
 									style="width: 100%" :limit="30">
 									<i class="el-icon-upload"></i>
@@ -333,7 +335,7 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="minePhaseUpload(tab)">上传</el-button>
 							</el-col>
 						</el-row><br />
 					</template>
@@ -349,7 +351,7 @@
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
 								<template>
-									<el-upload v-show="tab.emEditable" ref="upload" :auto-upload="false"
+									<el-upload v-show="tab.emEditable" ref="emSingleUpload" :auto-upload="false"
 										:on-change="emSingleHandleChange" :http-request="uploadFile" action="" multiple
 										style="width: 100%" :limit="1">
 										<i class="el-icon-upload"></i>
@@ -397,7 +399,7 @@
 								<span v-show="!tab.emEditable">{{tab.emPhaseData.emPhotoMod}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="电子显微照片">
-								<el-upload v-show="tab.emEditable" ref="upload" :auto-upload="false"
+								<el-upload v-show="tab.emEditable" ref="emListUpload" :auto-upload="false"
 									:on-change="emListHandleChange" :http-request="uploadFile" action="" multiple
 									style="width: 100%" :limit="30">
 									<i class="el-icon-upload"></i>
@@ -438,7 +440,7 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="emPhaseUpload(tab)">上传</el-button>
 							</el-col>
 						</el-row><br />
 					</template>
@@ -474,7 +476,7 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="physicalPorosityUpload(tab)">上传</el-button>
 							</el-col>
 						</el-row>
 					</template>
@@ -488,7 +490,7 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name"
 										:label="name" width="150">
-										<template slot="header" slot-scope="scope">
+										<template slot="header">
 											<el-input size="mini" name="colNameList" :value="name"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
@@ -519,7 +521,7 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name"
 										:label="name" width="150">
-										<template slot="header" slot-scope="scope">
+										<template slot="header">
 											<el-input size="mini" name="colNameList" :value="name"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
@@ -550,7 +552,7 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name"
 										:label="name" width="150">
-										<template slot="header" slot-scope="scope">
+										<template slot="header">
 											<el-input size="mini" name="colNameList" :value="name"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
@@ -581,7 +583,7 @@
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
 									<el-table-column v-for="name in tab.thermalPerformName" :key="name" :prop="name"
 										:label="name" width="150">
-										<template slot="header" slot-scope="scope">
+										<template slot="header">
 											<el-input size="mini" name="colNameList" :value="name"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
@@ -708,6 +710,7 @@
 				pageLink: httpImg, // img解析前缀链接
 				tableData: [],
 				metalPhaseData: {
+          sampleId: '',
 					metalPhase: '',
 					sfFullImg: '',
 					sfDescription: '',
@@ -717,6 +720,7 @@
 					sfImgList: []
 				},
 				minePhaseData: {
+          sampleId: '',
 					minePhase: '',
 					mpFullImg: '',
 					mpDescription: '',
@@ -726,6 +730,7 @@
 					mpImgList: []
 				},
 				emPhaseData: {
+          sampleId: '',
 					emPhase: '',
 					emFullImg: '',
 					emDescription: '',
@@ -735,6 +740,7 @@
 					emImgList: []
 				},
 				physicalPorosity: {
+          sampleId: '',
 					apparentPorosity: '',
 					trueDensity: '',
 					waterAbsorption: ''
@@ -755,13 +761,97 @@
 			this.getData();
 		},
 		methods: {
+      metalPhaseUpload: function (tab) {
+        this.metalPhaseData.metalPhase = tab.metalPhaseData.metalPhase;
+        this.metalPhaseData.sfDescription = tab.metalPhaseData.sfDescription;
+        this.metalPhaseData.sfEquipment = tab.metalPhaseData.sfEquipment;
+        this.metalPhaseData.sfZoom = tab.metalPhaseData.sfZoom;
+        this.metalPhaseData.sfPhotoMod = tab.metalPhaseData.sfPhotoMod;
+        this.metalPhaseData.sampleId = tab.label;
+        httpPost.post('api/upload/phase/metal', this.metalPhaseData)
+        .then(() => {
+          this.$refs.sfSingUpload[0].submit();
+          this.$refs.sfListUpload[0].submit();
+          this.$refs.sfSingUpload[0].clearFiles();
+          this.$refs.sfListUpload[0].clearFiles();
+        })
+        .catch(err => {
+          this.$notify.error({
+            title: '错误',
+            message: '数据上传错误，请联系管理员',
+            duration: 0
+          });
+          console.log(err);
+        })
+      },
+      minePhaseUpload: function (tab) {
+        this.minePhaseData.minePhase = tab.minePhaseData.minePhase
+        this.minePhaseData.mpDescription = tab.minePhaseData.mpDescription
+        this.minePhaseData.mpEquipment = tab.minePhaseData.mpEquipment
+        this.minePhaseData.mpZoom = tab.minePhaseData.mpZoom
+        this.minePhaseData.mpPhotoMod = tab.minePhaseData.mpPhotoMod
+        this.metalPhaseData.sampleId = tab.label
+        httpPost.post('api/upload/phase/mine', this.minePhaseData)
+        .then(() => {
+          this.$refs.mpSingleUpload[0].submit()
+          this.$refs.mpListUpload[0].submit()
+          this.$refs.mpSingleUpload[0].clearFiles()
+          this.$refs.mpListUpload[0].clearFiles()
+        })
+        .catch((err) => {
+          this.$notify.error({
+            title: '错误',
+            message: '数据上传错误，请联系管理员',
+            duration: 0
+          });
+          console.log(err)
+        })
+      },
+      emPhaseUpload: function (tab) {
+        this.emPhaseData.emPhase = tab.emPhaseData.emPhase
+        this.emPhaseData.emDescription = tab.emPhaseData.emDescription
+        this.emPhaseData.emEquipment = tab.emPhaseData.emEquipment
+        this.emPhaseData.emZoom = tab.emPhaseData.emZoom
+        this.emPhaseData.emPhotoMod = tab.emPhaseData.emPhotoMod
+        this.emPhaseData.sampleId = tab.label
+        httpPost.post('api/upload/phase/em', this.emPhaseData)
+        .then(() => {
+          this.$refs.emSingleUpload[0].submit()
+          this.$refs.emListUpload[0].submit()
+          this.$refs.emListUpload[0].clearFiles()
+          this.$refs.emSingleUpload[0].clearFiles()
+        })
+        .catch((err) => {
+          this.$notify.error({
+            title: '错误',
+            message: '数据上传错误，请联系管理员',
+            duration: 0
+          });
+          console.log(err)
+        })
+      },
+      physicalPorosityUpload: function (tab) {
+        this.physicalPorosity.apparentPorosity = tab.physicalPorosity.apparentPorosity
+        this.physicalPorosity.trueDensity = tab.physicalPorosity.trueDensity
+        this.physicalPorosity.waterAbsorption = tab.physicalPorosity.waterAbsorption
+        this.physicalPorosity.sampleId = tab.label
+        httpPost.post('api/upload/physical_porosity', this.physicalPorosity)
+        .catch(err => {
+          this.$notify.error({
+            title: '错误',
+            message: '数据上传错误，请联系管理员',
+            duration: 0
+          });
+          console.log(err)
+        })
+      },
 			sfSingleHandleChange: function(file) {
 				this.metalPhaseData.sfFullImg = file.name;
 			},
 			sfListHandleChange: function(file, fileList) {
-				this.metalPhaseData.sfImgList = fileList.map((item) => {
-					return item.name
-				});
+				this.metalPhaseData.sfImgList.push(fileList.map((item) => {
+          return item.name
+        }))
 			},
 			mpSingleHandleChange: function(file) {
 				this.minePhaseData.mpFullImg = file.name;
