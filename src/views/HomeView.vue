@@ -628,7 +628,7 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="phaseGraphicUpload(tab)">上传</el-button>
 							</el-col>
 						</el-row>
 					</template>
@@ -698,6 +698,13 @@
 					trueDensity: '',
 					waterAbsorption: ''
 				},
+        phaseGraphic: {
+          imageIndex: '',
+          omDescription: '',
+          omEquipment: '',
+          omZoom: '',
+          omPhotoMod: ''
+        },
 				experimentId: [],
 				mineralContent: [],
 				XRDContent: [],
@@ -714,12 +721,32 @@
 			this.getData();
 		},
 		methods: {
+      phaseGraphicUpload: function (tab) {
+        this.phaseGraphic.imageIndex = tab.label
+        this.phaseGraphic.omDescription = tab.omDescription
+        this.phaseGraphic.omEquipment = tab.omEquipment
+        this.phaseGraphic.omZoom = tab.omZoom
+        this.phaseGraphic.omPhotoMod = tab.omPhotoMod
+        httpPost.post('api/upload/graphic', this.phaseGraphic)
+        .then(() => {
+          this.phaseGraphic = {
+            imageIndex: '',
+            omDescription: '',
+            omEquipment: '',
+            omZoom: '',
+            omPhotoMod: ''
+          }
+        })
+      },
       metalPhaseUpload: function (tab) {
         this.metalPhaseData.metalPhase = tab.metalPhaseData.metalPhase;
         this.metalPhaseData.sfDescription = tab.metalPhaseData.sfDescription;
         this.metalPhaseData.sfEquipment = tab.metalPhaseData.sfEquipment;
         this.metalPhaseData.sfZoom = tab.metalPhaseData.sfZoom;
         this.metalPhaseData.sfPhotoMod = tab.metalPhaseData.sfPhotoMod;
+        if (this.metalPhaseData.sfImgList.length > 0) {
+          this.metalPhaseData.sfImgList = this.metalPhaseData.sfImgList[this.metalPhaseData.sfImgList.length -1]
+        }
         this.metalPhaseData.sampleId = tab.label;
         httpPost.post('api/upload/phase/metal', this.metalPhaseData)
         .then(() => {
@@ -727,6 +754,16 @@
           this.$refs.sfListUpload[0].submit();
           this.$refs.sfSingUpload[0].clearFiles();
           this.$refs.sfListUpload[0].clearFiles();
+          this.metalPhaseData = {
+            sampleId: '',
+            metalPhase: '',
+            sfFullImg: '',
+            sfDescription: '',
+            sfEquipment: '',
+            sfZoom: '',
+            sfPhotoMod: '',
+            sfImgList: []
+          }
         })
         .catch(err => {
           this.$notify.error({
@@ -743,6 +780,9 @@
         this.minePhaseData.mpEquipment = tab.minePhaseData.mpEquipment
         this.minePhaseData.mpZoom = tab.minePhaseData.mpZoom
         this.minePhaseData.mpPhotoMod = tab.minePhaseData.mpPhotoMod
+        if (this.minePhaseData.mpImgList.length > 0) {
+          this.minePhaseData.mpImgList = this.minePhaseData.mpImgList[this.minePhaseData.mpImgList.length -1]
+        }
         this.metalPhaseData.sampleId = tab.label
         httpPost.post('api/upload/phase/mine', this.minePhaseData)
         .then(() => {
@@ -750,6 +790,16 @@
           this.$refs.mpListUpload[0].submit()
           this.$refs.mpSingleUpload[0].clearFiles()
           this.$refs.mpListUpload[0].clearFiles()
+          this.minePhaseData = {
+            sampleId: '',
+            minePhase: '',
+            mpFullImg: '',
+            mpDescription: '',
+            mpEquipment: '',
+            mpZoom: '',
+            mpPhotoMod: '',
+            mpImgList: []
+          }
         })
         .catch((err) => {
           this.$notify.error({
@@ -766,6 +816,9 @@
         this.emPhaseData.emEquipment = tab.emPhaseData.emEquipment
         this.emPhaseData.emZoom = tab.emPhaseData.emZoom
         this.emPhaseData.emPhotoMod = tab.emPhaseData.emPhotoMod
+        if (this.emPhaseData.emImgList.length > 0) {
+          this.emPhaseData.emImgList = this.emPhaseData.emImgList[this.emPhaseData.emImgList.length -1]
+        }
         this.emPhaseData.sampleId = tab.label
         httpPost.post('api/upload/phase/em', this.emPhaseData)
         .then(() => {
@@ -773,6 +826,16 @@
           this.$refs.emListUpload[0].submit()
           this.$refs.emListUpload[0].clearFiles()
           this.$refs.emSingleUpload[0].clearFiles()
+          this.emPhaseData = {
+            sampleId: '',
+            emPhase: '',
+            emFullImg: '',
+            emDescription: '',
+            emEquipment: '',
+            emZoom: '',
+            emPhotoMod: '',
+            emImgList: []
+          }
         })
         .catch((err) => {
           this.$notify.error({
@@ -789,6 +852,14 @@
         this.physicalPorosity.waterAbsorption = tab.physicalPorosity.waterAbsorption
         this.physicalPorosity.sampleId = tab.label
         httpPost.post('api/upload/physical_porosity', this.physicalPorosity)
+        .then(() => {
+              this.physicalPorosity = {
+                sampleId: '',
+                apparentPorosity: '',
+                trueDensity: '',
+                waterAbsorption: ''
+              }
+            })
         .catch(err => {
           this.$notify.error({
             title: '错误',
@@ -805,6 +876,7 @@
 				this.metalPhaseData.sfImgList.push(fileList.map((item) => {
           return item.name
         }))
+        console.log(this.metalPhaseData.sfImgList)
 			},
 			mpSingleHandleChange: function(file) {
 				this.minePhaseData.mpFullImg = file.name;
@@ -981,20 +1053,31 @@
 						}
 					})
 					if (isExist === 0) {
-						this.tabsList.push({
-							label: id,
-							name: String(this.tabsNumber + 1),
-							closable: true,
-							editable: false,
-							src: type,
-							imageIndex: id,
-							omDescription: 0,
-							omEquipment: 0,
-							omZoom: 0,
-							omPhotoMod: 0,
-						});
-						this.activeTab = String(this.tabsNumber + 1);
-						this.tabsNumber++;
+            httpGet.get('api/request/graphic/'+id)
+            .then((response) => {
+              this.tabsList.push({
+                label: id,
+                name: String(this.tabsNumber + 1),
+                closable: true,
+                editable: false,
+                src: type,
+                imageIndex: id,
+                omDescription: response.data.omDescription,
+                omEquipment: response.data.omEquipment,
+                omZoom: response.data.omZoom,
+                omPhotoMod: response.data.omPhotoMod,
+              });
+              this.activeTab = String(this.tabsNumber + 1);
+              this.tabsNumber++;
+            })
+            .catch(err => {
+              this.$notify.error({
+                title: '错误',
+                message: '数据上传发生了错误，请检查数据库和后端状况\n错误信息',
+                duration: 0
+              });
+              console.log(err)
+            })
 					}
 				}
 
