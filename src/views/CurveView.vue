@@ -6,96 +6,34 @@
         <el-button  type="primary" @click="addTab('mineral')">矿物含量信息</el-button>
         <el-button  type="primary" @click="addTab('XRD')">XRD分析数据</el-button>
         <el-button  type="primary" @click="addTab('chemical')">化学成分分析</el-button>
+        <el-button  type="primary" @click="addTab('physical')">物理结构数据</el-button>
 		</el-tab-pane>
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name" :label="tab.label">
-
-        <template>
-          <div>
-            <span>
-    <el-row>
-
-  <el-button type="success"round>
-                  折线图
-  </el-button>
-
-     </el-row>
-
-              <template>
-          <v-chart class="chart" :option="option3" />
-        </template>
-            </span>
-            <el-divider></el-divider>
-
-            <span>
-    <el-row>
-  <el-button type="success"round>
-                  矿物含量信息柱状图
-  </el-button>
-     </el-row>
-              <template>
-			<v-chart class="chart" :option="option2" />
-		       </template>
-            </span>
-            <el-divider></el-divider>
-
-            <span>
-      <el-row>
-  <el-button type="success"round>
-                  矿物测量信息柱状图
-  </el-button>
-     </el-row>
-
-
-              <template>
-			<v-chart class="chart" :option="option1" />
-		       </template>
-            </span>
-            <el-divider></el-divider>
-
-            <span>
-     <el-row>
-  <el-button type="success"round>
-                  XRD分析数据柱状图
-  </el-button>
-     </el-row>
-
-              <template>
-			<v-chart class="chart" :option="option4" />
-		       </template>
-            </span>
-            <el-divider></el-divider>
-
-            <span>
-
-     <el-row>
-  <el-button type="success"round>
-                  化学成分数据柱状图
-  </el-button>
-     </el-row>
-
-
-              <template>
-			<v-chart class="chart" :option="option5" />
-		       </template>
-            </span>
-            <el-divider></el-divider>
-
-            <span>
-     <el-row>
-  <el-button type="success"round>
-                  物理结构数据柱状图
-  </el-button>
-     </el-row>
-
-              <template>
-			<v-chart class="chart" :option="option6" />
-		       </template>
-            </span>
-            <el-divider></el-divider>
-
-          </div>
-        </template>
-
+        <div v-if="tab.id ==='year'">
+          <template>
+            <v-chart class="chart" :option="option3" />
+          </template>
+        </div>
+        <div v-if="tab.id ==='mineral'">
+          <template>
+            <v-chart class="chart" :option="option2" />
+          </template>
+        </div>
+        <div v-if="tab.id ==='XRD'">
+          <template>
+            <v-chart class="chart" :option="option4" />
+          </template>
+        </div>
+        <div v-if="tab.id ==='chemical'">
+          <template>
+            <v-chart class="chart" :option="option5" />
+          </template>
+        </div>
+        <div v-if="tab.id ==='physical'">
+          <template>
+            <v-chart class="chart" :option="tab.physical" />
+          </template>
+        </div>
 		</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -106,6 +44,7 @@
 	import VChart, {
 		THEME_KEY
 	} from "vue-echarts";
+  import {httpGet} from "@/Utils/axios.config";
 	export default {
 		name: "CurveView",
 		provide: {
@@ -123,92 +62,22 @@
 
 				value: '',
 
-        option1:{
+        year:{
           backgroundColor: 'white',
-          legend: {},
-          tooltip: {},
-          dataset: {
-            dimensions: ['product','黏土基质','石英粉砂','石英','长石','其他矿物','岩屑','空洞'],
-            source: [
-              { product: '11Y3:9-1', 黏土基质: 34.7, 石英粉砂: 7.3, 石英: 12.5
-                , 长石:2,其他矿物:3,岩屑:25,空洞:15.4
-              },
-              { product: '11Y3:9-2', 黏土基质: 31.8, 石英粉砂: 6.4, 石英: 10.9
-                ,长石:1.6, 其他矿物:4.5,岩屑:29.1,空洞:15.7
-              },
-              { product: '11Y3:9-3', 黏土基质: 34.2, 石英粉砂: 8.2, 石英: 13.9
-                ,长石:1.6,其他矿物:1.3,岩屑:22.9,空洞:17.9
-              },
-            ]
-          },
-          xAxis: { type: 'category' },
-          yAxis: {},
-          // Declare several bar series, each will be mapped
-          // to a column of dataset.source by default.
-          series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' },{ type: 'bar' },{ type: 'bar' },{ type: 'bar' },{ type: 'bar' }]
+          dataset:{
+            dimensions:[],
+            source:[],
+          }
         },
-				option2: {
-					backgroundColor: 'white',
-					xAxis: {
-						name: '黏土基质'
-					},
+        physical:{
+          backgroundColor: 'white',
+          dataset:{
+            dimensions:['样品号', '显气孔率', '真密度', '吸水率'],
+            source:[],
+          }
+        },
 
-					yAxis: {
-						name: '石英粉砂'
-					},
-					series: [{
-						symbolSize: 20,
-						data: [
-							[34.7, 7.3],
-							[31.8, 6.4],
-							[34.2, 8.2],
-						],
-						type: 'scatter'
-					}]
-				},
-        option3 :{
-          backgroundColor: 'white',
-          xAxis: {
-            type: 'category',
-            data: ['2018', '2019', '2020', '2021', '2022' ]
-          },
-          yAxis: {
-            type: 'value'
-          },
-          series: [
-            {
-              data: [150, 230, 224, 218, 135, 0],
-              type: 'line'
-            }
-          ]
-        },
-        option4: {
-          backgroundColor: 'white',
 
-          legend: {},
-          tooltip: {},
-          dataset: {
-            dimensions: ['product','石英','钠长石','钾长石','云母','闪石','赤铁矿',
-              '磁铁矿','白云石','方沸石','磷石英','方石英','莫来石'],
-            source: [
-              { product: '11Y3:9-1', 石英: 0.76, 钠长石: 0.24, 云母:NaN
-                , 闪石:NaN,赤铁矿:NaN,磁铁矿:NaN,白云石:NaN,方沸石:NaN,磷石英:NaN,方石英:NaN,莫来石:NaN
-              },
-              { product: '11Y3:9-2', 石英: 0.63, 钠长石: 0.14, 云母: NaN
-                , 闪石:NaN,赤铁矿:0.04,磁铁矿:NaN,白云石:NaN,方沸石:NaN,磷石英:NaN,方石英:NaN,莫来石:NaN
-              },
-              { product: '11Y3:9-3', 石英: 0.45, 钠长石: 0.19, 云母: 0.22
-                , 闪石:0.06,赤铁矿:NaN,磁铁矿:0.02,白云石:0.06,方沸石:NaN,磷石英:NaN,方石英:NaN,莫来石:NaN
-              },
-            ]
-          },
-          xAxis: { type: 'category' },
-          yAxis: {},
-          // Declare several bar series, each will be mapped
-          // to a column of dataset.source by default.
-          series: [{ type: 'bar' }, { type: 'bar' }, { type: 'bar' },{ type: 'bar' },{ type: 'bar' },
-            { type: 'bar' },{ type: 'bar' },{ type: 'bar' },{ type: 'bar' },{ type: 'bar' },{ type: 'bar' },{ type: 'bar' }]
-        },
         option5: {
           backgroundColor: 'white',
           legend: {},
@@ -242,7 +111,7 @@
           dataset: {
             dimensions: ['product', '显气孔率', '真密度', '吸水率'],
             source: [
-              { product: '11Y3:9', 显气孔率: 43.3, 真密度: 85.8, 吸水率: 93.7 }
+              { product: '11Y3:9', 显气孔率: 43.3, 真密度:NaN, 吸水率: 93.7 }
             ]
           },
           xAxis: { type: 'category' },
@@ -300,6 +169,36 @@
               closable: true,
               label: '化学成分分析'
             });
+            this.activeTab = String(this.tabsNumber + 1);
+            this.tabsNumber++;
+          }
+          else if(id ==='physical'){
+            httpGet.get('api/request/phase/' + id)
+                .then(response => {
+                  this.tabsList.push({
+                    id: id,
+                    name: String(this.tabsNumber + 1),
+                    closable: true,
+                    label: '物理结构数据',
+                    physical:{
+                      backgroundColor: 'white',
+                      dataset:{
+                        dimensions:['样品号', '显气孔率', '真密度', '吸水率'],
+                        source:[response.data.physicalPorosity],
+                      }
+                    },
+                  });
+                  this.activeTab = String(this.tabsNumber + 1);
+                  this.tabsNumber++;
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.$notify.error({
+                    title: '出错了',
+                    message: '数据请求错误，样品数据可能不存在',
+                    duration: 0
+                  });
+                })
             this.activeTab = String(this.tabsNumber + 1);
             this.tabsNumber++;
           }
