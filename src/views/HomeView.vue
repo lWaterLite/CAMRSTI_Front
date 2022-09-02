@@ -95,7 +95,7 @@
 									action="" multiple style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
-									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)图片名称不超过20个字符</div>
 								</el-upload>
 								<span v-show="!tab.metalEditable">
 									<el-popover trigger="hover" placement="top">
@@ -205,7 +205,7 @@
                            :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
-									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
+									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)图片名称不超过20个字符</div>
 								</el-upload>
 								<span v-show="!tab.mineEditable">
 									<el-popover trigger="hover" placement="top">
@@ -309,7 +309,7 @@
 										style="width: 100%" :limit="1">
 										<i class="el-icon-upload"></i>
 										<div class="el-upload__text"><em>点击上传</em></div>
-										<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)</div>
+										<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)图片名称不超过20个字符</div>
 									</el-upload>
 									<span v-show="!tab.emEditable">
 										<el-popover trigger="hover" placement="top">
@@ -441,10 +441,10 @@
 							<el-descriptions-item label="矿物成分分析">
 								<el-table :data="tab.mineralContent" stripe border style="width: 175vh">
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-									<el-table-column v-for="name in tab.mineralContentName" :key="name" :prop="name"
-										:label="name" width="150">
-										<template slot="header">
-											<el-input size="mini" name="colNameList" :value="name"
+									<el-table-column v-for="(name,index) in tab.mineralContentName" :key="index"
+										width="150">
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" v-model="tab.mineralContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'mineralContent',name)">
@@ -462,7 +462,7 @@
 								<!-- 新增列按钮 -->
 								<template>
 									<el-row v-show="tab.editable">
-										<el-col :span="4" :offset="23">
+										<el-col :span="4">
 											<el-button type="primary" @click="addCol(tab.name,'mineralContent')">新增列
 											</el-button>
 										</el-col>
@@ -472,10 +472,10 @@
 							<el-descriptions-item label="物相成分分析">
 								<el-table :data="tab.XRDContent" stripe border style="width: 175vh">
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-									<el-table-column v-for="name in tab.XRDContentName" :key="name" :prop="name"
-										:label="name" width="150">
-										<template slot="header">
-											<el-input size="mini" name="colNameList" :value="name"
+									<el-table-column v-for="(name,index) in tab.XRDContentName" :key="index"
+										width="150">
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" v-model="tab.XRDContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'XRDContent',name)">
@@ -493,7 +493,7 @@
 								<!-- 新增列按钮 -->
 								<template>
 									<el-row v-show="tab.editable">
-										<el-col :span="4" :offset="23">
+										<el-col :span="4">
 											<el-button type="primary" @click="addCol(tab.name,'XRDContent')">新增列
 											</el-button>
 										</el-col>
@@ -503,10 +503,10 @@
 							<el-descriptions-item label="化学成分分析">
 								<el-table :data="tab.chemicalContent" stripe border style="width: 175vh">
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-									<el-table-column v-for="name in tab.chemicalContentName" :key="name" :prop="name"
-										:label="name" width="150">
-										<template slot="header">
-											<el-input size="mini" name="colNameList" :value="name"
+									<el-table-column v-for="(name,index) in tab.chemicalContentName" :key="index"
+										width="150">
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" v-model="tab.chemicalContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'chemicalContent',name)">
@@ -524,7 +524,7 @@
 								<!-- 新增列按钮 -->
 								<template>
 									<el-row v-show="tab.editable">
-										<el-col :span="4" :offset="23">
+										<el-col :span="4">
 											<el-button type="primary" @click="addCol(tab.name,'chemicalContent')">新增列
 											</el-button>
 										</el-col>
@@ -534,10 +534,10 @@
 							<el-descriptions-item label="热分析">
 								<el-table :data="tab.thermalPerform" stripe border>
 									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-									<el-table-column v-for="name in tab.thermalPerformName" :key="name" :prop="name"
-										:label="name" width="150">
-										<template slot="header">
-											<el-input size="mini" name="colNameList" :value="name"
+									<el-table-column v-for="(name,index) in tab.thermalPerformName" :key="index"
+										width="150">
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" v-model="tab.thermalPerformName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'thermalPerform',name)">
@@ -556,7 +556,7 @@
 								<!-- 新增列按钮 -->
 								<template>
 									<el-row v-show="tab.editable">
-										<el-col :span="4" :offset="23">
+										<el-col :span="4">
 											<el-button type="primary" @click="addCol(tab.name,'thermalPerform')">新增列
 											</el-button>
 										</el-col>
