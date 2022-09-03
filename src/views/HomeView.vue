@@ -5,6 +5,7 @@
 				<!-- 样品基本信息 -->
 				<template>
 					<el-table :data="tableData" stripe border height="80vh" style="width: 100%">
+						<el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
 						<el-table-column sortable prop="sampleId" label="样品号" width="120">
 							<template slot-scope="scope">
 								<el-link type="primary">
