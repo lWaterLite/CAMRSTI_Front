@@ -577,7 +577,7 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="experimentDataUpload(tab)">上传</el-button>
 							</el-col>
 						</el-row>
 					</template>
@@ -721,6 +721,24 @@
 			this.getData();
 		},
 		methods: {
+      experimentDataUpload: function (tab) {
+        let experimentData = {
+          mineralContent: tab.mineralContent,
+          XRDContent: tab.XRDContent,
+          chemicalContent: tab.chemicalContent,
+          thermalPerform: tab.thermalPerform
+        }
+        console.log(experimentData)
+        httpPost.post('api/upload/experiment', experimentData)
+        .catch((err) => {
+          this.$notify.error({
+            title: '错误',
+            message: '数据上传错误，请联系管理员',
+            duration: 0
+          });
+          console.log(err);
+        })
+      },
       phaseGraphicUpload: function (tab) {
         this.phaseGraphic.imageIndex = tab.label
         this.phaseGraphic.omDescription = tab.omDescription
@@ -736,6 +754,14 @@
             omZoom: '',
             omPhotoMod: ''
           }
+        })
+        .catch((err) => {
+          this.$notify.error({
+            title: '错误',
+            message: '数据上传错误，请联系管理员',
+            duration: 0
+          });
+          console.log(err);
         })
       },
       metalPhaseUpload: function (tab) {
