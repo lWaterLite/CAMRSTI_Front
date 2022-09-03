@@ -60,7 +60,6 @@
 						<el-table-column label="操作" width="62">
 							<template slot-scope="scope">
 								<span style="display: none;">{{ scope.row.sampleId }}</span>
-								<el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
 								<el-popconfirm @confirm="onDelete(scope.row.sampleId)" confirm-button-text='确定'
 									cancel-button-text='取消' icon="el-icon-info" icon-color="red" title="确定删除这一条记录吗？">
 									<el-button size="mini" round plain type="danger" icon="el-icon-delete"
@@ -71,12 +70,62 @@
 						</el-table-column>
 					</el-table>
 				</template>
+        <template>
+          <span>共{{this.tableData.length}}条数据</span>
+        </template>
 			</el-tab-pane>
 			<!--    样品信息分页    -->
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name"
 				:label="tab.label">
 				<!-- 样品详细信息 -->
 				<div v-if="tab.src === 'sampleId'">
+          <el-page-header @back="goBack" title="返回主页"></el-page-header>
+          <!-- 基本信息 -->
+          <template>
+            <el-descriptions content-class-name="baseData" title="基本信息:" border :label-style="{width: '150px'}">
+              <el-descriptions-item label="样品编号">
+                <span>{{tab.baseData.sampleId}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="样品类型">
+                <span>{{tab.baseData.sampleType}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="样品来源">
+                <span>{{tab.baseData.sampleSource}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="取样年份">
+                <span>{{tab.baseData.samplingYear}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="取样人">
+                <span>{{tab.baseData.samplingPeople}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="图片">
+                <template>
+                  <el-popover trigger="hover" placement="top" v-for="img in tab.baseData.imageId" :key="img">
+                    <el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
+                              fit="contain">
+                      <div slot="error" class="image-slot">
+                        <i class="el-icon-picture-outline"></i>
+                      </div>
+                    </el-image>
+                    <div slot="reference" class="name-wrapper">
+                      <a :href="pageLink+'api/request/img/' + img" target="_blank"
+                         style="text-decoration: none; color: #409EAF">{{ img }}</a>
+                    </div>
+                  </el-popover>
+                </template>
+              </el-descriptions-item>
+              <el-descriptions-item label="描述">
+                <span>{{tab.baseData.sampleDescribe}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="样品制备说明">
+                <span>{{tab.baseData.sampleExplain}}</span>
+              </el-descriptions-item>
+              <el-descriptions-item label="实验编号">
+                <el-tag v-for="(ex, index) in tab.baseData.experimentId" :key="index"
+                        type="success" effect="plain" size="small">{{ex}}</el-tag>
+              </el-descriptions-item>
+            </el-descriptions>
+          </template>
 					<!-- 金相信息 -->
 					<template>
 						<el-descriptions contentClassName="metalPhaseData" title="金相:" border
@@ -974,6 +1023,9 @@
 						console.log(error);
 					})
 			},
+      goBack: function () {
+        this.activeTab = "0";
+      },
 			addTab(id, type) {
 				let isExist = 0;
 				if (type === "sampleId") {
@@ -996,6 +1048,7 @@
 									emEditable: false,
 									physicalEditable: false,
 									src: type,
+                  baseData: response.data.baseData,
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
 									emPhaseData: response.data.emPhaseData,
