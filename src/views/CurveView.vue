@@ -11,22 +11,22 @@
 			<el-tab-pane v-for="tab in tabsList" :closable="tab.closable" :key="tab.name" :name="tab.name" :label="tab.label">
         <div v-if="tab.id ==='year'">
           <template>
-            <v-chart class="chart" :option="option3" />
+            <v-chart class="chart" :option="tab.year" />
           </template>
         </div>
         <div v-if="tab.id ==='mineral'">
           <template>
-            <v-chart class="chart" :option="option2" />
+            <v-chart class="chart" :option="tab.mineralContent" />
           </template>
         </div>
         <div v-if="tab.id ==='XRD'">
           <template>
-            <v-chart class="chart" :option="option4" />
+            <v-chart class="chart" :option="tab.XRDContent" />
           </template>
         </div>
         <div v-if="tab.id ==='chemical'">
           <template>
-            <v-chart class="chart" :option="option5" />
+            <v-chart class="chart" :option="tab.chemicalContent" />
           </template>
         </div>
         <div v-if="tab.id ==='physical'">
@@ -69,6 +69,13 @@
             source:[],
           }
         },
+        mineralContent:{
+          backgroundColor: 'white',
+          dataset:{
+            dimensions:[],
+            source:[],
+          }
+        },
         physical:{
           backgroundColor: 'white',
           dataset:{
@@ -76,6 +83,21 @@
             source:[],
           }
         },
+        XRDContent:{
+          backgroundColor: 'white',
+          dataset:{
+            dimensions:[],
+            source:[],
+          }
+        },
+        chemicalContent:{
+          backgroundColor: 'white',
+          dataset:{
+            dimensions:[],
+            source:[],
+          }
+        },
+
 
 
         option5: {
@@ -143,49 +165,157 @@
             this.tabsNumber++;
           }
           else if(id ==='mineral'){
-            this.tabsList.push({
-              id: id,
-              name: String(this.tabsNumber + 1),
-              closable: true,
-              label: '矿物含量信息'
-            });
+            httpGet.get('api/request/phase/' + "1")
+                .then(response => {
+                  this.tabsList.push({
+                    id: id,
+                    name: String(this.tabsNumber + 1),
+                    closable: true,
+                    label: '矿物含量信息',
+                    sampleId:"",
+                    mineralContent:{
+                      backgroundColor: 'white',
+                      legend: {},
+                      tooltip: {},
+                      dataset:{
+                        dimensions:['样品号', '显气孔率', '真密度', '吸水率'],
+                        source:[ {
+                          样品号: response.data.physicalPorosity.sampleId,
+                          显气孔率: response.data.physicalPorosity.apparentPorosity,
+                          真密度:response.data.physicalPorosity.trueDensity,
+                          吸水率: response.data.physicalPorosity.waterAbsorption
+                        }],
+                      },
+                      xAxis: { type: 'category' },
+                      yAxis: {},
+                      series: [ { type: 'bar' }, { type: 'bar' },{ type: 'bar' }
+                      ]
+                    },
+                  });
+                  this.activeTab = String(this.tabsNumber + 1);
+                  this.tabsNumber++;
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.$notify.error({
+                    title: '出错了',
+                    message: '数据请求错误，样品数据可能不存在',
+                    duration: 0
+                  });
+                })
             this.activeTab = String(this.tabsNumber + 1);
             this.tabsNumber++;
           }
           else if(id ==='XRD'){
-            this.tabsList.push({
-              id: id,
-              name: String(this.tabsNumber + 1),
-              closable: true,
-              label: 'XRD分析数据'
-            });
+            httpGet.get('api/request/phase/' + "1")
+                .then(response => {
+                  this.tabsList.push({
+                    id: id,
+                    name: String(this.tabsNumber + 1),
+                    closable: true,
+                    label: 'XRD分析数据',
+                    sampleId:"",
+                    XRDContent:{
+                      backgroundColor: 'white',
+                      legend: {},
+                      tooltip: {},
+                      dataset:{
+                        dimensions:['样品号', '显气孔率', '真密度', '吸水率'],
+                        source:[ {
+                          样品号: response.data.physicalPorosity.sampleId,
+                          显气孔率: response.data.physicalPorosity.apparentPorosity,
+                          真密度:response.data.physicalPorosity.trueDensity,
+                          吸水率: response.data.physicalPorosity.waterAbsorption
+                        }],
+                      },
+                      xAxis: { type: 'category' },
+                      yAxis: {},
+                      series: [ { type: 'bar' }, { type: 'bar' },{ type: 'bar' }
+                      ]
+                    },
+                  });
+                  this.activeTab = String(this.tabsNumber + 1);
+                  this.tabsNumber++;
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.$notify.error({
+                    title: '出错了',
+                    message: '数据请求错误，样品数据可能不存在',
+                    duration: 0
+                  });
+                })
             this.activeTab = String(this.tabsNumber + 1);
             this.tabsNumber++;
           }
           else if(id ==='chemical'){
-            this.tabsList.push({
-              id: id,
-              name: String(this.tabsNumber + 1),
-              closable: true,
-              label: '化学成分分析'
-            });
+            httpGet.get('api/request/phase/' + "1")
+                .then(response => {
+                  this.tabsList.push({
+                    id: id,
+                    name: String(this.tabsNumber + 1),
+                    closable: true,
+                    label: '化学成分数据',
+                    sampleId:"",
+                    chemicalContent:{
+                      backgroundColor: 'white',
+                      legend: {},
+                      tooltip: {},
+                      dataset:{
+                        dimensions:['样品号', '显气孔率', '真密度', '吸水率'],
+                        source:[ {
+                          样品号: response.data.physicalPorosity.sampleId,
+                          显气孔率: response.data.physicalPorosity.apparentPorosity,
+                          真密度:response.data.physicalPorosity.trueDensity,
+                          吸水率: response.data.physicalPorosity.waterAbsorption
+                        }],
+                      },
+                      xAxis: { type: 'category' },
+                      yAxis: {},
+                      series: [ { type: 'bar' }, { type: 'bar' },{ type: 'bar' }
+                      ]
+                    },
+                  });
+                  this.activeTab = String(this.tabsNumber + 1);
+                  this.tabsNumber++;
+                })
+                .catch(err => {
+                  console.log(err);
+                  this.$notify.error({
+                    title: '出错了',
+                    message: '数据请求错误，样品数据可能不存在',
+                    duration: 0
+                  });
+                })
             this.activeTab = String(this.tabsNumber + 1);
             this.tabsNumber++;
           }
           else if(id ==='physical'){
-            httpGet.get('api/request/phase/' + id)
+            httpGet.get('api/request/phase/' + "1")
                 .then(response => {
                   this.tabsList.push({
                     id: id,
                     name: String(this.tabsNumber + 1),
                     closable: true,
                     label: '物理结构数据',
+                    sampleId:"",
                     physical:{
                       backgroundColor: 'white',
+                      legend: {},
+                      tooltip: {},
                       dataset:{
                         dimensions:['样品号', '显气孔率', '真密度', '吸水率'],
-                        source:[response.data.physicalPorosity],
-                      }
+                        source:[ {
+                          样品号: response.data.physicalPorosity.sampleId,
+                          显气孔率: response.data.physicalPorosity.apparentPorosity,
+                          真密度:response.data.physicalPorosity.trueDensity,
+                          吸水率: response.data.physicalPorosity.waterAbsorption
+                        }],
+                      },
+                      xAxis: { type: 'category' },
+                      yAxis: {},
+                      series: [ { type: 'bar' }, { type: 'bar' },{ type: 'bar' }
+                        ]
                     },
                   });
                   this.activeTab = String(this.tabsNumber + 1);
