@@ -4,7 +4,7 @@
 			<el-tab-pane label="主页" name="0">
 				<!-- 样品基本信息 -->
 				<template>
-					<el-table :data="tableData" stripe border height="80vh" style="width: 100%">
+					<el-table :data="tableData" stripe border height="75vh" style="width: 100%">
 						<el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
 						<el-table-column sortable prop="sampleId" label="样品号" width="120">
 							<template slot-scope="scope">
@@ -70,6 +70,18 @@
 							</template>
 						</el-table-column>
 					</el-table>
+					<div>
+					<el-row type="flex" justify="start">
+						<el-col :span="5">
+					当前页面数据条数/数据库总条数
+					<el-input type="text" size="small" style="width: 80px;" v-model="sampleCurrentNumber" readonly="">
+					</el-input>
+					/
+					<el-input type="text" size="small" style="width: 80px;" v-model="sampleTotalNumber" readonly="">
+					</el-input>
+					</el-col>
+					</el-row>
+				</div>
 				</template>
 			</el-tab-pane>
 			<!--    样品信息分页    -->
@@ -445,7 +457,7 @@
 									<el-table-column v-for="(name,index) in tab.mineralContentName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.mineralContentName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="矿物名称" v-model="tab.mineralContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'mineralContent',name)">
@@ -454,7 +466,7 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.mineralReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -464,8 +476,11 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'mineralContent')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'mineralContent')" v-show="!tab.mineralReadable">新增列
 											</el-button>
+											<span v-show="tab.mineralReadable">
+												<el-button type="primary" @click="changeReadable(tab.name,'mineralContent')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -476,7 +491,7 @@
 									<el-table-column v-for="(name,index) in tab.XRDContentName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.XRDContentName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="物相成分" v-model="tab.XRDContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'XRDContent',name)">
@@ -485,7 +500,7 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.XRDReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -495,8 +510,11 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'XRDContent')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'XRDContent')" v-show="!tab.XRDReadable">新增列
 											</el-button>
+											<span v-show="tab.XRDReadable">
+												<el-button type="primary" @click="changeReadable(tab.name,'XRDContent')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -507,7 +525,7 @@
 									<el-table-column v-for="(name,index) in tab.chemicalContentName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.chemicalContentName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="化学成分" v-model="tab.chemicalContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'chemicalContent',name)">
@@ -516,7 +534,7 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.chemicalReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -526,8 +544,11 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'chemicalContent')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'chemicalContent')" v-show="!tab.chemicalReadable">新增列
 											</el-button>
+											<span v-show="tab.chemicalReadable">
+												<el-button type="primary" @click="changeReadable(tab.name,'chemicalContent')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -538,7 +559,7 @@
 									<el-table-column v-for="(name,index) in tab.thermalPerformName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.thermalPerformName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="热性能" v-model="tab.thermalPerformName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'thermalPerform',name)">
@@ -547,7 +568,7 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"  :readonly="tab.thermalReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -558,8 +579,11 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'thermalPerform')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'thermalPerform')" v-show="!tab.thermalReadable">新增列
 											</el-button>
+											<span v-show="tab.thermalReadable">
+												<el-button type="primary" @click="changeReadable(tab.name,'thermalPerform')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -663,6 +687,8 @@
 			return {
 				pageLink: httpImg, // img解析前缀链接
 				tableData: [],
+				sampleTotalNumber: 0,
+				sampleCurrentNumber: 0,
 				metalPhaseData: {
           sampleId: '',
 					metalPhase: '',
@@ -944,7 +970,9 @@
 						this.tableData = [];
 						for (let i = 0; i < response.data.length; ++i) {
 							response.data[i].editable = false;
-							this.tableData.push(response.data[i])
+							this.tableData.push(response.data[i]);
+							this.sampleTotalNumber++;
+							this.sampleCurrentNumber++;
 						}
 					})
 					.catch(error => {
@@ -1051,6 +1079,10 @@
 									editable: false,
 									src: type,
 									experimentId: Id,
+									mineralReadable: false,
+									XRDReadable: false,
+									chemicalReadable: false,
+									thermalReadable: false,
 									mineralContentName: mineralContentName,
 									XRDContentName: XRDContentName,
 									chemicalContentName: chemicalContentName,
@@ -1133,12 +1165,16 @@
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
 							tab.mineralContentName.push("");
+							tab.mineralReadable = true;
 						} else if (tableName === "XRDContent") {
 							tab.XRDContentName.push("");
+							tab.XRDReadable = true;
 						} else if (tableName === "chemicalContent") {
 							tab.chemicalContentName.push("");
+							tab.chemicalReadable = true;
 						} else if (tableName === "thermalPerform") {
 							tab.thermalPerformName.push("");
+							tab.thermalReadable = true;
 						}
 					}
 				});
@@ -1219,7 +1255,23 @@
 						}
 					})
 				}
-			}
+			},
+			changeReadable(tabName, tableName) {
+				this.tabsList.forEach((tab) => {
+					if (tab.name === tabName) {
+						if (tableName === "mineralContent") {
+							tab.mineralReadable = false;
+							console.log(tab);
+						} else if (tableName === "XRDContent") {
+							tab.XRDReadable = false;
+						} else if (tableName === "chemicalContent") {
+							tab.chemicalReadable = false;
+						} else if (tableName === "thermalPerform") {
+							tab.thermalReadable = false;
+						}
+					}
+				});
+			},
 		},
 	}
 </script>
