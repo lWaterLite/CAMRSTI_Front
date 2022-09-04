@@ -4,7 +4,8 @@
 			<el-tab-pane label="主页" name="0">
 				<!-- 样品基本信息 -->
 				<template>
-					<el-table :data="tableData" stripe border height="80vh" style="width: 100%">
+					<el-table :data="tableData" stripe border height="75vh" style="width: 100%">
+						<el-table-column label="序号" type="index" width="60" align="center"></el-table-column>
 						<el-table-column sortable prop="sampleId" label="样品号" width="120">
 							<template slot-scope="scope">
 								<el-link type="primary">
@@ -59,7 +60,6 @@
 						<el-table-column label="操作" width="62">
 							<template slot-scope="scope">
 								<span style="display: none;">{{ scope.row.sampleId }}</span>
-								<el-button size="mini" round plain type="warning" icon="el-icon-edit"></el-button><br>
 								<el-popconfirm @confirm="onDelete(scope.row.sampleId)" confirm-button-text='确定'
 									cancel-button-text='取消' icon="el-icon-info" icon-color="red" title="确定删除这一条记录吗？">
 									<el-button size="mini" round plain type="danger" icon="el-icon-delete"
@@ -69,6 +69,20 @@
 							</template>
 						</el-table-column>
 					</el-table>
+					<div>
+						<el-row type="flex" justify="start">
+							<el-col :span="5">
+								当前页面数据条数/数据库总条数
+								<el-input type="text" size="small" style="width: 80px;" v-model="sampleCurrentNumber"
+									readonly="">
+								</el-input>
+								/
+								<el-input type="text" size="small" style="width: 80px;" v-model="sampleTotalNumber"
+									readonly="">
+								</el-input>
+							</el-col>
+						</el-row>
+					</div>
 				</template>
 			</el-tab-pane>
 			<!--    样品信息分页    -->
@@ -76,21 +90,69 @@
 				:label="tab.label">
 				<!-- 样品详细信息 -->
 				<div v-if="tab.src === 'sampleId'">
+					<el-page-header @back="goBack" title="返回主页"></el-page-header>
+					<!-- 基本信息 -->
+					<template>
+						<el-descriptions content-class-name="baseData" title="基本信息:" border
+							:label-style="{width: '150px'}">
+							<el-descriptions-item label="样品编号">
+								<span>{{tab.baseData.sampleId}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="样品类型">
+								<span>{{tab.baseData.sampleType}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="样品来源">
+								<span>{{tab.baseData.sampleSource}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="取样年份">
+								<span>{{tab.baseData.samplingYear}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="取样人">
+								<span>{{tab.baseData.samplingPeople}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="图片">
+								<template>
+									<el-popover trigger="hover" placement="top" v-for="img in tab.baseData.imageId"
+										:key="img">
+										<el-image style="height: 200px" :src="pageLink+'api/request/img/' + img"
+											fit="contain">
+											<div slot="error" class="image-slot">
+												<i class="el-icon-picture-outline"></i>
+											</div>
+										</el-image>
+										<div slot="reference" class="name-wrapper">
+											<a :href="pageLink+'api/request/img/' + img" target="_blank"
+												style="text-decoration: none; color: #409EAF">{{ img }}</a>
+										</div>
+									</el-popover>
+								</template>
+							</el-descriptions-item>
+							<el-descriptions-item label="描述">
+								<span>{{tab.baseData.sampleDescribe}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="样品制备说明">
+								<span>{{tab.baseData.sampleExplain}}</span>
+							</el-descriptions-item>
+							<el-descriptions-item label="实验编号">
+								<el-tag v-for="(ex, index) in tab.baseData.experimentId" :key="index" type="success"
+									effect="plain" size="small">{{ex}}</el-tag>
+							</el-descriptions-item>
+						</el-descriptions>
+					</template>
 					<!-- 金相信息 -->
 					<template>
 						<el-descriptions contentClassName="metalPhaseData" title="金相:" border
 							:labelStyle="{width: '150px'}">
 							<el-descriptions-item label="金相">
-								<el-select size="small" v-model="tab.metalPhaseData.metalPhase" v-show="tab.metalEditable">
+								<el-select size="small" v-model="tab.metalPhaseData.metalPhase"
+									v-show="tab.metalEditable">
 									<el-option label="有" value="有"></el-option>
 									<el-option label="无" value="无"></el-option>
 								</el-select>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.metalPhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="样品全图">
-								<el-upload v-show="tab.metalEditable"
-                           ref="sfSingUpload"
-                           :auto-upload="false"
+								<el-upload v-show="tab.metalEditable" ref="sfSingUpload" :auto-upload="false"
 									:on-change="sfSingleHandleChange" :http-request="uploadFile" show-file-list
 									action="" multiple style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
@@ -120,7 +182,8 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfDescription}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="设备">
-								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment" v-show="tab.metalEditable">
+								<el-input type="text" v-model="tab.metalPhaseData.sfEquipment"
+									v-show="tab.metalEditable">
 								</el-input>
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfEquipment}}</span>
 							</el-descriptions-item>
@@ -130,7 +193,8 @@
 								<span v-show="!tab.metalEditable">{{tab.metalPhaseData.sfZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
-								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod" v-show="tab.metalEditable">
+								<el-select size="small" v-model="tab.metalPhaseData.sfPhotoMod"
+									v-show="tab.metalEditable">
 									<el-option label="明场" value="明场"></el-option>
 									<el-option label="暗场" value="暗场"></el-option>
 								</el-select>
@@ -178,7 +242,8 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload" @click="metalPhaseUpload(tab)">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="metalPhaseUpload(tab)">上传
+								</el-button>
 							</el-col>
 						</el-row><br />
 					</template>
@@ -194,15 +259,9 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.minePhase}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="薄片扫描图">
-								<el-upload v-show="tab.mineEditable"
-                           ref="upload"
-                           :auto-upload="false"
-                           :on-change="mpSingleHandleChange"
-                           :http-request="uploadFile"
-                           action=""
-                           multiple
-                           style="width: 100%"
-                           :limit="1">
+								<el-upload v-show="tab.mineEditable" ref="upload" :auto-upload="false"
+									:on-change="mpSingleHandleChange" :http-request="uploadFile" action="" multiple
+									style="width: 100%" :limit="1">
 									<i class="el-icon-upload"></i>
 									<div class="el-upload__text"><em>点击上传</em></div>
 									<div class="el-upload__tip" slot="tip">只能上传jpg/png文件(可传1张)图片名称不超过20个字符</div>
@@ -235,12 +294,14 @@
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpEquipment}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="放大倍数">
-								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom" v-show="tab.mineEditable">
+								<el-input type="text" autosize v-model="tab.minePhaseData.mpZoom"
+									v-show="tab.mineEditable">
 								</el-input>
 								<span v-show="!tab.mineEditable">{{tab.minePhaseData.mpZoom}}</span>
 							</el-descriptions-item>
 							<el-descriptions-item label="拍摄模式">
-								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod" v-show="tab.mineEditable">
+								<el-select size="small" v-model="tab.minePhaseData.mpPhotoMod"
+									v-show="tab.mineEditable">
 									<el-option label="XPL" value="XPL"></el-option>
 									<el-option label="PPL" value="PPL"></el-option>
 								</el-select>
@@ -288,7 +349,8 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload" @click="minePhaseUpload(tab)">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="minePhaseUpload(tab)">上传
+								</el-button>
 							</el-col>
 						</el-row><br />
 					</template>
@@ -393,7 +455,8 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload" @click="emPhaseUpload(tab)">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="emPhaseUpload(tab)">上传
+								</el-button>
 							</el-col>
 						</el-row><br />
 					</template>
@@ -429,7 +492,8 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload" @click="physicalPorosityUpload(tab)">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="physicalPorosityUpload(tab)">上传
+								</el-button>
 							</el-col>
 						</el-row>
 					</template>
@@ -444,7 +508,8 @@
 									<el-table-column v-for="(name,index) in tab.mineralContentName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.mineralContentName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="矿物名称"
+												v-model="tab.mineralContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'mineralContent',name)">
@@ -453,7 +518,8 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"
+												:readonly="tab.mineralReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -463,8 +529,13 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'mineralContent')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'mineralContent')"
+												v-show="!tab.mineralReadable">新增列
 											</el-button>
+											<span v-show="tab.mineralReadable">
+												<el-button type="primary"
+													@click="changeReadable(tab.name,'mineralContent')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -475,7 +546,8 @@
 									<el-table-column v-for="(name,index) in tab.XRDContentName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.XRDContentName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="物相成分"
+												v-model="tab.XRDContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'XRDContent',name)">
@@ -484,7 +556,8 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"
+												:readonly="tab.XRDReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -494,8 +567,13 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'XRDContent')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'XRDContent')"
+												v-show="!tab.XRDReadable">新增列
 											</el-button>
+											<span v-show="tab.XRDReadable">
+												<el-button type="primary"
+													@click="changeReadable(tab.name,'XRDContent')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -506,7 +584,8 @@
 									<el-table-column v-for="(name,index) in tab.chemicalContentName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.chemicalContentName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="化学成分"
+												v-model="tab.chemicalContentName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'chemicalContent',name)">
@@ -515,7 +594,8 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"
+												:readonly="tab.chemicalReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -525,8 +605,13 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'chemicalContent')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'chemicalContent')"
+												v-show="!tab.chemicalReadable">新增列
 											</el-button>
+											<span v-show="tab.chemicalReadable">
+												<el-button type="primary"
+													@click="changeReadable(tab.name,'chemicalContent')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
@@ -537,7 +622,8 @@
 									<el-table-column v-for="(name,index) in tab.thermalPerformName" :key="index"
 										width="150">
 										<template slot="header" slot-scope="scope">
-											<el-input size="mini" name="colNameList" v-model="tab.thermalPerformName[index]" :itemprop="scope.$index"
+											<el-input size="mini" name="colNameList" placeholder="热性能"
+												v-model="tab.thermalPerformName[index]" :itemprop="scope.$index"
 												v-show="tab.editable">
 												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
 													@click="removeCol(tab.name,'thermalPerform',name)">
@@ -546,7 +632,8 @@
 											<span v-show="!tab.editable">{{name}}</span>
 										</template>
 										<template slot-scope="scope">
-											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"
+												:readonly="tab.thermalReadable">
 											</el-input>
 											<span v-show="!tab.editable">{{scope.row[name]}}</span>
 										</template>
@@ -557,12 +644,85 @@
 								<template>
 									<el-row v-show="tab.editable">
 										<el-col :span="4">
-											<el-button type="primary" @click="addCol(tab.name,'thermalPerform')">新增列
+											<el-button type="primary" @click="addCol(tab.name,'thermalPerform')"
+												v-show="!tab.thermalReadable">新增列
 											</el-button>
+											<span v-show="tab.thermalReadable">
+												<el-button type="primary"
+													@click="changeReadable(tab.name,'thermalPerform')">确定</el-button>
+											</span>
 										</el-col>
 									</el-row>
 								</template>
 							</el-descriptions-item>
+              <el-descriptions-item label="岩屑直径分布">
+                <el-table :data="tab.diameterDisplay" stripe border style="width: 175vh">
+                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+                  <el-table-column v-for="(name, index) in tab.diameterDisplayName" :key="index" width="150">
+                    <template slot="header" slot-scope="scope">
+                      <el-input size="mini" name="colNameList" placeholder="岩屑直径"
+                                v-model="tab.diameterDisplayName[index]" :itemprop="scope.$index"
+                                v-show="tab.editable">
+                        <el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+                                   @click="removeCol(tab.name, 'diameterDisplay', name)"></el-button>
+                      </el-input>
+                      <span v-show="!tab.editable">{{name}}</span>
+                    </template>
+                    <template slot-scope="scope">
+                      <el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.diameterReadable"></el-input>
+                      <span v-show="!tab.editable">{{scope.row[name]}}</span>
+                    </template>
+                  </el-table-column>
+                </el-table><br />
+                <template>
+                  <el-row v-show="tab.editable">
+                    <el-col :span="4">
+                      <el-button type="primary" @click="addCol(tab.name, 'diameterDisplay')" v-show="!tab.diameterReadable">
+                        新增列
+                      </el-button>
+                      <span v-show="tab.diameterReadable">
+                        <el-button type="primary" @click="changeReadable(tab.name, 'diameterDisplay')">
+                          确定
+                        </el-button>
+                      </span>
+                    </el-col>
+                  </el-row>
+                </template>
+              </el-descriptions-item>
+              <el-descriptions-item label="空洞长度分布">
+                <el-table :data="tab.cavityDisplay" stripe border style="width: 175vh">
+                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+                  <el-table-column v-for="(name, index) in tab.cavityDisplayName" :key="index" width="150">
+                    <template slot="header" slot-scope="scope">
+                      <el-input size="mini" name="colNameList" placeholder="岩屑直径"
+                                v-model="tab.cavityDisplayName[index]" :itemprop="scope.$index"
+                                v-show="tab.editable">
+                        <el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+                                   @click="removeCol(tab.name, 'cavityDisplay', name)"></el-button>
+                      </el-input>
+                      <span v-show="!tab.editable">{{name}}</span>
+                    </template>
+                    <template slot-scope="scope">
+                      <el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.cavityReadable"></el-input>
+                      <span v-show="!tab.editable">{{scope.row[name]}}</span>
+                    </template>
+                  </el-table-column>
+                </el-table><br />
+                <template>
+                  <el-row v-show="tab.editable">
+                    <el-col :span="4">
+                      <el-button type="primary" @click="addCol(tab.name, 'cavityDisplay')" v-show="!tab.cavityReadable">
+                        新增列
+                      </el-button>
+                      <span v-show="tab.cavityReadable">
+                        <el-button type="primary" @click="changeReadable(tab.name, 'cavityDisplay')">
+                          确定
+                        </el-button>
+                      </span>
+                    </el-col>
+                  </el-row>
+                </template>
+              </el-descriptions-item>
 						</el-descriptions>
 					</template><br />
 					<!-- 修改按钮 -->
@@ -577,7 +737,8 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload" @click="experimentDataUpload(tab)">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="experimentDataUpload(tab)">上传
+								</el-button>
 							</el-col>
 						</el-row>
 					</template>
@@ -628,7 +789,8 @@
 								</span>
 							</el-col>
 							<el-col :span="4" :push="7">
-								<el-button type="primary" icon="el-icon-upload" @click="phaseGraphicUpload(tab)">上传</el-button>
+								<el-button type="primary" icon="el-icon-upload" @click="phaseGraphicUpload(tab)">上传
+								</el-button>
 							</el-col>
 						</el-row>
 					</template>
@@ -662,8 +824,10 @@
 			return {
 				pageLink: httpImg, // img解析前缀链接
 				tableData: [],
+				sampleTotalNumber: 0,
+				sampleCurrentNumber: 0,
 				metalPhaseData: {
-          sampleId: '',
+					sampleId: '',
 					metalPhase: '',
 					sfFullImg: '',
 					sfDescription: '',
@@ -673,7 +837,7 @@
 					sfImgList: []
 				},
 				minePhaseData: {
-          sampleId: '',
+					sampleId: '',
 					minePhase: '',
 					mpFullImg: '',
 					mpDescription: '',
@@ -683,7 +847,7 @@
 					mpImgList: []
 				},
 				emPhaseData: {
-          sampleId: '',
+					sampleId: '',
 					emPhase: '',
 					emFullImg: '',
 					emDescription: '',
@@ -693,23 +857,25 @@
 					emImgList: []
 				},
 				physicalPorosity: {
-          sampleId: '',
+					sampleId: '',
 					apparentPorosity: '',
 					trueDensity: '',
 					waterAbsorption: ''
 				},
-        phaseGraphic: {
-          imageIndex: '',
-          omDescription: '',
-          omEquipment: '',
-          omZoom: '',
-          omPhotoMod: ''
-        },
+				phaseGraphic: {
+					imageIndex: '',
+					omDescription: '',
+					omEquipment: '',
+					omZoom: '',
+					omPhotoMod: ''
+				},
 				experimentId: [],
 				mineralContent: [],
 				XRDContent: [],
 				chemicalContent: [],
 				thermalPerform: [],
+        diameterDisplay: [],
+        cavityDisplay: [],
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 0,
@@ -721,188 +887,192 @@
 			this.getData();
 		},
 		methods: {
-      experimentDataUpload: function (tab) {
-        let experimentData = {
-          mineralContent: tab.mineralContent,
-          XRDContent: tab.XRDContent,
-          chemicalContent: tab.chemicalContent,
-          thermalPerform: tab.thermalPerform
-        }
-        console.log(experimentData)
-        httpPost.post('api/upload/experiment', experimentData)
-        .catch((err) => {
-          this.$notify.error({
-            title: '错误',
-            message: '数据上传错误，请联系管理员',
-            duration: 0
-          });
-          console.log(err);
-        })
-      },
-      phaseGraphicUpload: function (tab) {
-        this.phaseGraphic.imageIndex = tab.label
-        this.phaseGraphic.omDescription = tab.omDescription
-        this.phaseGraphic.omEquipment = tab.omEquipment
-        this.phaseGraphic.omZoom = tab.omZoom
-        this.phaseGraphic.omPhotoMod = tab.omPhotoMod
-        httpPost.post('api/upload/graphic', this.phaseGraphic)
-        .then(() => {
-          this.phaseGraphic = {
-            imageIndex: '',
-            omDescription: '',
-            omEquipment: '',
-            omZoom: '',
-            omPhotoMod: ''
-          }
-        })
-        .catch((err) => {
-          this.$notify.error({
-            title: '错误',
-            message: '数据上传错误，请联系管理员',
-            duration: 0
-          });
-          console.log(err);
-        })
-      },
-      metalPhaseUpload: function (tab) {
-        this.metalPhaseData.metalPhase = tab.metalPhaseData.metalPhase;
-        this.metalPhaseData.sfDescription = tab.metalPhaseData.sfDescription;
-        this.metalPhaseData.sfEquipment = tab.metalPhaseData.sfEquipment;
-        this.metalPhaseData.sfZoom = tab.metalPhaseData.sfZoom;
-        this.metalPhaseData.sfPhotoMod = tab.metalPhaseData.sfPhotoMod;
-        if (this.metalPhaseData.sfImgList.length > 0) {
-          this.metalPhaseData.sfImgList = this.metalPhaseData.sfImgList[this.metalPhaseData.sfImgList.length -1]
-        }
-        this.metalPhaseData.sampleId = tab.label;
-        httpPost.post('api/upload/phase/metal', this.metalPhaseData)
-        .then(() => {
-          this.$refs.sfSingUpload[0].submit();
-          this.$refs.sfListUpload[0].submit();
-          this.$refs.sfSingUpload[0].clearFiles();
-          this.$refs.sfListUpload[0].clearFiles();
-          this.metalPhaseData = {
-            sampleId: '',
-            metalPhase: '',
-            sfFullImg: '',
-            sfDescription: '',
-            sfEquipment: '',
-            sfZoom: '',
-            sfPhotoMod: '',
-            sfImgList: []
-          }
-        })
-        .catch(err => {
-          this.$notify.error({
-            title: '错误',
-            message: '数据上传错误，请联系管理员',
-            duration: 0
-          });
-          console.log(err);
-        })
-      },
-      minePhaseUpload: function (tab) {
-        this.minePhaseData.minePhase = tab.minePhaseData.minePhase
-        this.minePhaseData.mpDescription = tab.minePhaseData.mpDescription
-        this.minePhaseData.mpEquipment = tab.minePhaseData.mpEquipment
-        this.minePhaseData.mpZoom = tab.minePhaseData.mpZoom
-        this.minePhaseData.mpPhotoMod = tab.minePhaseData.mpPhotoMod
-        if (this.minePhaseData.mpImgList.length > 0) {
-          this.minePhaseData.mpImgList = this.minePhaseData.mpImgList[this.minePhaseData.mpImgList.length -1]
-        }
-        this.metalPhaseData.sampleId = tab.label
-        httpPost.post('api/upload/phase/mine', this.minePhaseData)
-        .then(() => {
-          this.$refs.mpSingleUpload[0].submit()
-          this.$refs.mpListUpload[0].submit()
-          this.$refs.mpSingleUpload[0].clearFiles()
-          this.$refs.mpListUpload[0].clearFiles()
-          this.minePhaseData = {
-            sampleId: '',
-            minePhase: '',
-            mpFullImg: '',
-            mpDescription: '',
-            mpEquipment: '',
-            mpZoom: '',
-            mpPhotoMod: '',
-            mpImgList: []
-          }
-        })
-        .catch((err) => {
-          this.$notify.error({
-            title: '错误',
-            message: '数据上传错误，请联系管理员',
-            duration: 0
-          });
-          console.log(err)
-        })
-      },
-      emPhaseUpload: function (tab) {
-        this.emPhaseData.emPhase = tab.emPhaseData.emPhase
-        this.emPhaseData.emDescription = tab.emPhaseData.emDescription
-        this.emPhaseData.emEquipment = tab.emPhaseData.emEquipment
-        this.emPhaseData.emZoom = tab.emPhaseData.emZoom
-        this.emPhaseData.emPhotoMod = tab.emPhaseData.emPhotoMod
-        if (this.emPhaseData.emImgList.length > 0) {
-          this.emPhaseData.emImgList = this.emPhaseData.emImgList[this.emPhaseData.emImgList.length -1]
-        }
-        this.emPhaseData.sampleId = tab.label
-        httpPost.post('api/upload/phase/em', this.emPhaseData)
-        .then(() => {
-          this.$refs.emSingleUpload[0].submit()
-          this.$refs.emListUpload[0].submit()
-          this.$refs.emListUpload[0].clearFiles()
-          this.$refs.emSingleUpload[0].clearFiles()
-          this.emPhaseData = {
-            sampleId: '',
-            emPhase: '',
-            emFullImg: '',
-            emDescription: '',
-            emEquipment: '',
-            emZoom: '',
-            emPhotoMod: '',
-            emImgList: []
-          }
-        })
-        .catch((err) => {
-          this.$notify.error({
-            title: '错误',
-            message: '数据上传错误，请联系管理员',
-            duration: 0
-          });
-          console.log(err)
-        })
-      },
-      physicalPorosityUpload: function (tab) {
-        this.physicalPorosity.apparentPorosity = tab.physicalPorosity.apparentPorosity
-        this.physicalPorosity.trueDensity = tab.physicalPorosity.trueDensity
-        this.physicalPorosity.waterAbsorption = tab.physicalPorosity.waterAbsorption
-        this.physicalPorosity.sampleId = tab.label
-        httpPost.post('api/upload/physical_porosity', this.physicalPorosity)
-        .then(() => {
-              this.physicalPorosity = {
-                sampleId: '',
-                apparentPorosity: '',
-                trueDensity: '',
-                waterAbsorption: ''
-              }
-            })
-        .catch(err => {
-          this.$notify.error({
-            title: '错误',
-            message: '数据上传错误，请联系管理员',
-            duration: 0
-          });
-          console.log(err)
-        })
-      },
+			experimentDataUpload: function(tab) {
+				let experimentData = {
+					mineralContent: tab.mineralContent,
+					XRDContent: tab.XRDContent,
+					chemicalContent: tab.chemicalContent,
+					thermalPerform: tab.thermalPerform,
+          diameterDisplay: tab.diameterDisplay,
+          cavityDisplay: tab.cavityDisplay
+				}
+				console.log(experimentData)
+				httpPost.post('api/upload/experiment', experimentData)
+					.catch((err) => {
+						this.$notify.error({
+							title: '错误',
+							message: '数据上传错误，请联系管理员',
+							duration: 0
+						});
+						console.log(err);
+					})
+			},
+			phaseGraphicUpload: function(tab) {
+				this.phaseGraphic.imageIndex = tab.label
+				this.phaseGraphic.omDescription = tab.omDescription
+				this.phaseGraphic.omEquipment = tab.omEquipment
+				this.phaseGraphic.omZoom = tab.omZoom
+				this.phaseGraphic.omPhotoMod = tab.omPhotoMod
+				httpPost.post('api/upload/graphic', this.phaseGraphic)
+					.then(() => {
+						this.phaseGraphic = {
+							imageIndex: '',
+							omDescription: '',
+							omEquipment: '',
+							omZoom: '',
+							omPhotoMod: ''
+						}
+					})
+					.catch((err) => {
+						this.$notify.error({
+							title: '错误',
+							message: '数据上传错误，请联系管理员',
+							duration: 0
+						});
+						console.log(err);
+					})
+			},
+			metalPhaseUpload: function(tab) {
+				this.metalPhaseData.metalPhase = tab.metalPhaseData.metalPhase;
+				this.metalPhaseData.sfDescription = tab.metalPhaseData.sfDescription;
+				this.metalPhaseData.sfEquipment = tab.metalPhaseData.sfEquipment;
+				this.metalPhaseData.sfZoom = tab.metalPhaseData.sfZoom;
+				this.metalPhaseData.sfPhotoMod = tab.metalPhaseData.sfPhotoMod;
+				if (this.metalPhaseData.sfImgList.length > 0) {
+					this.metalPhaseData.sfImgList = this.metalPhaseData.sfImgList[this.metalPhaseData.sfImgList
+						.length - 1]
+				}
+				this.metalPhaseData.sampleId = tab.label;
+				httpPost.post('api/upload/phase/metal', this.metalPhaseData)
+					.then(() => {
+						this.$refs.sfSingUpload[0].submit();
+						this.$refs.sfListUpload[0].submit();
+						this.$refs.sfSingUpload[0].clearFiles();
+						this.$refs.sfListUpload[0].clearFiles();
+						this.metalPhaseData = {
+							sampleId: '',
+							metalPhase: '',
+							sfFullImg: '',
+							sfDescription: '',
+							sfEquipment: '',
+							sfZoom: '',
+							sfPhotoMod: '',
+							sfImgList: []
+						}
+					})
+					.catch(err => {
+						this.$notify.error({
+							title: '错误',
+							message: '数据上传错误，请联系管理员',
+							duration: 0
+						});
+						console.log(err);
+					})
+			},
+			minePhaseUpload: function(tab) {
+				this.minePhaseData.minePhase = tab.minePhaseData.minePhase
+				this.minePhaseData.mpDescription = tab.minePhaseData.mpDescription
+				this.minePhaseData.mpEquipment = tab.minePhaseData.mpEquipment
+				this.minePhaseData.mpZoom = tab.minePhaseData.mpZoom
+				this.minePhaseData.mpPhotoMod = tab.minePhaseData.mpPhotoMod
+				if (this.minePhaseData.mpImgList.length > 0) {
+					this.minePhaseData.mpImgList = this.minePhaseData.mpImgList[this.minePhaseData.mpImgList.length -
+						1]
+				}
+				this.metalPhaseData.sampleId = tab.label
+				httpPost.post('api/upload/phase/mine', this.minePhaseData)
+					.then(() => {
+						this.$refs.mpSingleUpload[0].submit()
+						this.$refs.mpListUpload[0].submit()
+						this.$refs.mpSingleUpload[0].clearFiles()
+						this.$refs.mpListUpload[0].clearFiles()
+						this.minePhaseData = {
+							sampleId: '',
+							minePhase: '',
+							mpFullImg: '',
+							mpDescription: '',
+							mpEquipment: '',
+							mpZoom: '',
+							mpPhotoMod: '',
+							mpImgList: []
+						}
+					})
+					.catch((err) => {
+						this.$notify.error({
+							title: '错误',
+							message: '数据上传错误，请联系管理员',
+							duration: 0
+						});
+						console.log(err)
+					})
+			},
+			emPhaseUpload: function(tab) {
+				this.emPhaseData.emPhase = tab.emPhaseData.emPhase
+				this.emPhaseData.emDescription = tab.emPhaseData.emDescription
+				this.emPhaseData.emEquipment = tab.emPhaseData.emEquipment
+				this.emPhaseData.emZoom = tab.emPhaseData.emZoom
+				this.emPhaseData.emPhotoMod = tab.emPhaseData.emPhotoMod
+				if (this.emPhaseData.emImgList.length > 0) {
+					this.emPhaseData.emImgList = this.emPhaseData.emImgList[this.emPhaseData.emImgList.length - 1]
+				}
+				this.emPhaseData.sampleId = tab.label
+				httpPost.post('api/upload/phase/em', this.emPhaseData)
+					.then(() => {
+						this.$refs.emSingleUpload[0].submit()
+						this.$refs.emListUpload[0].submit()
+						this.$refs.emListUpload[0].clearFiles()
+						this.$refs.emSingleUpload[0].clearFiles()
+						this.emPhaseData = {
+							sampleId: '',
+							emPhase: '',
+							emFullImg: '',
+							emDescription: '',
+							emEquipment: '',
+							emZoom: '',
+							emPhotoMod: '',
+							emImgList: []
+						}
+					})
+					.catch((err) => {
+						this.$notify.error({
+							title: '错误',
+							message: '数据上传错误，请联系管理员',
+							duration: 0
+						});
+						console.log(err)
+					})
+			},
+			physicalPorosityUpload: function(tab) {
+				this.physicalPorosity.apparentPorosity = tab.physicalPorosity.apparentPorosity
+				this.physicalPorosity.trueDensity = tab.physicalPorosity.trueDensity
+				this.physicalPorosity.waterAbsorption = tab.physicalPorosity.waterAbsorption
+				this.physicalPorosity.sampleId = tab.label
+				httpPost.post('api/upload/physical_porosity', this.physicalPorosity)
+					.then(() => {
+						this.physicalPorosity = {
+							sampleId: '',
+							apparentPorosity: '',
+							trueDensity: '',
+							waterAbsorption: ''
+						}
+					})
+					.catch(err => {
+						this.$notify.error({
+							title: '错误',
+							message: '数据上传错误，请联系管理员',
+							duration: 0
+						});
+						console.log(err)
+					})
+			},
 			sfSingleHandleChange: function(file) {
 				this.metalPhaseData.sfFullImg = file.name;
 			},
 			sfListHandleChange: function(file, fileList) {
 				this.metalPhaseData.sfImgList.push(fileList.map((item) => {
-          return item.name
-        }))
-        console.log(this.metalPhaseData.sfImgList)
+					return item.name
+				}))
+				console.log(this.metalPhaseData.sfImgList)
 			},
 			mpSingleHandleChange: function(file) {
 				this.minePhaseData.mpFullImg = file.name;
@@ -943,7 +1113,9 @@
 						this.tableData = [];
 						for (let i = 0; i < response.data.length; ++i) {
 							response.data[i].editable = false;
-							this.tableData.push(response.data[i])
+							this.tableData.push(response.data[i]);
+							this.sampleTotalNumber++;
+							this.sampleCurrentNumber++;
 						}
 					})
 					.catch(error => {
@@ -973,6 +1145,9 @@
 						console.log(error);
 					})
 			},
+			goBack: function() {
+				this.activeTab = "0";
+			},
 			addTab(id, type) {
 				let isExist = 0;
 				if (type === "sampleId") {
@@ -995,6 +1170,7 @@
 									emEditable: false,
 									physicalEditable: false,
 									src: type,
+									baseData: response.data.baseData,
 									metalPhaseData: response.data.metalPhaseData,
 									minePhaseData: response.data.minePhaseData,
 									emPhaseData: response.data.emPhaseData,
@@ -1031,17 +1207,25 @@
 								chemicalContentName = chemicalContentName.filter(name => name !== '实验编号')
 								let thermalPerformName = Object.keys(data[0].thermalPerform);
 								thermalPerformName = thermalPerformName.filter(name => name !== '实验编号')
+                let diameterDisplayName = Object.keys(data[0].diameterDisplay);
+                diameterDisplayName = diameterDisplayName.filter(name => name !== '实验编号')
+                let cavityDisplayName = Object.keys(data[0].cavityDisplay);
+                cavityDisplayName = cavityDisplayName.filter(name => name !== '实验编号')
 								let Id = [];
 								let mineral = [];
 								let XRD = [];
 								let chemical = [];
 								let thermal = [];
+                let diameter = [];
+                let cavity = [];
 								data.forEach((data) => {
 									Id.push(data.experimentId);
 									mineral.push(data.mineralContent);
 									XRD.push(data.XRDContent);
 									chemical.push(data.chemicalContent);
 									thermal.push(data.thermalPerform);
+                  diameter.push(data.diameterDisplay);
+                  cavity.push(data.cavityDisplay);
 								});
 								this.tabsList.push({
 									label: id + "的实验",
@@ -1050,14 +1234,24 @@
 									editable: false,
 									src: type,
 									experimentId: Id,
+									mineralReadable: false,
+									XRDReadable: false,
+									chemicalReadable: false,
+									thermalReadable: false,
+                  diameterReadable: false,
+                  cavityReadable: false,
 									mineralContentName: mineralContentName,
 									XRDContentName: XRDContentName,
 									chemicalContentName: chemicalContentName,
 									thermalPerformName: thermalPerformName,
+                  diameterDisplayName: diameterDisplayName,
+                  cavityDisplayName: cavityDisplayName,
 									mineralContent: mineral,
 									XRDContent: XRD,
 									chemicalContent: chemical,
-									thermalPerform: thermal
+									thermalPerform: thermal,
+                  diameterDisplay: diameter,
+                  cavityDisplay: cavity
 								});
 								this.activeTab = String(this.tabsNumber + 1);
 								this.tabsNumber++;
@@ -1079,31 +1273,31 @@
 						}
 					})
 					if (isExist === 0) {
-            httpGet.get('api/request/graphic/'+id)
-            .then((response) => {
-              this.tabsList.push({
-                label: id,
-                name: String(this.tabsNumber + 1),
-                closable: true,
-                editable: false,
-                src: type,
-                imageIndex: id,
-                omDescription: response.data.omDescription,
-                omEquipment: response.data.omEquipment,
-                omZoom: response.data.omZoom,
-                omPhotoMod: response.data.omPhotoMod,
-              });
-              this.activeTab = String(this.tabsNumber + 1);
-              this.tabsNumber++;
-            })
-            .catch(err => {
-              this.$notify.error({
-                title: '错误',
-                message: '数据上传发生了错误，请检查数据库和后端状况\n错误信息',
-                duration: 0
-              });
-              console.log(err)
-            })
+						httpGet.get('api/request/graphic/' + id)
+							.then((response) => {
+								this.tabsList.push({
+									label: id,
+									name: String(this.tabsNumber + 1),
+									closable: true,
+									editable: false,
+									src: type,
+									imageIndex: id,
+									omDescription: response.data.omDescription,
+									omEquipment: response.data.omEquipment,
+									omZoom: response.data.omZoom,
+									omPhotoMod: response.data.omPhotoMod,
+								});
+								this.activeTab = String(this.tabsNumber + 1);
+								this.tabsNumber++;
+							})
+							.catch(err => {
+								this.$notify.error({
+									title: '错误',
+									message: '数据上传发生了错误，请检查数据库和后端状况\n错误信息',
+									duration: 0
+								});
+								console.log(err)
+							})
 					}
 				}
 
@@ -1132,13 +1326,23 @@
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
 							tab.mineralContentName.push("");
+							tab.mineralReadable = true;
 						} else if (tableName === "XRDContent") {
 							tab.XRDContentName.push("");
+							tab.XRDReadable = true;
 						} else if (tableName === "chemicalContent") {
 							tab.chemicalContentName.push("");
+							tab.chemicalReadable = true;
 						} else if (tableName === "thermalPerform") {
 							tab.thermalPerformName.push("");
-						}
+							tab.thermalReadable = true;
+						} else if (tableName === "diameterDisplay") {
+              tab.diameterDisplayName.push("");
+              tab.diameterReadable = true;
+            } else if (tableName === 'cavityDisplay') {
+              tab.cavityDisplayName.push("");
+              tab.cavityReadable = true;
+            }
 					}
 				});
 			},
@@ -1147,13 +1351,35 @@
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
 							tab.mineralContentName = tab.mineralContentName.filter(name => name !== colName);
+							tab.mineralContent.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						} else if (tableName === "XRDContent") {
 							tab.XRDContentName = tab.XRDContentName.filter(name => name !== colName);
+							tab.XRDContent.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						} else if (tableName === "chemicalContent") {
 							tab.chemicalContentName = tab.chemicalContentName.filter(name => name !== colName);
+							tab.chemicalContent.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						} else if (tableName === "thermalPerform") {
 							tab.thermalPerformName = tab.thermalPerformName.filter(name => name !== colName);
-						}
+							tab.thermalPerform.forEach((experiment) => {
+								delete experiment[colName];
+							})
+						} else if (tableName === 'diameterDisplay') {
+              tab.diameterDisplayName = tab.diameterDisplayName.filter(name => name !== colName);
+              tab.diameterDisplay.forEach((experiment) => {
+                delete experiment[colName];
+              })
+            } else if (tabName === 'cavityDisplay') {
+              tab.cavityDisplayName = tab.cavityDisplayName.filter(name => name !== colName);
+              tab.cavityDisplay.forEach(experiment => {
+                delete experiment[colName];
+              })
+            }
 					}
 				});
 
@@ -1218,7 +1444,27 @@
 						}
 					})
 				}
-			}
+			},
+			changeReadable(tabName, tableName) {
+				this.tabsList.forEach((tab) => {
+					if (tab.name === tabName) {
+						if (tableName === "mineralContent") {
+							tab.mineralReadable = false;
+							console.log(tab);
+						} else if (tableName === "XRDContent") {
+							tab.XRDReadable = false;
+						} else if (tableName === "chemicalContent") {
+							tab.chemicalReadable = false;
+						} else if (tableName === "thermalPerform") {
+							tab.thermalReadable = false;
+						} else if (tableName === 'diameterDisplay') {
+              tab.diameterReadable = false;
+            } else if (tableName === 'cavityDisplay') {
+              tab.cavityReadable = false;
+            }
+					}
+				});
+			},
 		},
 	}
 </script>
