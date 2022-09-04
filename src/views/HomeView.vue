@@ -655,6 +655,12 @@
 									</el-row>
 								</template>
 							</el-descriptions-item>
+              <el-descriptions-item label="岩屑直径分布">
+                <el-table :data="tab.diameterDisplay" stripe border style="width: 175vh">
+                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+                  <el-table-column v-for="(name, index) in tab.diameterDisplayName" :key="index" width="150"></el-table-column>
+                </el-table>
+              </el-descriptions-item>
 						</el-descriptions>
 					</template><br />
 					<!-- 修改按钮 -->
@@ -806,6 +812,8 @@
 				XRDContent: [],
 				chemicalContent: [],
 				thermalPerform: [],
+        diameterDisplay: [],
+        cavityDisplay: [],
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 0,
@@ -1135,17 +1143,25 @@
 								chemicalContentName = chemicalContentName.filter(name => name !== '实验编号')
 								let thermalPerformName = Object.keys(data[0].thermalPerform);
 								thermalPerformName = thermalPerformName.filter(name => name !== '实验编号')
+                let diameterDisplayName = Object.keys(data[0].diameterDisplay);
+                diameterDisplayName = diameterDisplayName.filter(name => name !== '实验编号')
+                let cavityDisplayName = Object.keys(data[0].cavityDisplay);
+                cavityDisplayName = cavityDisplayName.filter(name => name !== '实验编号')
 								let Id = [];
 								let mineral = [];
 								let XRD = [];
 								let chemical = [];
 								let thermal = [];
+                let diameter = [];
+                let cavity = [];
 								data.forEach((data) => {
 									Id.push(data.experimentId);
 									mineral.push(data.mineralContent);
 									XRD.push(data.XRDContent);
 									chemical.push(data.chemicalContent);
 									thermal.push(data.thermalPerform);
+                  diameter.push(data.diameterDisplay);
+                  cavity.push(data.cavityDisplay);
 								});
 								this.tabsList.push({
 									label: id + "的实验",
@@ -1162,10 +1178,14 @@
 									XRDContentName: XRDContentName,
 									chemicalContentName: chemicalContentName,
 									thermalPerformName: thermalPerformName,
+                  diameterDisplayName: diameterDisplayName,
+                  cavityDisplayName: cavityDisplayName,
 									mineralContent: mineral,
 									XRDContent: XRD,
 									chemicalContent: chemical,
-									thermalPerform: thermal
+									thermalPerform: thermal,
+                  diameterDisplay: diameter,
+                  cavityDisplay: cavity
 								});
 								this.activeTab = String(this.tabsNumber + 1);
 								this.tabsNumber++;
