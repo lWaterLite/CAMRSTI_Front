@@ -1259,12 +1259,24 @@
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
 							tab.mineralContentName = tab.mineralContentName.filter(name => name !== colName);
+							tab.mineralContent.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						} else if (tableName === "XRDContent") {
 							tab.XRDContentName = tab.XRDContentName.filter(name => name !== colName);
+							tab.XRDContent.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						} else if (tableName === "chemicalContent") {
 							tab.chemicalContentName = tab.chemicalContentName.filter(name => name !== colName);
+							tab.chemicalContent.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						} else if (tableName === "thermalPerform") {
 							tab.thermalPerformName = tab.thermalPerformName.filter(name => name !== colName);
+							tab.thermalPerform.forEach((experiment) => {
+								delete experiment[colName];
+							})
 						}
 					}
 				});
