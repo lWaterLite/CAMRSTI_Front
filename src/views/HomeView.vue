@@ -497,9 +497,7 @@
 							</el-col>
 						</el-row>
 					</template>
-				</div>
-				<!-- 样品实验详细信息 -->
-				<div v-else-if="tab.src === 'experimentId'">
+					<!-- 实验信息 -->
 					<template>
 						<el-descriptions title="" border :column="1" :labelStyle="{width: '150px'}">
 							<el-descriptions-item label="矿物成分分析">
@@ -655,74 +653,82 @@
 									</el-row>
 								</template>
 							</el-descriptions-item>
-              <el-descriptions-item label="岩屑直径分布">
-                <el-table :data="tab.diameterDisplay" stripe border style="width: 175vh">
-                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-                  <el-table-column v-for="(name, index) in tab.diameterDisplayName" :key="index" width="150">
-                    <template slot="header" slot-scope="scope">
-                      <el-input size="mini" name="colNameList" placeholder="岩屑直径"
-                                v-model="tab.diameterDisplayName[index]" :itemprop="scope.$index"
-                                v-show="tab.editable">
-                        <el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
-                                   @click="removeCol(tab.name, 'diameterDisplay', name)"></el-button>
-                      </el-input>
-                      <span v-show="!tab.editable">{{name}}</span>
-                    </template>
-                    <template slot-scope="scope">
-                      <el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.diameterReadable"></el-input>
-                      <span v-show="!tab.editable">{{scope.row[name]}}</span>
-                    </template>
-                  </el-table-column>
-                </el-table><br />
-                <template>
-                  <el-row v-show="tab.editable">
-                    <el-col :span="4">
-                      <el-button type="primary" @click="addCol(tab.name, 'diameterDisplay')" v-show="!tab.diameterReadable">
-                        新增列
-                      </el-button>
-                      <span v-show="tab.diameterReadable">
-                        <el-button type="primary" @click="changeReadable(tab.name, 'diameterDisplay')">
-                          确定
-                        </el-button>
-                      </span>
-                    </el-col>
-                  </el-row>
-                </template>
-              </el-descriptions-item>
-              <el-descriptions-item label="空洞长度分布">
-                <el-table :data="tab.cavityDisplay" stripe border style="width: 175vh">
-                  <el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
-                  <el-table-column v-for="(name, index) in tab.cavityDisplayName" :key="index" width="150">
-                    <template slot="header" slot-scope="scope">
-                      <el-input size="mini" name="colNameList" placeholder="岩屑直径"
-                                v-model="tab.cavityDisplayName[index]" :itemprop="scope.$index"
-                                v-show="tab.editable">
-                        <el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
-                                   @click="removeCol(tab.name, 'cavityDisplay', name)"></el-button>
-                      </el-input>
-                      <span v-show="!tab.editable">{{name}}</span>
-                    </template>
-                    <template slot-scope="scope">
-                      <el-input size="mini" v-model="scope.row[name]" v-show="tab.editable" :readonly="tab.cavityReadable"></el-input>
-                      <span v-show="!tab.editable">{{scope.row[name]}}</span>
-                    </template>
-                  </el-table-column>
-                </el-table><br />
-                <template>
-                  <el-row v-show="tab.editable">
-                    <el-col :span="4">
-                      <el-button type="primary" @click="addCol(tab.name, 'cavityDisplay')" v-show="!tab.cavityReadable">
-                        新增列
-                      </el-button>
-                      <span v-show="tab.cavityReadable">
-                        <el-button type="primary" @click="changeReadable(tab.name, 'cavityDisplay')">
-                          确定
-                        </el-button>
-                      </span>
-                    </el-col>
-                  </el-row>
-                </template>
-              </el-descriptions-item>
+							<el-descriptions-item label="岩屑直径分布">
+								<el-table :data="tab.diameterDisplay" stripe border style="width: 175vh">
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="(name, index) in tab.diameterDisplayName" :key="index"
+										width="150">
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" placeholder="岩屑直径"
+												v-model="tab.diameterDisplayName[index]" :itemprop="scope.$index"
+												v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+													@click="removeCol(tab.name, 'diameterDisplay', name)"></el-button>
+											</el-input>
+											<span v-show="!tab.editable">{{name}}</span>
+										</template>
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"
+												:readonly="tab.diameterReadable"></el-input>
+											<span v-show="!tab.editable">{{scope.row[name]}}</span>
+										</template>
+									</el-table-column>
+								</el-table><br />
+								<template>
+									<el-row v-show="tab.editable">
+										<el-col :span="4">
+											<el-button type="primary" @click="addCol(tab.name, 'diameterDisplay')"
+												v-show="!tab.diameterReadable">
+												新增列
+											</el-button>
+											<span v-show="tab.diameterReadable">
+												<el-button type="primary"
+													@click="changeReadable(tab.name, 'diameterDisplay')">
+													确定
+												</el-button>
+											</span>
+										</el-col>
+									</el-row>
+								</template>
+							</el-descriptions-item>
+							<el-descriptions-item label="空洞长度分布">
+								<el-table :data="tab.cavityDisplay" stripe border style="width: 175vh">
+									<el-table-column prop="实验编号" label="实验编号" width="90"></el-table-column>
+									<el-table-column v-for="(name, index) in tab.cavityDisplayName" :key="index"
+										width="150">
+										<template slot="header" slot-scope="scope">
+											<el-input size="mini" name="colNameList" placeholder="空洞长度"
+												v-model="tab.cavityDisplayName[index]" :itemprop="scope.$index"
+												v-show="tab.editable">
+												<el-button slot="append" size="mini" type="danger" icon="el-icon-delete"
+													@click="removeCol(tab.name, 'cavityDisplay', name)"></el-button>
+											</el-input>
+											<span v-show="!tab.editable">{{name}}</span>
+										</template>
+										<template slot-scope="scope">
+											<el-input size="mini" v-model="scope.row[name]" v-show="tab.editable"
+												:readonly="tab.cavityReadable"></el-input>
+											<span v-show="!tab.editable">{{scope.row[name]}}</span>
+										</template>
+									</el-table-column>
+								</el-table><br />
+								<template>
+									<el-row v-show="tab.editable">
+										<el-col :span="4">
+											<el-button type="primary" @click="addCol(tab.name, 'cavityDisplay')"
+												v-show="!tab.cavityReadable">
+												新增列
+											</el-button>
+											<span v-show="tab.cavityReadable">
+												<el-button type="primary"
+													@click="changeReadable(tab.name, 'cavityDisplay')">
+													确定
+												</el-button>
+											</span>
+										</el-col>
+									</el-row>
+								</template>
+							</el-descriptions-item>
 						</el-descriptions>
 					</template><br />
 					<!-- 修改按钮 -->
@@ -818,6 +824,10 @@
 		httpImg
 	} from "@/Utils/axios.config";
 
+	import {
+		nextTick
+	} from 'vue'
+
 	export default {
 		name: 'HomeView',
 		data() {
@@ -874,13 +884,12 @@
 				XRDContent: [],
 				chemicalContent: [],
 				thermalPerform: [],
-        diameterDisplay: [],
-        cavityDisplay: [],
+				diameterDisplay: [],
+				cavityDisplay: [],
 				isRouterAlive: true,
 				activeTab: "0",
 				tabsNumber: 0,
 				tabsList: [],
-				fixDataList: [],
 			}
 		},
 		mounted() {
@@ -893,10 +902,9 @@
 					XRDContent: tab.XRDContent,
 					chemicalContent: tab.chemicalContent,
 					thermalPerform: tab.thermalPerform,
-          diameterDisplay: tab.diameterDisplay,
-          cavityDisplay: tab.cavityDisplay
+					diameterDisplay: tab.diameterDisplay,
+					cavityDisplay: tab.cavityDisplay
 				}
-				console.log(experimentData)
 				httpPost.post('api/upload/experiment', experimentData)
 					.catch((err) => {
 						this.$notify.error({
@@ -1163,7 +1171,7 @@
 							.then(response => {
 								this.tabsList.push({
 									label: id,
-									name: String(this.tabsNumber + 1),
+									name: String(this.tabsNumber + 1),	
 									closable: true,
 									metalEditable: false,
 									mineEditable: false,
@@ -1176,8 +1184,6 @@
 									emPhaseData: response.data.emPhaseData,
 									physicalPorosity: response.data.physicalPorosity
 								});
-								this.activeTab = String(this.tabsNumber + 1);
-								this.tabsNumber++;
 							})
 							.catch(err => {
 								console.log(err);
@@ -1187,15 +1193,6 @@
 									duration: 0
 								});
 							})
-					}
-				} else if (type === "experimentId") {
-					this.tabsList.forEach((tab) => {
-						if (tab.label === (id + "的实验")) {
-							this.activeTab = tab.name;
-							isExist = 1;
-						}
-					})
-					if (isExist === 0) {
 						httpGet.get('api/request/experiment/' + id)
 							.then(response => {
 								let data = Object.values(response.data);
@@ -1207,54 +1204,50 @@
 								chemicalContentName = chemicalContentName.filter(name => name !== '实验编号')
 								let thermalPerformName = Object.keys(data[0].thermalPerform);
 								thermalPerformName = thermalPerformName.filter(name => name !== '实验编号')
-                let diameterDisplayName = Object.keys(data[0].diameterDisplay);
-                diameterDisplayName = diameterDisplayName.filter(name => name !== '实验编号')
-                let cavityDisplayName = Object.keys(data[0].cavityDisplay);
-                cavityDisplayName = cavityDisplayName.filter(name => name !== '实验编号')
+								let diameterDisplayName = Object.keys(data[0].diameterDisplay);
+								diameterDisplayName = diameterDisplayName.filter(name => name !== '实验编号')
+								let cavityDisplayName = Object.keys(data[0].cavityDisplay);
+								cavityDisplayName = cavityDisplayName.filter(name => name !== '实验编号')
 								let Id = [];
 								let mineral = [];
 								let XRD = [];
 								let chemical = [];
 								let thermal = [];
-                let diameter = [];
-                let cavity = [];
+								let diameter = [];
+								let cavity = [];
 								data.forEach((data) => {
 									Id.push(data.experimentId);
 									mineral.push(data.mineralContent);
 									XRD.push(data.XRDContent);
 									chemical.push(data.chemicalContent);
 									thermal.push(data.thermalPerform);
-                  diameter.push(data.diameterDisplay);
-                  cavity.push(data.cavityDisplay);
+									diameter.push(data.diameterDisplay);
+									cavity.push(data.cavityDisplay);
 								});
-								this.tabsList.push({
-									label: id + "的实验",
-									name: String(this.tabsNumber + 1),
-									closable: true,
-									editable: false,
-									src: type,
-									experimentId: Id,
-									mineralReadable: false,
-									XRDReadable: false,
-									chemicalReadable: false,
-									thermalReadable: false,
-                  diameterReadable: false,
-                  cavityReadable: false,
-									mineralContentName: mineralContentName,
-									XRDContentName: XRDContentName,
-									chemicalContentName: chemicalContentName,
-									thermalPerformName: thermalPerformName,
-                  diameterDisplayName: diameterDisplayName,
-                  cavityDisplayName: cavityDisplayName,
-									mineralContent: mineral,
-									XRDContent: XRD,
-									chemicalContent: chemical,
-									thermalPerform: thermal,
-                  diameterDisplay: diameter,
-                  cavityDisplay: cavity
+								this.tabsList.forEach((tab) => {
+									if (tab.label === id) {
+										tab.editable = false;
+										tab.experimentId = Id;
+										tab.mineralReadable = false;
+										tab.XRDReadable = false;
+										tab.chemicalReadable = false;
+										tab.thermalReadable = false;
+										tab.diameterReadable = false;
+										tab.cavityReadable = false;
+										tab.mineralContentName = mineralContentName;
+										tab.XRDContentName = XRDContentName;
+										tab.chemicalContentName = chemicalContentName;
+										tab.thermalPerformName = thermalPerformName;
+										tab.diameterDisplayName = diameterDisplayName;
+										tab.cavityDisplayName = cavityDisplayName;
+										tab.mineralContent = mineral;
+										tab.XRDContent = XRD;
+										tab.chemicalContent = chemical;
+										tab.thermalPerform = thermal;
+										tab.diameterDisplay = diameter;
+										tab.cavityDisplay = cavity;
+									}
 								});
-								this.activeTab = String(this.tabsNumber + 1);
-								this.tabsNumber++;
 							})
 							.catch(err => {
 								console.log(err);
@@ -1263,7 +1256,9 @@
 									message: '数据请求错误，请联系管理员检查运行情况',
 									duration: 0
 								});
-							});
+							});	
+						this.activeTab = String(this.tabsNumber + 1);
+						this.tabsNumber++;
 					}
 				} else if (type === "Image") {
 					this.tabsList.forEach((tab) => {
@@ -1287,8 +1282,7 @@
 									omZoom: response.data.omZoom,
 									omPhotoMod: response.data.omPhotoMod,
 								});
-								this.activeTab = String(this.tabsNumber + 1);
-								this.tabsNumber++;
+
 							})
 							.catch(err => {
 								this.$notify.error({
@@ -1298,9 +1292,10 @@
 								});
 								console.log(err)
 							})
+						this.activeTab = String(this.tabsNumber + 1);
+						this.tabsNumber++;
 					}
 				}
-
 			},
 			removeTab(removeName) {
 				let tabs = this.tabsList;
@@ -1337,12 +1332,12 @@
 							tab.thermalPerformName.push("");
 							tab.thermalReadable = true;
 						} else if (tableName === "diameterDisplay") {
-              tab.diameterDisplayName.push("");
-              tab.diameterReadable = true;
-            } else if (tableName === 'cavityDisplay') {
-              tab.cavityDisplayName.push("");
-              tab.cavityReadable = true;
-            }
+							tab.diameterDisplayName.push("");
+							tab.diameterReadable = true;
+						} else if (tableName === 'cavityDisplay') {
+							tab.cavityDisplayName.push("");
+							tab.cavityReadable = true;
+						}
 					}
 				});
 			},
@@ -1370,87 +1365,59 @@
 								delete experiment[colName];
 							})
 						} else if (tableName === 'diameterDisplay') {
-              tab.diameterDisplayName = tab.diameterDisplayName.filter(name => name !== colName);
-              tab.diameterDisplay.forEach((experiment) => {
-                delete experiment[colName];
-              })
-            } else if (tabName === 'cavityDisplay') {
-              tab.cavityDisplayName = tab.cavityDisplayName.filter(name => name !== colName);
-              tab.cavityDisplay.forEach(experiment => {
-                delete experiment[colName];
-              })
-            }
+							tab.diameterDisplayName = tab.diameterDisplayName.filter(name => name !== colName);
+							tab.diameterDisplay.forEach((experiment) => {
+								delete experiment[colName];
+							})
+						} else if (tabName === 'cavityDisplay') {
+							tab.cavityDisplayName = tab.cavityDisplayName.filter(name => name !== colName);
+							tab.cavityDisplay.forEach(experiment => {
+								delete experiment[colName];
+							})
+						}
 					}
 				});
 
 			},
 			edit(tabName, element) {
-				if (tabName !== "主页") {
-					this.tabsList.forEach((tab) => {
-						if (tab.name === tabName) {
-							if (element === "metalPhaseData") {
-								let oldData = tab.metalPhaseData;
-								this.fixDataList.push({
-									position: tab.name,
-									name: "metalPhaseData",
-									data: oldData,
-								})
-								tab.metalEditable = true;
-							} else if (element === "minePhaseData") {
-								tab.mineEditable = true;
-							} else if (element === "emPhaseData") {
-								tab.emEditable = true;
-							} else if (element === "physicalPorosity") {
-								tab.physicalEditable = true;
-							} else if (element === "Img" || element === "experiment") {
-								tab.editable = true;
-							}
+				this.tabsList.forEach((tab) => {
+					if (tab.name === tabName) {
+						if (element === "metalPhaseData") {
+							tab.metalEditable = true;
+						} else if (element === "minePhaseData") {
+							tab.mineEditable = true;
+						} else if (element === "emPhaseData") {
+							tab.emEditable = true;
+						} else if (element === "physicalPorosity") {
+							tab.physicalEditable = true;
+						} else if (element === "Img" || element === "experiment") {
+							tab.editable = true;
 						}
-					});
-				} else {
-					this.tableData.forEach((row) => {
-						if (row.sampleId === element) {
-							row.editable = true;
-						}
-					})
-				}
+					}
+				});
 			},
 			unedit(tabName, element) {
-				if (tabName !== "主页") {
-					this.tabsList.forEach((tab) => {
-						if (tab.name === tabName) {
-							if (element === "metalPhaseData") {
-								tab.metalEditable = false;
-								this.fixDataList.forEach((item) => {
-									if (item.position === name && item.name === element) {
-										tab.metalPhaseData = item.data;
-									}
-								});
-							} else if (element === "minePhaseData") {
-								tab.mineEditable = false;
-							} else if (element === "emPhaseData") {
-								tab.emEditable = false;
-							} else if (element === "physicalPorosity") {
-								tab.physicalEditable = false;
-							} else if (element === "Img" || element === "experiment") {
-								tab.editable = false;
-							}
+				this.tabsList.forEach((tab) => {
+					if (tab.name === tabName) {
+						if (element === "metalPhaseData") {
+							tab.metalEditable = false;
+						} else if (element === "minePhaseData") {
+							tab.mineEditable = false;
+						} else if (element === "emPhaseData") {
+							tab.emEditable = false;
+						} else if (element === "physicalPorosity") {
+							tab.physicalEditable = false;
+						} else if (element === "Img" || element === "experiment") {
+							tab.editable = false;
 						}
-					});
-				} else {
-					this.tableData.forEach((row) => {
-						if (row.sampleId === element) {
-							row.editable = false;
-						}
-					})
-				}
+					}
+				});
 			},
 			changeReadable(tabName, tableName) {
 				this.tabsList.forEach((tab) => {
 					if (tab.name === tabName) {
 						if (tableName === "mineralContent") {
 							tab.mineralReadable = false;
-							console.log(tab);
 						} else if (tableName === "XRDContent") {
 							tab.XRDReadable = false;
 						} else if (tableName === "chemicalContent") {
@@ -1458,13 +1425,14 @@
 						} else if (tableName === "thermalPerform") {
 							tab.thermalReadable = false;
 						} else if (tableName === 'diameterDisplay') {
-              tab.diameterReadable = false;
-            } else if (tableName === 'cavityDisplay') {
-              tab.cavityReadable = false;
-            }
+							tab.diameterReadable = false;
+						} else if (tableName === 'cavityDisplay') {
+							tab.cavityReadable = false;
+						}
 					}
 				});
 			},
 		},
+
 	}
 </script>
