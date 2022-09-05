@@ -4,14 +4,14 @@ import axios from "axios";
 const urlPrefix = 'http://localhost:5000/'
 
 export const httpGet = axios.create({
-    baseURL: urlPrefix,
-    timeout: 3000
+  baseURL: urlPrefix,
+  timeout: 3000
 });
 
 export const httpPost = axios.create({
-    method: 'POST',
-    baseURL: urlPrefix,
-    timeout: 3000
+  method: 'POST',
+  baseURL: urlPrefix,
+  timeout: 3000
 })
 
 export const httpImg = urlPrefix
