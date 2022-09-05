@@ -20,19 +20,9 @@
           </template>
         </div>
         <div v-if="tab.id ==='XRD'">
-          <el-input
-              placeholder="请输入内容"
-              v-model="tab.sampleId"
-              clearable>
-          </el-input>
-
-          <el-button type="primary" @click="confirm_XRD(tab.id)">确认
-          </el-button>
-
-          <div>
-            <v-chart  :style="{width:'1000px',height: '800px'}"
-                     v-show="tab.chartshow" class="chart" :option="tab.XRDContent" />
-          </div>
+          <template>
+            <v-chart class="chart" :option="tab.XRDContent" />
+          </template>
         </div>
         <div v-if="tab.id ==='chemical'">
           <template>
@@ -210,7 +200,7 @@
               id: id,
               name: String(this.tabsNumber + 1),
               closable: true,
-              label: '物理结构数据',
+              label: '化学成分数据',
               sampleId:"",
               chemicalContent:{},
             });
@@ -253,47 +243,8 @@
 				});
 				this.tabsNumber--;
 			},
-      confirm_XRD(id){
-        this.tabsList.forEach((tab) => {
-          console.log(tab.sampleId)
-          if(tab.id ===id ){
-            tab.chartshow = true
-            httpGet.get('api/request/phase/' + tab.sampleId)
-
-                .then(response => {
-                  console.log(response)
-                  tab.physical={
-                    backgroundColor: 'white',
-                    legend: {},
-                    tooltip: {},
-                    dataset:{
-                      dimensions:['样品号', '石英', '钠长石', '吸水率'],
-                          source:[ {
-                        样品号: response.data.physicalPorosity.sampleId,
-                        石英: response.data.physicalPorosity.apparentPorosity,
-                        钠长石:response.data.physicalPorosity.trueDensity,
-                        吸水率: response.data.physicalPorosity.waterAbsorption
-                      }],
-                    },
-                    xAxis: { type: 'category' },
-                    yAxis: {},
-                    series: [ { type: 'bar' }, { type: 'bar' },{ type: 'bar' }
-                    ]
-                  };
-                })
-
-                .catch(err => {
-              console.log(err);
-              this.$notify.error({
-                title: '出错了',
-                message: '数据请求错误，样品数据可能不存在',
-                duration: 0
-              });
-            })
-          }
-        })
-        },
       confirm(id){
+
         this.tabsList.forEach((tab) => {
           console.log(tab.sampleId)
           if(tab.id ===id ){
@@ -302,6 +253,8 @@
 
                 .then(response => {
                   console.log(response)
+                  console.log(tab.sampleId)
+
                   tab.physical={
                     backgroundColor: 'white',
                     legend: {},
